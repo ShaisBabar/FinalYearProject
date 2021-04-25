@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Rating, AirbnbRating } from 'react-native-ratings';
-
 import {
 	Text,
 	TextInput,
@@ -8,7 +6,6 @@ import {
 	Image,
 	TouchableOpacity,
 	StyleSheet,
-	Alert
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
@@ -19,76 +16,44 @@ import LoadingIndicator from '../../components/LoadingIndicator';
 import { connect } from 'react-redux';
 import { login } from '../../redux/actions/user';
 
-
-
-function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
+function ChoiceScreen({ navigation: { navigate }, token, loading, login }) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-    const ratingCompleted = (rating) => {
-        console.log("Rating is: " + rating)
-      }
+
 	// useEffect(() => {
 	// 	if (token) {
 	// 		navigate('MainApp');
 	// 	}
 	// 	return () => {};
 	// }, [token]);
-  
 
-	const login_user = (email,password) =>{
-		login({ email, password });
-
-		if (token) {
-			navigate('MainApp');
-	 	}
-		 else{
-			Alert.alert(
-				"Invalid Login",
-				"Username or password is incorrect",
-				[
-				  {
-					text: "Cancel",
-					onPress: () => console.log("Cancel Pressed"),
-					style: "cancel"
-				  },
-				  { text: "OK", onPress: () => console.log("OK Pressed") }
-				]
-			  );
-		 }
-	}
 	return (
 		<View style={styles.container}>
-			{/* {loading && <LoadingIndicator />} */}
 			<LinearGradient
 				colors={[colors.red, colors.red]}
 				style={styles.header}
 			>
 				<Image
 					style={styles.logo}
-					source={require('../../assets/images/user.png')}
+					source={require('../../assets/images/icon.png')}
 				/>
 			</LinearGradient>
-			<Animatable.View animation="slideInUp" style={styles.footer}>
-            <Text style={styles.text}>Give Rating</Text>
-            <Rating
-                    type='heart'
-                    ratingCount={5}
-                    imageSize={60}
-                    showRating
-                    onFinishRating={ratingCompleted}
-                    />
-
-				<Text style={styles.text}>Give Review</Text>
-				<TextInput
-					autoCapitalize="none"
-					keyboardType="email-address"
-					style={styles.textInput}
-					placeholder={'Enter Review'}
-					maxLength={50}
-					onChangeText={(text) => setEmail(text)}
-					value={email}
-				/>
-               
+			
+            <Animatable.View animation="slideInUp" style={styles.footer}>
+            <View>
+				<Text style={styles.heading}>SELECT ACCOUNT TYPE</Text>
+			</View>
+                <LinearGradient
+					colors={[colors.red, colors.red]}
+					style={[styles.button]}
+				>
+					<TouchableOpacity
+						style={{ width: '100%', alignItems: 'center' }}
+						onPress={() => navigate('Login')}
+					>
+						<Text style={styles.textBtn}>I'm a User</Text>
+					</TouchableOpacity>
+				</LinearGradient>
 				<TouchableOpacity
 					style={[
 						styles.button,
@@ -98,16 +63,24 @@ function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
 							borderWidth: 1,
 						},
 					]}
-					onPress={() => navigate('Register')}
+					onPress={() => navigate('WorkerLogin')}
 				>
-					<Text style={styles.textBtnSignUp}>Submit Review</Text>
+					<Text style={styles.textBtnSignUp}>I'm a Worker</Text>
 				</TouchableOpacity>
+
 			</Animatable.View>
 		</View>
 	);
 }
 
 const styles = StyleSheet.create({
+    heading:{
+        color:colors.red,
+        fontSize:35,
+        fontWeight:'bold',
+        textAlign:'center',
+        marginBottom:90
+     },
 	button: {
 		// backgroundColor: colors.red,
 		borderRadius: 2,
@@ -115,8 +88,10 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		padding: 10,
 		elevation: 5,
+        height:60,
 		marginVertical: 10,
 		marginHorizontal: 10,
+        marginBottom:30
 	},
 	linearGradient: {
 		flex: 1,
@@ -172,8 +147,8 @@ const styles = StyleSheet.create({
 	},
 	logo: {
 		// tintColor: colors.red,
-		width: 250,
-		height: 200,
+		width: 300,
+		height: 300,
 	},
 	header: {
 		flex: 1,
@@ -196,4 +171,4 @@ const mapStateToProps = ({ user: { token, loading } }) => ({ token, loading });
 
 const mapActionToProps = { login };
 
-export default connect(mapStateToProps, mapActionToProps)(ReviewScreen);
+export default connect(mapStateToProps, mapActionToProps)(ChoiceScreen);

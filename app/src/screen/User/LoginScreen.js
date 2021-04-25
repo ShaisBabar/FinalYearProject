@@ -6,6 +6,7 @@ import {
 	Image,
 	TouchableOpacity,
 	StyleSheet,
+	Alert
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
@@ -20,13 +21,35 @@ function LoginScreen({ navigation: { navigate }, token, loading, login }) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
-	useEffect(() => {
+	// useEffect(() => {
+	// 	if (token) {
+	// 		navigate('MainApp');
+	// 	}
+	// 	return () => {};
+	// }, [token]);
+  
+
+	const login_user = (email,password) =>{
+		login({ email, password });
+
 		if (token) {
 			navigate('MainApp');
-		}
-		return () => {};
-	}, [token]);
-
+	 	}
+		 else{
+			Alert.alert(
+				"Invalid Login",
+				"Username or password is incorrect",
+				[
+				  {
+					text: "Cancel",
+					onPress: () => console.log("Cancel Pressed"),
+					style: "cancel"
+				  },
+				  { text: "OK", onPress: () => console.log("OK Pressed") }
+				]
+			  );
+		 }
+	}
 	return (
 		<View style={styles.container}>
 			{/* {loading && <LoadingIndicator />} */}
@@ -36,7 +59,7 @@ function LoginScreen({ navigation: { navigate }, token, loading, login }) {
 			>
 				<Image
 					style={styles.logo}
-					source={require('../../assets/images/icon.png')}
+					source={require('../../assets/images/user.png')}
 				/>
 			</LinearGradient>
 			<Animatable.View animation="slideInUp" style={styles.footer}>
@@ -68,7 +91,7 @@ function LoginScreen({ navigation: { navigate }, token, loading, login }) {
 				>
 					<TouchableOpacity
 						style={{ width: '100%', alignItems: 'center' }}
-						onPress={() => login({ email, password })}
+						onPress={() => login_user(email, password)}
 					>
 						<Text style={styles.textBtn}>Sign In</Text>
 					</TouchableOpacity>
@@ -156,8 +179,8 @@ const styles = StyleSheet.create({
 	},
 	logo: {
 		// tintColor: colors.red,
-		width: 300,
-		height: 300,
+		width: 250,
+		height: 200,
 	},
 	header: {
 		flex: 1,

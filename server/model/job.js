@@ -25,27 +25,16 @@ const jobschema = new Schema(
             default: Date.now,
             type: Date,
         },
-        finish_time:{
-            required:true,
-            type: Date,
-            default: Date.now
-        },
         expected_time:{
             required:true,
             type: Date,
             default: Date.now
-        },
-        min_payment:{
-            required:true,
-            type: Number,
-            required:true,
         },
         max_payment:{
             required:true,
             type: Number,
             required:true,
         },
-
         categories: [
             {
              type: Schema.Types.ObjectId,

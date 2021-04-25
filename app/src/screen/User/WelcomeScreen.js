@@ -10,11 +10,12 @@ function WelcomeScreen({ navigation: { navigate }, token }) {
 
 	useEffect(() => {
 		setTimeout(() => {
-			if (token) {
-				navigate('MainApp');
-			} else {
-				navigate('Login');
-			}
+			// if (token) {
+			// 	navigate('MainApp');
+			// } else {
+			// 	navigate('Choice');
+			// }
+			navigate('Choice');
 		}, 3000);
 
 		return () => {};

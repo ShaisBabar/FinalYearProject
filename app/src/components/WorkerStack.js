@@ -36,14 +36,11 @@ import WelcomeScreen from '../screen/User/WelcomeScreen';
 import UserSettings from '../screen/User/UserSettings';
 import EditPasswordScreen from '../screen/User/EditPasswordScreen';
 import ReviewScreen from './../screen/User/ReviewScreen';
-import UserActiveJobs from '../screen/User/UserActiveJobs';
-import UserCompletedJobs from '../screen/User/UserCompletedJobs';
-import JobDetailScreen from '../screen/User/JobDetailScreen';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
-export default class UserStack extends Component {
+export default class WorkerStack extends Component {
 	
    
 	createChatStack = () => {
@@ -78,10 +75,10 @@ export default class UserStack extends Component {
 			<Stack.Screen
 				name="Account"
 				component={UserSettings}
-				// options={{
-				// 	headerStyle: { backgroundColor: colors.red },
-				// 	headerTintColor: 'white',
-				// }}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
 			/>
 			<Stack.Screen
 				name="Edit Password"
@@ -117,38 +114,6 @@ export default class UserStack extends Component {
 				}}
 			/>
 			<Stack.Screen
-				name="UserActive"
-				component={UserActiveJobs}
-				options={{
-					headerStyle: { backgroundColor: colors.red },
-					headerTintColor: 'white',
-				}}
-			/>
-			<Stack.Screen
-				name="UserComplete"
-				component={UserCompletedJobs}
-				options={{
-					headerStyle: { backgroundColor: colors.red },
-					headerTintColor: 'white',
-				}}
-			/>
-			<Stack.Screen
-				name="JobDetails"
-				component={JobDetailScreen}
-				options={{
-					headerStyle: { backgroundColor: colors.red },
-					headerTintColor: 'white',
-				}}
-			/>
-			<Stack.Screen
-				name="Review"
-				component={ReviewScreen}
-				options={{
-					headerStyle: { backgroundColor: colors.red },
-					headerTintColor: 'white',
-				}}
-			/>
-			<Stack.Screen
 				name="Post Details"
 				component={AddJobScreen}
 				options={{
@@ -159,29 +124,6 @@ export default class UserStack extends Component {
 			<Stack.Screen
 				name="Chat Details"
 				component={chatScreen}
-				options={{
-					headerStyle: { backgroundColor: colors.red },
-					headerTintColor: 'white',
-				}}
-			/>
-		</Stack.Navigator>
-		);
-	}
-
-	createHomeStack = () => {
-        return (
-		<Stack.Navigator>
-			<Stack.Screen
-				name="Home"
-				component={HomeScreen}
-				options={{
-					headerStyle: { backgroundColor: colors.red },
-					headerTintColor: 'white',
-				}}
-			/>
-			<Stack.Screen
-				name="Post Details"
-				component={AddJobScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',
@@ -208,9 +150,9 @@ export default class UserStack extends Component {
 				color:'white'
 			  }}>
 
-				<Drawer.Screen name="Home" children={this.createHomeStack}  />
+				<Drawer.Screen name="Home" component={HomeScreen} />
 				
-				<Drawer.Screen name="Get Service" component={PackagesAddScreen}
+				<Drawer.Screen name="Explore Jobs" component={PackagesAddScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',

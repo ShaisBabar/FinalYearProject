@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Rating, AirbnbRating } from 'react-native-ratings';
-
 import {
 	Text,
 	TextInput,
@@ -8,7 +6,6 @@ import {
 	Image,
 	TouchableOpacity,
 	StyleSheet,
-	Alert
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
@@ -19,27 +16,22 @@ import LoadingIndicator from '../../components/LoadingIndicator';
 import { connect } from 'react-redux';
 import { login } from '../../redux/actions/user';
 
-
-
-function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
+function WorkerLoginScreen({ navigation: { navigate }, token, loading, login }) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-    const ratingCompleted = (rating) => {
-        console.log("Rating is: " + rating)
-      }
+
 	// useEffect(() => {
 	// 	if (token) {
 	// 		navigate('MainApp');
 	// 	}
 	// 	return () => {};
 	// }, [token]);
-  
 
 	const login_user = (email,password) =>{
 		login({ email, password });
 
 		if (token) {
-			navigate('MainApp');
+			navigate('WorkerApp');
 	 	}
 		 else{
 			Alert.alert(
@@ -56,6 +48,7 @@ function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
 			  );
 		 }
 	}
+
 	return (
 		<View style={styles.container}>
 			{/* {loading && <LoadingIndicator />} */}
@@ -65,30 +58,43 @@ function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
 			>
 				<Image
 					style={styles.logo}
-					source={require('../../assets/images/user.png')}
+					source={require('../../assets/images/worker.png')}
 				/>
 			</LinearGradient>
 			<Animatable.View animation="slideInUp" style={styles.footer}>
-            <Text style={styles.text}>Give Rating</Text>
-            <Rating
-                    type='heart'
-                    ratingCount={5}
-                    imageSize={60}
-                    showRating
-                    onFinishRating={ratingCompleted}
-                    />
-
-				<Text style={styles.text}>Give Review</Text>
+				<Text style={styles.text}>Email</Text>
 				<TextInput
 					autoCapitalize="none"
 					keyboardType="email-address"
 					style={styles.textInput}
-					placeholder={'Enter Review'}
+					placeholder={'Enter Email'}
 					maxLength={50}
 					onChangeText={(text) => setEmail(text)}
 					value={email}
 				/>
-               
+				<Text style={styles.text}>Password</Text>
+				<TextInput
+					style={styles.textInput}
+					placeholder={'Enter Password'}
+					maxLength={20}
+					onChangeText={(text) => setPassword(text)}
+					secureTextEntry={true}
+					value={password}
+				/>
+				{/* <TouchableOpacity onPress={() => navigate('Forget')}>
+					<Text style={styles.textforget}>Forget Password?</Text>
+				</TouchableOpacity> */}
+				<LinearGradient
+					colors={[colors.red, colors.red]}
+					style={[styles.button]}
+				>
+					<TouchableOpacity
+						style={{ width: '100%', alignItems: 'center' }}
+						onPress={() => login({ email, password })}
+					>
+						<Text style={styles.textBtn}>Sign In</Text>
+					</TouchableOpacity>
+				</LinearGradient>
 				<TouchableOpacity
 					style={[
 						styles.button,
@@ -98,9 +104,9 @@ function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
 							borderWidth: 1,
 						},
 					]}
-					onPress={() => navigate('Register')}
+					onPress={() => navigate('WorkerRegister')}
 				>
-					<Text style={styles.textBtnSignUp}>Submit Review</Text>
+					<Text style={styles.textBtnSignUp}>Sign Up</Text>
 				</TouchableOpacity>
 			</Animatable.View>
 		</View>
@@ -173,7 +179,7 @@ const styles = StyleSheet.create({
 	logo: {
 		// tintColor: colors.red,
 		width: 250,
-		height: 200,
+		height: 270,
 	},
 	header: {
 		flex: 1,
@@ -196,4 +202,4 @@ const mapStateToProps = ({ user: { token, loading } }) => ({ token, loading });
 
 const mapActionToProps = { login };
 
-export default connect(mapStateToProps, mapActionToProps)(ReviewScreen);
+export default connect(mapStateToProps, mapActionToProps)(WorkerLoginScreen);

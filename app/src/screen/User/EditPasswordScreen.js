@@ -104,7 +104,7 @@ const appointment1 = [
 	},
 ];
 
-function ProfileScreen({ user, updateUser, loading }) {
+function EditPasswordScreen({ user, updateUser, loading }) {
 	const [apiMage, setApiMage] = useState({});
 	const [image, setImage] = useState(
 		user?.image
@@ -481,4 +481,4 @@ const mapStateToProps = ({ mainRecords: { user, loading } }) => ({
 
 const mapActionToProps = { getUser, updateUser };
 
-export default connect(mapStateToProps, mapActionToProps)(ProfileScreen);
+export default connect(mapStateToProps, mapActionToProps)(EditPasswordScreen);

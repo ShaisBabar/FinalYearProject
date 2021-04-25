@@ -5,6 +5,7 @@ import {
 	FlatList,
 	StyleSheet,
 	TouchableOpacity,
+	Image
 } from 'react-native';
 import GradientHeader from 'react-native-gradient-header';
 import * as Animatable from 'react-native-animatable';
@@ -50,50 +51,63 @@ function HomeScreen({
 					<GradientHeader
 						title={`Hello, ${user ? user.name : ''}`}
 						subtitle="Get started to get services at your doorstep!"
-						gradientColors={[colors.orange, colors.red]}
+						gradientColors={[colors.red, colors.red]}
 						imageSource={{
-							uri: user?.image
-								? `data:${user?.image?.type};base64,${user?.image?.data}`
-								: profileImg.img,
+							uri: '../../assets/images/user.png'
 						}}
 					/>
 				</Animatable.View>
 			</View>
-			<View style={styles.flatContainer}>
-				<FlatList
-					contentContainerStyle={{ paddingBottom: 15 }}
-					style={styles.flatScreen}
-					data={records}
-					numColumns={2}
-					showsVerticalScrollIndicator={false}
-					keyExtractor={(listing, index) => index.toString()}
-					renderItem={({ item }) => (
-						<HomeCard title={item.title} subTitle={item.value} />
-					)}
-				/>
+			<View>
+				<Text style={styles.heading}>CHOOSE SERVICE</Text>
 			</View>
-			{!loading && (
-				<LinearGradient
-					colors={[colors.orange, colors.red]}
-					style={styles.button}
-				>
-					<TouchableOpacity
-						style={{ width: '100%', alignItems: 'center' }}
-						onPress={() => {
-							logout();
-							navigate('Welcome');
-							AsyncStorage.removeItem('@Token');
-						}}
-					>
-						<Text style={styles.textBtn}>Logout</Text>
-					</TouchableOpacity>
-				</LinearGradient>
-			)}
+			<View style={styles.flatContainer}>
+				<View style={styles.midstyling}>
+      <View style={styles.firsttwo}>
+        <TouchableOpacity style={styles.loginBtn}  onPress={() => navigate('Post Details', {service: 'Plumbing'})}>
+        <Image source={require('./../../assets/images/1.png')} style={styles.img}/>
+        <Text style={styles.loginText}>Plumber</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.loginBtn} onPress={() => navigate('Post Details', {service: 'Laundary Work'})}>
+        <Image source={require('./../../assets/images/2.png')} style={styles.img}/>
+        <Text style={styles.loginText}>Laundary Worker</Text>
+        </TouchableOpacity>
+        </View>
+        <View style={styles.firsttwo}>
+        <TouchableOpacity style={styles.loginBtn} onPress={() => navigate('Post Details', {service: 'Gardening'})}>
+        <Image source={require('./../../assets/images/3.png')} style={styles.img}/>
+        <Text style={styles.loginText}>Gardener</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.loginBtn}  onPress={() => navigate('Post Details', {service: 'Cooking'})}>
+        <Image source={require('./../../assets/images/4.png')} style={styles.img}/>
+        <Text style={styles.loginText}>Cook</Text>
+        </TouchableOpacity>
+        </View>
+        <View style={styles.firsttwo}>
+        <TouchableOpacity style={styles.loginBtn}  onPress={() => navigate('Post Details', {service: 'Carpenting'})}>
+        <Image source={require('./../../assets/images/5.png')} style={styles.img}/>
+        <Text style={styles.loginText}>Carpentor</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.loginBtn} onPress={() => navigate('Post Details', {service: 'Electrician'})}>
+        <Image source={require('./../../assets/images/6.png')} style={styles.img}/>
+        <Text style={styles.loginText}>Electrician</Text>
+        </TouchableOpacity>
+        </View>
+       </View>
+			</View>
 		</View>
 	);
 }
 
 const styles = StyleSheet.create({
+	heading:{
+       color:colors.red,
+	   fontSize:40,
+	   fontWeight:'bold',
+	   textAlign:'center',
+	   marginBottom:40,
+	   marginTop:15
+	},
 	screen: {
 		flex: 1,
 		backgroundColor: colors.white,
@@ -125,6 +139,101 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 		marginHorizontal: 90,
 	},
+	overlay: {
+		opacity: 1,
+		backgroundColor: '#000000'
+	  },
+	  img: {
+		width:60,
+		height: 60,
+		marginTop:10,
+		//justifyContent: 'center',
+		//alignContent: 'center',
+		position: 'absolute'
+	  },
+	  midstyling:{
+		top: 20,
+	  },
+	  firsttwo: {
+		flexDirection: 'row',
+	   // marginTop:10
+	  },
+	  container: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+		marginTop: 160
+	  },
+	  loginBtn:{
+		width:"40%",
+		backgroundColor: colors.red,
+		borderRadius:30,
+		height:100,
+		flexDirection: 'row',
+		alignItems:"center",
+		justifyContent:"center",
+		color:"white",
+		fontSize:50,
+		marginLeft: 20,
+		marginRight:2,
+		marginBottom:20
+	  },
+	  loginText:{
+		color:"white",
+		fontSize:15,
+		marginTop:70,
+		marginBottom:10,
+		borderRadius:100
+		
+	  },
+	  avatar: {
+		width:60,
+		height:60,
+		borderRadius: 63,
+		borderWidth: 4,
+		borderColor: "white",
+		marginBottom:10,
+		alignSelf:'center',
+		marginBottom:-100,
+	   marginTop:-390,
+		marginLeft: 320
+	  },
+	  centeredView: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		marginTop: 22
+	  },
+	  modalView: {
+		margin: 20,
+		backgroundColor: "white",
+		borderRadius: 20,
+		padding: 35,
+		alignItems: "center",
+		shadowColor: "#000",
+		shadowOffset: {
+		  width: 0,
+		  height: 2
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
+		elevation: 5
+	  },
+	  openButton: {
+		backgroundColor: "#F194FF",
+		borderRadius: 20,
+		padding: 10,
+		elevation: 2
+	  },
+	  textStyle: {
+		color: "white",
+		fontWeight: "bold",
+		textAlign: "center"
+	  },
+	  modalText: {
+		marginBottom: 15,
+		textAlign: "center"
+	  }
 });
 
 const mapStateToProps = ({

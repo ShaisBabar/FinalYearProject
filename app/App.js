@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-
+import {LogBox} from 'react-native';
 import BarberAuth from './src/components/AuthStack';
 import axios from 'axios';
 import { connect } from 'react-redux';
@@ -31,7 +31,7 @@ function App({ user }) {
 	// 	//console.log('review', data);
 	// });
 	// // }
-
+	LogBox.ignoreAllLogs()
 	return (
 		<>
 			<StatusBar backgroundColor={colors.red} />

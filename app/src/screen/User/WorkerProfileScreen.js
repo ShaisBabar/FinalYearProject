@@ -19,10 +19,7 @@ import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Geolocation from '@react-native-community/geolocation';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import {
-	Dropdown,
 
-  } from 'sharingan-rn-modal-dropdown';
 import ReviewCard from '../../components/ReviewCard';
 
 import colors from '../../styles/colors';
@@ -32,7 +29,6 @@ import LoadingIndicator from '../../components/LoadingIndicator';
 import { connect } from 'react-redux';
 import { getUser, updateUser } from '../../redux/actions/mainRecords';
 import axios from '../../../config';
-import {citydata,isl_data,lahore_data,karachi_data,quetta_data,multan_data} from './../../assets/strings'
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -104,7 +100,7 @@ const appointment1 = [
 	},
 ];
 
-function ProfileScreen({ user, updateUser, loading }) {
+function BarberAbout({ user, updateUser, loading }) {
 	const [apiMage, setApiMage] = useState({});
 	const [image, setImage] = useState(
 		user?.image
@@ -117,37 +113,6 @@ function ProfileScreen({ user, updateUser, loading }) {
 	const [address, setaddress] = useState(user?.street_address);
 	const [city, setcity] = useState(user?.city);
 	const [getmarginBottom, setMarginBottom] = useState(1);
-	const [area, setArea] = useState('Add Area');
-	const [area_city, setAreaCity] = useState([ {
-        value: 'Add Area',
-        label: 'Add Area',
-      },]);
-	const data = citydata;
-
-	const setAreaforCityFunc = (city) =>{
-		setCity(city);
-		if(city=='Islamabad'){
-			setAreaCity(isl_data);
-		}
-		else if(city=='Karachi'){
-			setAreaCity(karachi_data);
-		}
-		else if(city=='Lahore'){
-			setAreaCity(lahore_data);
-		}
-		else if(city=='Karachi'){
-			setAreaCity(karachi_data);
-		}
-		else if(city=='Multan'){
-			setAreaCity(multan_data);
-		}
-		else if(city=='Quetta'){
-			setAreaCity(quetta_data);
-		}
-		setArea('Add Area')
-		
-	}
-
 	const update = () => {
 		const updateCurrentUser = {
 			name,
@@ -186,67 +151,69 @@ function ProfileScreen({ user, updateUser, loading }) {
 			{loading && <LoadingIndicator />}
 			{!loading && (
 				<View style={{ width: '100%', height: '100%' }}>
-					{/* <TouchableOpacity style={styles.imageContainer} onPress={selectFile}>
+					<TouchableOpacity style={styles.imageContainer} onPress={selectFile}>
 						<Image style={styles.profileImage} source={{ uri: image }} />
-					</TouchableOpacity> */}
+					</TouchableOpacity>
 					<View style={styles.profileData}>
-						<Text style={styles.text}>Full Name</Text>
-				<TextInput
-					style={styles.textInput}
-					placeholder={'Enter Full Name '}
-					maxLength={50}
-					onChangeText={(text) => setName(text)}
-					value={name}
-				/>
-				<Text style={styles.text}>Email</Text>
-				<TextInput
-					style={styles.textInput}
-					autoCapitalize="none"
-					keyboardType="email-address"
-					placeholder={'Enter Email'}
-					maxLength={50}
-					onChangeText={(text) => setEmail(text)}
-					value={email}
-				/>
-				<Text style={styles.text}>Phone no.</Text>
-				<TextInput
-					style={styles.textInput}
-					placeholder={'Enter Phone no.'}
-					keyboardType={'phone-pad'}
-					maxLength={13}
-					minLength={11}
-					onChangeText={(text) => setPhone(text)}
-					value={phone}
-				/>
-				<Text style={styles.text}>Select City</Text>
-				<View style={styles.citycontainer}>
-				<Dropdown
-				    placeholder={'Select City'}
-					data={data}
-					enableSearch
-					value={city}
-					onChange={setAreaforCityFunc}
-				/>
-				</View>
-				<Text style={styles.text}>Select Area</Text>
-				<View style={styles.citycontainer}>
-				<Dropdown
-				    placeholder={'Select Area'}
-					data={area_city}
-					enableSearch
-					value={area}
-					onChange={setArea}
-				/>
-				</View>
-				<Text style={styles.text}>Enter Street Address</Text>
-				<TextInput
-					style={styles.textInput}
-					placeholder={'Enter Address'}
-					maxLength={20}
-					onChangeText={(text) => setAddress(text)}
-					value={address}
-				/>
-				
+						
+						<Text style={styles.text}>Name</Text>
+						<TextInput
+							style={styles.textInput}
+							placeholder={'Ahmed'}
+							maxLength={50}
+							onChangeText={(text) => setName(text)}
+							value={name}
+						/>
+						<Text style={styles.text}>Email</Text>
+						<TextInput
+							style={styles.textInput}
+							autoCapitalize="none"
+							keyboardType="email-address"
+							placeholder={'e.g. abc@gmail.com'}
+							maxLength={50}
+							onChangeText={(text) => setEmail(text)}
+							value={email}
+						/>
+						<Text style={styles.text}>Phone no.</Text>
+						<TextInput
+							style={styles.textInput}
+							placeholder={'+92'}
+							keyboardType={'phone-pad'}
+							maxLength={13}
+							minLength={11}
+							onChangeText={(text) => setPhone(text)}
+							value={phone}
+						/>
+						<Text
+							style={[
+								styles.text,
+								{
+									fontSize: 20,
+									fontWeight: 'bold',
+									marginTop: 30,
+									marginBottom: 15,
+								},
+							]}
+						>
+							User Address
+						</Text>
+						<Text style={styles.text}>Street Address</Text>
+						<TextInput
+							style={styles.textInput}
+							placeholder={'e.g. HairoSol'}
+							maxLength={50}
+							onChangeText={(text) => setaddress(text)}
+							value={address}
+						/>
+						<Text style={styles.text}>City</Text>
+						<TextInput
+							style={styles.textInput}
+							placeholder={'e.g. G-9, Lane 3, Islamabad '}
+							maxLength={50}
+							onChangeText={(text) => setCity(text)}
+							value={city}
+						/>
+
 						</View>
 						<LinearGradient
 							colors={[colors.orange, colors.red]}
@@ -266,88 +233,88 @@ function ProfileScreen({ user, updateUser, loading }) {
 	);
 }
 
-// function barberReviews(props) {
-// 	const [reviews, setReviews] = useState([]);
+function barberReviews(props) {
+	const [reviews, setReviews] = useState([]);
 
-// 	useEffect(() => {
-// 		axios.get('http://localhost:5000/jobs/jobsbyuser/'+AsyncStorage.getItem('@Token')).then((res) => {
-// 			setReviews(
-// 				res.data?.map((val) => ({
-// 					id: val?._id,
-// 					name: val?.user?.firstName,
-// 					time: val?.review?.date?.split('T')[0],
-// 					image: `data:${val?.user?.image?.type};base64,${val?.user?.image?.data}`,
-// 					text: val?.review?.userReview,
-// 					rated: Number(val?.review?.stars),
-// 				})),
-// 			);
-// 		});
-// 		return () => {};
-// 	}, []);
-// 	return (
-// 		<View style={styles.screen}>
-// 			<FlatList
-// 				contentContainerStyle={{ paddingBottom: 15 }}
-// 				style={styles.flatScreen}
-// 				data={reviews}
-// 				keyExtractor={(review) => review.id.toString()}
-// 				renderItem={({ item }) => (
-// 					<ReviewCard
-// 						title={item.name}
-// 						time={item.time}
-// 						image={item.image}
-// 						text={item.text}
-// 						rated={item.rated}
-// 					/>
-// 				)}
-// 			/>
-// 		</View>
-// 	);
-// }
+	useEffect(() => {
+		axios.get('http://localhost:5000/jobs/jobsbyuser/'+AsyncStorage.getItem('@Token')).then((res) => {
+			setReviews(
+				res.data?.map((val) => ({
+					id: val?._id,
+					name: val?.user?.firstName,
+					time: val?.review?.date?.split('T')[0],
+					image: `data:${val?.user?.image?.type};base64,${val?.user?.image?.data}`,
+					text: val?.review?.userReview,
+					rated: Number(val?.review?.stars),
+				})),
+			);
+		});
+		return () => {};
+	}, []);
+	return (
+		<View style={styles.screen}>
+			<FlatList
+				contentContainerStyle={{ paddingBottom: 15 }}
+				style={styles.flatScreen}
+				data={reviews}
+				keyExtractor={(review) => review.id.toString()}
+				renderItem={({ item }) => (
+					<ReviewCard
+						title={item.name}
+						time={item.time}
+						image={item.image}
+						text={item.text}
+						rated={item.rated}
+					/>
+				)}
+			/>
+		</View>
+	);
+}
 
-// function ProfileScreen({ user, updateUser, loading }) {
-// 	useEffect(() => {
-// 		if (!user) {
-// 			getUser();
-// 		}
-// 		return () => {};
-// 	}, []);
-// 	return (
-// 		<Tab.Navigator
-// 			initialRouteName="About"
-// 			tabBarOptions={{
-// 				labelStyle: { fontSize: 14 },
-// 				indicatorStyle: { backgroundColor: colors.white },
-// 				activeTintColor: colors.white,
-// 				inActiveTintColor: colors.lightRed,
-// 				style: { backgroundColor: colors.red },
-// 			}}
-// 		>
-// 			<Tab.Screen
-// 				name="About"
-// 				options={{
-// 					tabBarLabel: 'About',
-// 				}}
-// 			>
-// 				{(props) => (
-// 					<BarberAbout
-// 						{...props}
-// 						user={user}
-// 						updateUser={updateUser}
-// 						loading={loading}
-// 					/>
-// 				)}
-// 			</Tab.Screen>
-// 			<Tab.Screen
-// 				name="Reviews"
-// 				component={barberReviews}
-// 				options={{
-// 					tabBarLabel: 'Reviews',
-// 				}}
-// 			/>
-// 		</Tab.Navigator>
-// 	);
-// }
+function ProfileScreen({ user, updateUser, loading }) {
+	useEffect(() => {
+		if (!user) {
+			getUser();
+		}
+		return () => {};
+	}, []);
+	return (
+		<Tab.Navigator
+			initialRouteName="About"
+			tabBarOptions={{
+				labelStyle: { fontSize: 14 },
+				indicatorStyle: { backgroundColor: colors.white },
+				activeTintColor: colors.white,
+				inActiveTintColor: colors.lightRed,
+				style: { backgroundColor: colors.red },
+			}}
+		>
+			<Tab.Screen
+				name="About"
+				options={{
+					tabBarLabel: 'About',
+				}}
+			>
+				{(props) => (
+					<BarberAbout
+						{...props}
+						user={user}
+						updateUser={updateUser}
+						loading={loading}
+					/>
+				)}
+			</Tab.Screen>
+			<Tab.Screen
+				name="Reviews"
+				component={barberReviews}
+				options={{
+					tabBarLabel: 'Reviews',
+				}}
+			/>
+		</Tab.Navigator>
+	);
+}
 
 const styles = StyleSheet.create({
 	screen: {
@@ -413,8 +380,6 @@ const styles = StyleSheet.create({
 		color: colors.black,
 		fontSize: 14,
 		paddingHorizontal: 20,
-		marginBottom:10,
-		marginTop:15
 	},
 	textInput: {
 		height: 40,

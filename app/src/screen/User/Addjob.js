@@ -19,25 +19,42 @@ import {
 import { connect } from 'react-redux';
 import { addPackage } from '../../redux/actions/packageAction';
 import { getRecords } from '../../redux/actions/mainRecords';
-import {services_data} from './../../assets/strings';
 import {citydata,isl_data,lahore_data,karachi_data,quetta_data,multan_data} from './../../assets/strings'
-
-function PackagesAddScreen(props) {
+import CheckboxList from './../../components/checkbox/checkList';
+const service_data = [
+	{ id: 1, name: 'Plumbing' },
+	{ id: 2, name: 'Gardening' },
+	{ id: 3, name: 'Cooking' },
+	{ id: 4, name: 'Laundary Work' },
+	{ id: 5, name: 'Carpenting' },
+	{ id: 6, name: 'Electrician' },
+   
+  ];
+function AddJobScreen(props) {
 	const [apiMage, setApiMage] = useState({});
 	const [imagePicked, setImagePicked] = useState();
 	const [title, setTitle] = React.useState('');
 	const [price, setPrice] = React.useState('');
 	const [description, setDescription] = React.useState('');
 	const [city, setCity] = useState('Add City');
-	const [address, setAddress] = useState('');
-	const [service_, setservice] = React.useState('Select Service');
-	const data = citydata;
 	const [area, setArea] = useState('Add Area');
+	const [address, setAddress] = useState('');
+	const [service_, setservice] = React.useState(props.route.params.service);
+	const data = citydata;
 	const [area_city, setAreaCity] = useState([ {
         value: 'Add Area',
         label: 'Add Area',
       },]);
-	  const setAreaforCityFunc = (city) =>{
+	  const theme = 'red';
+	  const border = 'grey';
+    // useEffect(() => {
+        
+	// 	console.log("jjj",props.route.params.service);
+	// 	//console.log("jjj",navigation.navigate);
+
+	// }, []);
+
+	const setAreaforCityFunc = (city) =>{
 		setCity(city);
 		if(city=='Islamabad'){
 			setAreaCity(isl_data);
@@ -61,34 +78,6 @@ function PackagesAddScreen(props) {
 		
 	}
 
-    useEffect(() => {
-        console.log(services_data)
-
-	}, []);
-	const selectFile = () => {
-		var options = {
-			title: 'Select Image',
-			storageOptions: {
-				skipBackup: true,
-				path: 'images',
-			},
-		};
-
-		ImagePicker.showImagePicker(options, (res) => {
-			//console.log('Response = ', res);
-
-			if (res.didCancel) {
-				//console.log('User cancelled image picker');
-			} else if (res.error) {
-				//console.log('ImagePicker Error: ', res.error);
-			} else {
-				setApiMage({ type: res.type, data: res.data });
-				const uri = `data:${res.type};base64,${res.data}`;
-				setImagePicked(uri);
-			}
-		});
-	};
-
 	const addNewPackage = () => {
 		const newPackage = {
 			name: title,
@@ -108,15 +97,14 @@ function PackagesAddScreen(props) {
 			<View style={styles.container}>
 				<ScrollView>
             <Text style={styles.text}>Service</Text>
-			<View style={styles.citycontainer}>
-				<Dropdown
-				    placeholder={'Select Service'}
-					data={services_data}
-					enableSearch
+				<TextInput
+					style={styles.textInput}
+					placeholder={'e.g. Enter job'}
+					maxLength={50}
+					onChangeText={(text) => setTitle(text)}
 					value={service_}
-					onChange={setservice}
+                    editable={false}
 				/>
-				</View>
 				<Text style={styles.text}>Relavent Details</Text>
 				<TextInput
 					style={styles.textInput}
@@ -179,9 +167,47 @@ function PackagesAddScreen(props) {
 					onChange={setArea}
 				/>
 				</View>
-				
+				{/* <Text style={styles.text}>Select Services</Text>
+				<CheckboxList
+          headerName="Select All"
+          theme={theme}
+          listItems={service_data}
+          onChange={({ ids, items }) => console.log('My updated list :: ', ids)}
+          onLoading={() => (
+            <View
+              style={{
+                flex: 1,
+				marginTop:20,
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <ActivityIndicator size="large" color="red" />
+              <Text style={{ fontSize: 16, color: '#555555' }}>
+                Loading....
+              </Text>
+            </View>
+          )}
+          //selectedListItems={service_data.slice(0, 4)}
+          checkboxProp={Platform.select({
+            // Optional
+            ios: {
+              // iOS (supported from v0.3.0)
+              boxType: 'square',
+              tintColor: border,
+              onTintColor: theme,
+              onCheckColor: '#fff',
+              onFillColor: theme
+            },
+            android: {
+              tintColors: { true: theme, false: border }
+            }
+          })}
+          // listItemStyle={{ borderBottomColor: "#eee", borderBottomWidth: 1 }}
+          
+        /> */}
 				<LinearGradient
-					colors={[colors.red, colors.red]}
+					colors={[colors.orange, colors.red]}
 					style={[styles.button]}
 				>
 					<TouchableOpacity
@@ -272,4 +298,4 @@ const mapStateToProps = ({ packageReducer: { packages, loading } }) => ({
 
 const mapActionToProps = { addPackage, getRecords };
 
-export default connect(mapStateToProps, mapActionToProps)(PackagesAddScreen);
+export default connect(mapStateToProps, mapActionToProps)(AddJobScreen);

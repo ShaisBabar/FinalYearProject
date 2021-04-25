@@ -6,12 +6,16 @@ import {
 	TouchableOpacity,
 	StyleSheet,
 	Image,
-	ScrollView
+	ScrollView,
+	ActivityIndicator,
+    SafeAreaView,
+    Platform,
+	Alert
 } from 'react-native';
 import {
 	Dropdown,
-
   } from 'sharingan-rn-modal-dropdown';
+  import CheckboxList from './../../components/checkbox/checkList';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 // import DropDownPicker from 'react-native-dropdown-picker';
@@ -21,7 +25,19 @@ import { connect } from 'react-redux';
 import { signup } from '../../redux/actions/user';
 import {citydata,isl_data,lahore_data,karachi_data,quetta_data,multan_data} from './../../assets/strings'
 
-function RegisterScreen({ navigation: { navigate }, token, loading, signup }) {
+
+const service_data = [
+	{ id: 1, name: 'Plumbing' },
+	{ id: 2, name: 'Gardening' },
+	{ id: 3, name: 'Cooking' },
+	{ id: 4, name: 'Laundary Work' },
+	{ id: 5, name: 'Carpenting' },
+	{ id: 6, name: 'Electrician' },
+   
+  ];
+
+  
+function WorkerRegisterScreen({ navigation: { navigate }, token, loading, signup }) {
 	const data = citydata;
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
@@ -35,7 +51,8 @@ function RegisterScreen({ navigation: { navigate }, token, loading, signup }) {
         value: 'Add Area',
         label: 'Add Area',
       },]);
-	
+	const theme = 'red';
+	const border = 'grey';
 	// useEffect(() => {
 	// 	if (token) {
 	// 		navigate('MainApp');
@@ -54,7 +71,7 @@ function RegisterScreen({ navigation: { navigate }, token, loading, signup }) {
 			"Logging in..",
 		  );
 		if (token) {
-			navigate('MainApp');
+			navigate('WorkerApp');
 		}
 		else{
 			Alert.alert(
@@ -71,6 +88,7 @@ function RegisterScreen({ navigation: { navigate }, token, loading, signup }) {
 			  );
 		}
 	}
+
 
 	const setAreaforCityFunc = (city) =>{
 		setCity(city);
@@ -104,7 +122,7 @@ function RegisterScreen({ navigation: { navigate }, token, loading, signup }) {
 			>
 				<Image
 					style={styles.logo}
-					source={require('../../assets/images/user.png')}
+					source={require('../../assets/images/worker.png')}
 				/>
 			</LinearGradient>
 			<Animatable.View animation="slideInUp" style={styles.footer}>
@@ -183,6 +201,45 @@ function RegisterScreen({ navigation: { navigate }, token, loading, signup }) {
 					onChangeText={(text) => setAddress(text)}
 					value={address}
 				/>
+				<Text style={styles.text}>Select Services</Text>
+				<CheckboxList
+          headerName="Select All"
+          theme={theme}
+          listItems={service_data}
+          onChange={({ ids, items }) => console.log('My updated list :: ', ids)}
+          onLoading={() => (
+            <View
+              style={{
+                flex: 1,
+				marginTop:20,
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <ActivityIndicator size="large" color="red" />
+              <Text style={{ fontSize: 16, color: '#555555' }}>
+                Loading....
+              </Text>
+            </View>
+          )}
+          //selectedListItems={service_data.slice(0, 4)}
+          checkboxProp={Platform.select({
+            // Optional
+            ios: {
+              // iOS (supported from v0.3.0)
+              boxType: 'square',
+              tintColor: border,
+              onTintColor: theme,
+              onCheckColor: '#fff',
+              onFillColor: theme
+            },
+            android: {
+              tintColors: { true: theme, false: border }
+            }
+          })}
+          // listItemStyle={{ borderBottomColor: "#eee", borderBottomWidth: 1 }}
+          
+        />
 				
         
 				<LinearGradient
@@ -193,7 +250,7 @@ function RegisterScreen({ navigation: { navigate }, token, loading, signup }) {
 						style={{ width: '100%', alignItems: 'center' }}
 						onPress={() =>
 							register()
-							
+							// navigate('Services')
 						}
 					>
 						<Text style={styles.textBtn}>Register</Text>
@@ -248,6 +305,7 @@ const styles = StyleSheet.create({
 		color: colors.black,
 		fontSize: 14,
 		paddingHorizontal: 20,
+		marginBottom:10
 	},
 	textBtn: {
 		color: colors.white,
@@ -292,4 +350,4 @@ const mapStateToProps = ({ user: { token, loading } }) => ({ token, loading });
 
 const mapActionToProps = { signup };
 
-export default connect(mapStateToProps, mapActionToProps)(RegisterScreen);
+export default connect(mapStateToProps, mapActionToProps)(WorkerRegisterScreen);
