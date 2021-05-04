@@ -6,22 +6,18 @@ import {
 	TouchableOpacity,
 	StyleSheet,
 	Image,
-	ScrollView
+	ScrollView,
+	Alert
 } from 'react-native';
 import {
 	Dropdown,
-
   } from 'sharingan-rn-modal-dropdown';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
-// import DropDownPicker from 'react-native-dropdown-picker';
-// import LoadingIndicator from '../../components/LoadingIndicator';
 import colors from '../../styles/colors';
-import { connect } from 'react-redux';
-import { signup } from '../../redux/actions/user';
 import {citydata,isl_data,lahore_data,karachi_data,quetta_data,multan_data} from './../../assets/strings'
 
-function RegisterScreen({ navigation: { navigate }, token, loading, signup }) {
+function RegisterScreen({ navigation: { navigate }}) {
 	const data = citydata;
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
@@ -36,30 +32,18 @@ function RegisterScreen({ navigation: { navigate }, token, loading, signup }) {
         label: 'Add Area',
       },]);
 	
-	// useEffect(() => {
-	// 	if (token) {
-	// 		navigate('MainApp');
-	// 	}
-	// 	return () => {};
-	// }, [token]);
+	useEffect(() => {
+		if (global.user!=null) {
+			navigate('MainApp',{user:global.user});
+		}
+		return () => {};
+	}, []);
 
 	const register = () =>{
-		const user = {
-			name, email, phoneno:phone, password,city,street_address:address,city 
-		}
-		//console.log(user)
-		signup(user)
-		Alert.alert(
-			"User Registered",
-			"Logging in..",
-		  );
-		if (token) {
-			navigate('MainApp');
-		}
-		else{
+		if(password!=conPassword){
 			Alert.alert(
-				"Invalid Login",
-				"Username or password is incorrect",
+				"Password and Confirm Password fields do not match!",
+				"Try again.",
 				[
 				  {
 					text: "Cancel",
@@ -69,7 +53,85 @@ function RegisterScreen({ navigation: { navigate }, token, loading, signup }) {
 				  { text: "OK", onPress: () => console.log("OK Pressed") }
 				]
 			  );
+			  return;
 		}
+		if(phone.length!=11){
+			Alert.alert(
+				"Please enter a valid phone number format: 03xxxxxxxxx (11 digits)",
+				"Try again.",
+				[
+				  {
+					text: "Cancel",
+					onPress: () => console.log("Cancel Pressed"),
+					style: "cancel"
+				  },
+				  { text: "OK", onPress: () => console.log("OK Pressed") }
+				]
+			  );
+			  return;
+		}
+		const user = {
+			name, email, phoneno:phone, password,city,street_address:address,city,area
+		}
+		console.log(user)
+		fetch('http://192.168.0.110:5000/users/adduser', {
+			method: 'POST',
+			headers: {
+			  Accept: 'application/json',
+			  'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(user)
+		})
+		.then((response) => response.json())
+		.then((json) => {
+			console.log(json)
+			if (json.token) {
+				global.user = json.user
+				//AsyncStorage.setItem('@Token', json.token);
+				Alert.alert(
+					json.message,
+					"Logging in.",
+					[
+					  {
+						text: "Cancel",
+						onPress: () => console.log("Cancel Pressed"),
+						style: "cancel"
+					  },
+					  { text: "OK", onPress: () => console.log("OK Pressed") }
+					]
+				  );
+				navigate('MainApp',{user:json.user});
+			}
+			else{
+				Alert.alert(
+					json.message,
+					"Try again.",
+					[
+					  {
+						text: "Cancel",
+						onPress: () => console.log("Cancel Pressed"),
+						style: "cancel"
+					  },
+					  { text: "OK", onPress: () => console.log("OK Pressed") }
+					]
+				  );
+				  navigate('Register');
+			}
+		})
+		.catch((error) => Alert.alert(
+			"Error occured",
+			"Try again later.",
+			[
+			  {
+				text: "Cancel",
+				onPress: () => console.log("Cancel Pressed"),
+				style: "cancel"
+			  },
+			  { text: "OK", onPress: () => console.log("OK Pressed") }
+			]
+		  )
+		  );
+		return;
 	}
 
 	const setAreaforCityFunc = (city) =>{
@@ -97,7 +159,6 @@ function RegisterScreen({ navigation: { navigate }, token, loading, signup }) {
 	}
 	return (
 		<View style={styles.container}>
-			{/* {loading && <LoadingIndicator />} */}
 			<LinearGradient
 				colors={[colors.red, colors.red]}
 				style={styles.header}
@@ -130,7 +191,7 @@ function RegisterScreen({ navigation: { navigate }, token, loading, signup }) {
 				<Text style={styles.text}>Phone no.</Text>
 				<TextInput
 					style={styles.textInput}
-					placeholder={'Enter Phone no.'}
+					placeholder={'Enter Phone no. format (03xxxxxxxxx'}
 					keyboardType={'phone-pad'}
 					maxLength={13}
 					minLength={11}
@@ -288,8 +349,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-const mapStateToProps = ({ user: { token, loading } }) => ({ token, loading });
-
-const mapActionToProps = { signup };
-
-export default connect(mapStateToProps, mapActionToProps)(RegisterScreen);
+export default RegisterScreen;

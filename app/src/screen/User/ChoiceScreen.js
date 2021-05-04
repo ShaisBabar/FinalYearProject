@@ -11,22 +11,32 @@ import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 
 import colors from '../../styles/colors';
-import LoadingIndicator from '../../components/LoadingIndicator';
+import {service_data} from './../../assets/strings';
 
-import { connect } from 'react-redux';
-import { login } from '../../redux/actions/user';
+function ChoiceScreen({ navigation: { navigate }}) {
+    
+	useEffect(() => {
+		// console.log("jjj",global.user)
+		if (global.user!=null && global.user != undefined) {
+			navigate('MainApp',{user:global.user});
+		}
 
-function ChoiceScreen({ navigation: { navigate }, token, loading, login }) {
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
-
-	// useEffect(() => {
-	// 	if (token) {
-	// 		navigate('MainApp');
-	// 	}
-	// 	return () => {};
-	// }, [token]);
-
+		fetch('http://192.168.0.110:5000/category/categories')
+		.then((response) => response.json())
+		.then((json) => {
+				var arr = [];
+				for(var i=0;i<json.result.length; i++){
+					arr.push({
+						value:json.result[i]._id,
+						label:json.result[i].name,
+						image:json.result[i].image
+					});
+				}
+				global.cateogries = arr;
+				console.log(global.cateogries)
+			}).catch((error) => global.cateogries=service_data);
+		return () => {};
+	}, []);
 	return (
 		<View style={styles.container}>
 			<LinearGradient
@@ -146,7 +156,6 @@ const styles = StyleSheet.create({
 		marginBottom: 20,
 	},
 	logo: {
-		// tintColor: colors.red,
 		width: 300,
 		height: 300,
 	},
@@ -167,8 +176,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-const mapStateToProps = ({ user: { token, loading } }) => ({ token, loading });
-
-const mapActionToProps = { login };
-
-export default connect(mapStateToProps, mapActionToProps)(ChoiceScreen);
+export default ChoiceScreen;

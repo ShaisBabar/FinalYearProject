@@ -28,6 +28,23 @@ export const signup = (data) => async (dispatch) => {
 	}
 };
 
+
+export const worker_signup = (data) => async (dispatch) => {
+	try {
+		dispatch({ type: SET_LOADING, payload: true });
+		await axios.post('http://192.168.0.110:5000/workers/addworker', data).then((res)=>{
+			AsyncStorage.setItem('@Token', res.data.token);
+			dispatch({ type: SIGNUP, payload: res.data.token });
+			dispatch({ type: SET_CURRENT_USER, payload: res.data.user });
+		})
+		
+	} catch (err) {
+		console.log(err);
+		dispatch({ type: SET_LOADING, payload: false });
+		dispatch({ type: SET_ERROR, payload: err.response.data });
+	}
+};
+
 export const login = (data) => async (dispatch) => {
 	try {
 		dispatch({ type: SET_LOADING, payload: true });
@@ -38,6 +55,23 @@ export const login = (data) => async (dispatch) => {
 		})
 	} catch (err) {
 		console.log(err);
+		dispatch({ type: SET_LOADING, payload: false });
+		dispatch({ type: SET_ERROR, payload: err.response.data });
+	}
+};
+
+export const worker_login = (data) => async (dispatch) => {
+	try {
+		dispatch({ type: SET_LOADING, payload: true });
+		await axios.post('http://192.168.0.110:5000/workers/loginworker', data).then((res)=>{
+			console.log("lllll",res.data)
+			AsyncStorage.setItem('@Token', res.data.token);
+			AsyncStorage.setItem('@Message', res.data.message);
+		    dispatch({ type: LOGIN, payload: res.data.token });
+			dispatch({ type: SET_CURRENT_USER, payload: res.data.user });
+		})
+	} catch (err) {
+		console.log("Error ",err);
 		dispatch({ type: SET_LOADING, payload: false });
 		dispatch({ type: SET_ERROR, payload: err.response.data });
 	}

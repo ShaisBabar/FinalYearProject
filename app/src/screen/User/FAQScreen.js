@@ -4,7 +4,7 @@ import { ListItem, SearchBar } from 'react-native-elements';
 import colors from '../../styles/colors';
 const { width, height } = Dimensions.get('window');
 
-class UserCompletedJobs extends Component {
+class ConversationScreen extends Component {
   constructor(props) {
     super(props);
 
@@ -18,41 +18,7 @@ class UserCompletedJobs extends Component {
   }
 
   componentDidMount() {
-    fetch('http://192.168.0.110:5000/jobs/jobsbyusercompleted/'+global.user._id)
-		.then((response) => response.json())
-		.then((json) => {
-			console.log(json)
-			if (json.success==true) {
-			}
-			else{
-				Alert.alert(
-					"Error Loading Jobs",
-					"Try again.",
-					[
-					  {
-						text: "Cancel",
-						onPress: () => console.log("Cancel Pressed"),
-						style: "cancel"
-					  },
-					  { text: "OK", onPress: () => console.log("OK Pressed") }
-					]
-				  );
-			}
-		})
-		.catch((error) => Alert.alert(
-			"Error occured",
-			"Try again later.",
-			[
-			  {
-				text: "Cancel",
-				onPress: () => console.log("Cancel Pressed"),
-				style: "cancel"
-			  },
-			  { text: "OK", onPress: () => console.log("OK Pressed") }
-			]
-		  )
-		  );
-    //this.makeRemoteRequest();
+    this.makeRemoteRequest();
   }
 
   makeRemoteRequest = () => {
@@ -155,7 +121,7 @@ class UserCompletedJobs extends Component {
           )}
           keyExtractor={item => item.email}
           ItemSeparatorComponent={this.renderSeparator}
-          //ListHeaderComponent={this.renderHeader}
+          ListHeaderComponent={this.renderHeader}
         />
       </View>
     );
@@ -347,4 +313,4 @@ const styles = StyleSheet.create({
   },
 }); 
 
-export default UserCompletedJobs;
+export default ConversationScreen;

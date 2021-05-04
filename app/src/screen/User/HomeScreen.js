@@ -2,50 +2,20 @@ import React, { useEffect, useState } from 'react';
 import {
 	View,
 	Text,
-	FlatList,
 	StyleSheet,
 	TouchableOpacity,
 	Image
 } from 'react-native';
 import GradientHeader from 'react-native-gradient-header';
 import * as Animatable from 'react-native-animatable';
-import LinearGradient from 'react-native-linear-gradient';
-
-import profileImg from '../../utils/profileImg';
-import HomeCard from '../../components/HomeCard';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import colors from '../../styles/colors';
 
-import { connect } from 'react-redux';
-import { logout } from '../../redux/actions/user';
-import { getUser, getRecords } from '../../redux/actions/mainRecords';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-function HomeScreen({
-	navigation: { goBack, navigate },
-	user,
-	records,
-	loading,
-	getUser,
-	getRecords,
-	logout,
-	token,
-}) {
-	useEffect(() => {
-		if (!user) {
-			getUser();
-		}
-		if(user){
-		  getRecords(user._id);
-
-		}
-		
-		return () => {};
-	}, [goBack]);
-
+function HomeScreen({navigation: { goBack, navigate }}) 
+{
+	
 	return (
 		<View style={styles.screen}>
-			{loading && <LoadingIndicator />}
 			<View style={styles.headerScreen}>
 				<Animatable.View animation="slideInDown">
 					<GradientHeader
@@ -246,6 +216,5 @@ const mapStateToProps = ({
 	loading,
 });
 
-const mapActionToProps = { getUser, getRecords, logout };
 
-export default connect(mapStateToProps, mapActionToProps)(HomeScreen);
+export default HomeScreen;

@@ -3,33 +3,23 @@ import React, { useState, useEffect } from 'react';
 import {
 	View,
 	StyleSheet,
-	Image,
-	ScrollView,
 	Text,
 	TextInput,
-	TouchableOpacity,
-	Alert,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import GradientHeader from 'react-native-gradient-header';
 import colors from '../../styles/colors';
 
-function ProfileScreen({navigation: { navigate }}) 
+function ContactusScreen({navigation: { goBack, navigate }}) 
 {
-	const user = global.user;
-	const [name, setName] = useState(user?.name || '');
-	const [email, setEmail] = useState(user?.email);
-	const [phone, setPhone] = useState(user?.phoneno);
-	const [address, setAddress] = useState(user?.street_address);
-	const [city, setCity] = useState(user?.city);
-	const [area, setArea] = useState(user?.area);
+	
 	return (
 		<View style={styles.screen}>
 			<View style={styles.headerScreen}>
 				<Animatable.View animation="slideInDown">
 					 				<GradientHeader
-						title={`Your Profile`}
-						subtitle="This is your public profile which workers can view."
+						title={`contact Us`}
+						subtitle="If you have any queries, feel free to get in touch via email or phone."
 						gradientColors={[colors.red, colors.red]}
 						imageSource={{
 							uri: '../../assets/images/user.png'
@@ -38,76 +28,30 @@ function ProfileScreen({navigation: { navigate }})
 				</Animatable.View>
 			</View>
 			<View style={styles.flatContainer}>
-			<ScrollView style={styles.container}>
- 						<Text style={styles.text}>Full Name</Text>
-						<TextInput
-							style={styles.textInput}
-							placeholder={'Enter Full Name '}
-							maxLength={50}
-							onChangeText={(text) => setName(text)}
-							value={name}
-							editable={false}
-						/>
-						<Text style={styles.text}>Email</Text>
+						<Text style={styles.text}>Contact Email: </Text>
 						<TextInput
 							style={styles.textInput}
 							autoCapitalize="none"
 							keyboardType="email-address"
-							placeholder={'Enter Email'}
 							maxLength={50}
-							onChangeText={(text) => setEmail(text)}
-							value={email}
-							editable={false}
+							// onChangeText={(text) => setEmail(text)}
+							value='shaizdar@gmail.com'
+              editable={false}
 						/>
-						<Text style={styles.text}>Phone no.</Text>
+						<Text style={styles.text}>Contact Phone no.:</Text>
 						<TextInput
 							style={styles.textInput}
-							placeholder={'Enter Phone no.'}
 							keyboardType={'phone-pad'}
-							maxLength={13}
-							minLength={11}
-							onChangeText={(text) => setPhone(text)}
-							value={phone}
-							editable={false}
-						/>
-						<Text style={styles.text}>City</Text>
-						<TextInput
-							style={styles.textInput}
-							placeholder={'Enter Full Name '}
-							maxLength={50}
-							onChangeText={(text) => setCity(text)}
-							value={city}
-							editable={false}
-						/>
-						<Text style={styles.text}>Area</Text>
-						<TextInput
-							style={styles.textInput}
-							placeholder={'Enter Full Name '}
-							maxLength={50}
-							onChangeText={(text) => setArea(text)}
-							value={area}
-							editable={false}
-						/>
-						<Text style={styles.text}>Street Address</Text>
-						<TextInput
-							style={styles.textInput}
-							placeholder={'Enter Address'}
-							maxLength={20}
-							onChangeText={(text) => setAddress(text)}
-							value={address}
-							editable={false}
-						/>	
-						<View style={styles.bottom}></View>
-		</ScrollView>
+              editable={false}
+							//onChangeText={(text) => setPhone(text)}
+							value='+92 333 5968206'
+						/>					
 		</View>
 		</View>
 	);
 }
 
 const styles = StyleSheet.create({
-	bottom:{
-       marginBottom:40
-	},
 	heading:{
        color:colors.red,
 	   fontSize:40,
@@ -365,4 +309,15 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default ProfileScreen;
+const mapStateToProps = ({
+	user: { token },
+	mainRecords: { user, records, loading },
+}) => ({
+	token,
+	user,
+	records,
+	loading,
+});
+
+
+export default ContactusScreen;

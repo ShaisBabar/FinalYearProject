@@ -3,8 +3,6 @@ const Bcrypt = require("bcryptjs");
 
 //router.get('/getuserbyid/:id', getuserbyid);
 exports.getuserbyid = (req, res, next) => {
-    console.log("kkkk")
-    console.log(req.params.id,"pppppppppppp")
     User.findById(req.params.id)
     .then((result) => {
         var  t = result;
@@ -35,6 +33,7 @@ exports.adduser = (req, res) => {
         email:req.body.email
     }).then(user=> {
           if(user){
+            console.log("User Already exists.")
             res.status(200).json({
                 message: "User already exists",
             });
@@ -43,6 +42,7 @@ exports.adduser = (req, res) => {
             req.body.password = Bcrypt.hashSync(req.body.password, 10);
             const user = new User(req.body);
             user.save();
+            console.log("User Registration successful.")
             res.status(200).json({
                 message: "User Added succesfully",
                 token: user._id,
@@ -51,7 +51,7 @@ exports.adduser = (req, res) => {
               
           }
         }).catch(err => {
-            console.log("error",err)
+            console.log("Error",err)
             res.status(404).json({
             message: "Error occured. Try again",
         })
@@ -60,16 +60,18 @@ exports.adduser = (req, res) => {
 };
 
 //router.put('/edituser', edituser);
-exports.edituser = (req, res, next) =>{
-    User.findOneAndUpdate({_id:req.body.user._id},req.body.user,function(error, results) {
+exports.edituser = (req, res) =>{
+    User.findOneAndUpdate({_id:req.body._id},req.body,function(error, results) {
         if (error) {
-        return next(error);
+            console.log('Updating User Failed ',error);
+            res.json({success:false});
         }
-        console.log('Updated User Details');
-        res.json(results);
-        });
-   
-};
+        else{
+            console.log('Updated User Details');
+            res.json({success:true});
+        }   
+});
+}
 
 //router.delete('/removeuser', removeuser);
 exports.removeuser = (req, res) => {
@@ -92,8 +94,8 @@ exports.loginuser = (request, response) => {
                 if(res) {
                  // Passwords match
                     user.isLoggedin = true;
-                    user.save().then(user => console.log("")).catch((err)=>{throw err;});
-                    response.json({user: user,success:true,token:user._id})
+                    user.save().then(user => console.log("User Logged in.")).catch((err)=>{throw err;});
+                    response.json({user: user,success:true,token:user._id,message:"User Logged in."})
                 } else {
                  // Passwords don't match
                 console.log('User does not exist') 
@@ -110,8 +112,8 @@ exports.loginuser = (request, response) => {
       })
     .catch(err=>
       {
-          response.send('error: '+err)
-
+        console.log('Error: ',err)
+        response.json({error: err,success:false})
       })
 };
 

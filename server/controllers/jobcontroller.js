@@ -4,16 +4,43 @@ var _ = require('lodash');
 
 //router.get('/jobsbyuser/:id', getJobByUser);
 exports.getJobByUser = (req, res, next) => {
-    console.log("lll")
     Job.find({user_id:req.params.id})
     .then((result) => {
         res.status(200).json({
             result
         });
     })
-    .catch(err => console.log("llll",err));
+    .catch(err => console.log("Error:",err));
 };
 
+exports.getJobByUserActive = (req, res, next) => {
+    Job.find({user_id:req.params.id,is_completed:false})
+    .then((result) => {
+        res.status(200).json({
+            result:result,success:true
+        });
+    })
+    .catch(err => {console.log("Error:",err)
+    res.status(200).json({
+        error:err,success:false
+    });
+});
+};
+
+exports.getJobByUserCompleted = (req, res, next) => {
+    Job.find({user_id:req.params.id,is_completed:true})
+    .then((result) => {
+        res.status(200).json({
+            result:result,success:true
+        });
+    })
+    .catch(err => {
+    console.log("Error:",err)
+    res.status(200).json({
+        error:err,success:false
+    });
+    });
+};
 
 //router.get('/jobsbyid/:id', getJobById);
 exports.getJobById = (req, res, next, id) => {
@@ -88,7 +115,7 @@ exports.getJobByCategory = (req, res, next) => {
 };
 
 //router.get('/jobs', getJobs);
-exports.getJobs = (req, res, next, id) => {
+exports.getJobs = (req, res) => {
     Job.find({})
     .then((result) => {
         res.status(200).json({
@@ -111,11 +138,20 @@ exports.removeJob = (req, res) => {
 
 //router.post('/addjob',addJob);
 exports.addJob = async (req, res) => {
-    const job = await new Job(req.body);
-    await job.save();
-    res.status(200).json({
-        message: "Job Added succesfully",
-    });
+    Category.findOne({name:req.body.categories[0]}).then((result)=>{
+        req.body.categories = [result._id]
+        const job = new Job(req.body);
+        job.save().then(()=>
+        res.status(200).json({
+            message: "Post Added succesfully",success:true
+        })).catch(err=>{
+            console.log('Error: ',err)
+            res.status(400).json({
+            message: "Post Adding failed",success:false
+        })});
+    })
+    
+    
 };
 
 //router.put("/editJob", editJob);

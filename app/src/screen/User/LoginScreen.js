@@ -14,31 +14,62 @@ import * as Animatable from 'react-native-animatable';
 import colors from '../../styles/colors';
 import LoadingIndicator from '../../components/LoadingIndicator';
 
-import { connect } from 'react-redux';
-import { login } from '../../redux/actions/user';
-
-function LoginScreen({ navigation: { navigate }, token, loading, login }) {
+function LoginScreen({ navigation: { navigate }}) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
-	// useEffect(() => {
-	// 	if (token) {
-	// 		navigate('MainApp');
-	// 	}
-	// 	return () => {};
-	// }, [token]);
-  
-
 	const login_user = (email,password) =>{
-		login({ email, password });
-
-		if (token) {
-			navigate('MainApp');
-	 	}
-		 else{
-			Alert.alert(
-				"Invalid Login",
-				"Username or password is incorrect",
+			const user = {
+				email,password
+			}
+			console.log(user)
+			fetch('http://192.168.0.110:5000/users/loginuser', {
+				method: 'POST',
+				headers: {
+				  Accept: 'application/json',
+				  'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(user)
+			})
+			.then((response) => response.json())
+			.then((json) => {
+				console.log(json)
+				if (json.success==true) {
+					global.user = json.user
+					//AsyncStorage.setItem('@Token', json.token);
+					Alert.alert(
+						"Logged in successfully",
+						"Logging in.",
+						[
+						  {
+							text: "Cancel",
+							onPress: () => console.log("Cancel Pressed"),
+							style: "cancel"
+						  },
+						  { text: "OK", onPress: () => console.log("OK Pressed") }
+						]
+					  );
+					navigate('MainApp',{user:json.user});
+				}
+				else{
+					Alert.alert(
+						json.error,
+						"Try again.",
+						[
+						  {
+							text: "Cancel",
+							onPress: () => console.log("Cancel Pressed"),
+							style: "cancel"
+						  },
+						  { text: "OK", onPress: () => console.log("OK Pressed") }
+						]
+					  );
+					  navigate('Login');
+				}
+			})
+			.catch((error) => Alert.alert(
+				"Error occured.",
+				"Try again later.",
 				[
 				  {
 					text: "Cancel",
@@ -47,8 +78,8 @@ function LoginScreen({ navigation: { navigate }, token, loading, login }) {
 				  },
 				  { text: "OK", onPress: () => console.log("OK Pressed") }
 				]
-			  );
-		 }
+			  ));
+			return;
 	}
 	return (
 		<View style={styles.container}>
@@ -199,8 +230,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-const mapStateToProps = ({ user: { token, loading } }) => ({ token, loading });
-
-const mapActionToProps = { login };
-
-export default connect(mapStateToProps, mapActionToProps)(LoginScreen);
+export default LoginScreen;

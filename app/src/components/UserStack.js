@@ -7,28 +7,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import colors from '../styles/colors';
 
 import HomeScreen from '../screen/User/HomeScreen';
-// import ServicesListScreen from '../screen/User/ServicesListScreen';
-// import ServicesEditScreen from '../screen/User/ServicesEditScreen';
-// import ServicesAddScreen from '../screen/User/ServicesAddScreen';
-// import ServiceDetailsScreen from '../screen/User/ServiceDetailsScreen';
-// import ViewImageScreen from '../screen/User/ViewImageScreen';
-// import PackageDetailsScreen from '../screen/User/PackageDetailsScreen';
-// import PackagesListScreen from '../screen/User/PackagesListScreen';
-// import PackagesEditScreen from '../screen/User/PackagesEditScreen';
-import PackagesAddScreen from '../screen/User/PackagesAddScreen';
+import PostServiceScreen from '../screen/User/PostServiceScreen';
 import ProfileScreen from '../screen/User/ProfileScreen';
-// import SpecialistScreen from '../screen/User/SpecialistScreen';
-// import SpecialistDetailsScreen from '../screen/User/SpecialistDetailsScreen';
-// import SpecialistEditScreen from '../screen/User/SpecialistEditScreen';
-// import SpecialistAddScreen from '../screen/User/SpecialistAddScreen';
 import AppointmentScreen from '../screen/User/AppointmentScreen';
 import AppointmentDetailScreen from '../screen/User/AppoinmentDetailScreen';
-// import GalleryScreen from '../screen/User/GalleryScreen';
 import ExploreScreen from '../screen/User/ExploreScreen'
-// import WelcomeScreen from '../screen/User/WelcomeScreen';
-// import LoginScreen from '../screen/User/LoginScreen';
-// import RegisterScreen from '../screen/BarberSide/RegisterScreen';
-// import Chat from '../screen/chat/Chat';
 import AddJobScreen from '../screen/User/Addjob';
 import chatScreen from '../screen/chat/chatScreen';
 import ConversationScreen from '../screen/chat/conversations';
@@ -39,6 +22,10 @@ import ReviewScreen from './../screen/User/ReviewScreen';
 import UserActiveJobs from '../screen/User/UserActiveJobs';
 import UserCompletedJobs from '../screen/User/UserCompletedJobs';
 import JobDetailScreen from '../screen/User/JobDetailScreen';
+import LogoutScreen from '../screen/User/LogoutScreen';
+import ContactusScreen from '../screen/User/ContactusScreen';
+import FAQScreen from './../screen/User/FAQScreen';
+import EditProfileScreen from './../screen/User/EditProfileScreen';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -76,16 +63,40 @@ export default class UserStack extends Component {
 		<Stack.Navigator>
 	
 			<Stack.Screen
-				name="Account"
+				name="Settings"
 				component={UserSettings}
-				// options={{
-				// 	headerStyle: { backgroundColor: colors.red },
-				// 	headerTintColor: 'white',
-				// }}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
+			<Stack.Screen
+				name="Edit Profile"
+				component={EditProfileScreen}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
 			/>
 			<Stack.Screen
 				name="Edit Password"
 				component={EditPasswordScreen}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
+			<Stack.Screen
+				name="Contact"
+				component={ContactusScreen}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
+			<Stack.Screen
+				name="FAQ"
+				component={FAQScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',
@@ -210,7 +221,7 @@ export default class UserStack extends Component {
 
 				<Drawer.Screen name="Home" children={this.createHomeStack}  />
 				
-				<Drawer.Screen name="Get Service" component={PackagesAddScreen}
+				<Drawer.Screen name="Get Service" component={PostServiceScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',
@@ -224,9 +235,9 @@ export default class UserStack extends Component {
 				<Drawer.Screen name="Profile" component={ProfileScreen} />
 				<Drawer.Screen name="Account Settings" children={this.createAccountStack} 
 				 />
-				<Drawer.Screen name="Reviews" component={ReviewScreen}
-				 />
-				<Drawer.Screen name="Logout" component={WelcomeScreen} />
+				{/* <Drawer.Screen name="Reviews" component={ReviewScreen}
+				 /> */}
+				<Drawer.Screen name="Logout" component={LogoutScreen} />
 			</Drawer.Navigator>
 		);
 	}

@@ -12,9 +12,21 @@ import {
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import GradientHeader from 'react-native-gradient-header';
-import colors from '../../styles/colors';
+import LinearGradient from 'react-native-linear-gradient';
+import ImagePicker from 'react-native-image-picker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import Geolocation from '@react-native-community/geolocation';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import {
+	Dropdown,
 
-function ProfileScreen({navigation: { navigate }}) 
+  } from 'sharingan-rn-modal-dropdown';
+import colors from '../../styles/colors';
+import {citydata,isl_data,lahore_data,karachi_data,quetta_data,multan_data} from './../../assets/strings'
+
+function EditProfileScreen({navigation: { goBack, navigate }}) 
 {
 	const user = global.user;
 	const [name, setName] = useState(user?.name || '');
@@ -22,7 +34,103 @@ function ProfileScreen({navigation: { navigate }})
 	const [phone, setPhone] = useState(user?.phoneno);
 	const [address, setAddress] = useState(user?.street_address);
 	const [city, setCity] = useState(user?.city);
-	const [area, setArea] = useState(user?.area);
+	const [area, setArea] = useState('Add Area');
+	const [area_city, setAreaCity] = useState([ {
+        value: 'Add Area',
+        label: 'Add Area',
+      },]);
+	const data = citydata;
+
+	const setAreaforCityFunc = (city) =>{
+		setCity(city);
+		if(city=='Islamabad'){
+			setAreaCity(isl_data);
+		}
+		else if(city=='Karachi'){
+			setAreaCity(karachi_data);
+		}
+		else if(city=='Lahore'){
+			setAreaCity(lahore_data);
+		}
+		else if(city=='Karachi'){
+			setAreaCity(karachi_data);
+		}
+		else if(city=='Multan'){
+			setAreaCity(multan_data);
+		}
+		else if(city=='Quetta'){
+			setAreaCity(quetta_data);
+		}
+		setArea('Add Area')
+		
+	}
+
+	const update = () =>{
+		console.log(global.user)
+		const user = {
+			name, email, phoneno:phone,city,street_address:address,city,area,password:global.user.password,_id:global.user._id
+		}
+		console.log(user)
+		fetch('http://192.168.0.110:5000/users/edituser', {
+			method: 'PUT',
+			headers: {
+			  Accept: 'application/json',
+			  'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(user)
+		})
+		.then((response) => response.json())
+		.then((json) => {
+			console.log(json)
+			if (json.success==true) {
+				global.user = user
+				//AsyncStorage.setItem('@Token', json.token);
+				Alert.alert(
+					"Updated User",
+					"",
+					[
+					  {
+						text: "Cancel",
+						onPress: () => console.log("Cancel Pressed"),
+						style: "cancel"
+					  },
+					  { text: "OK", onPress: () => console.log("OK Pressed") }
+					]
+				  );
+				navigate('Profile');
+			}
+			else{
+				Alert.alert(
+					"Could not perform Update",
+					"Try again.",
+					[
+					  {
+						text: "Cancel",
+						onPress: () => console.log("Cancel Pressed"),
+						style: "cancel"
+					  },
+					  { text: "OK", onPress: () => console.log("OK Pressed") }
+					]
+				  );
+				  navigate('Profile');
+			}
+		})
+		.catch((error) => Alert.alert(
+			"Error occured",
+			"Try again later.",
+			[
+			  {
+				text: "Cancel",
+				onPress: () => console.log("Cancel Pressed"),
+				style: "cancel"
+			  },
+			  { text: "OK", onPress: () => console.log("OK Pressed") }
+			]
+		  )
+		  );
+		return;
+	}
+	
 	return (
 		<View style={styles.screen}>
 			<View style={styles.headerScreen}>
@@ -46,7 +154,6 @@ function ProfileScreen({navigation: { navigate }})
 							maxLength={50}
 							onChangeText={(text) => setName(text)}
 							value={name}
-							editable={false}
 						/>
 						<Text style={styles.text}>Email</Text>
 						<TextInput
@@ -57,7 +164,6 @@ function ProfileScreen({navigation: { navigate }})
 							maxLength={50}
 							onChangeText={(text) => setEmail(text)}
 							value={email}
-							editable={false}
 						/>
 						<Text style={styles.text}>Phone no.</Text>
 						<TextInput
@@ -68,26 +174,27 @@ function ProfileScreen({navigation: { navigate }})
 							minLength={11}
 							onChangeText={(text) => setPhone(text)}
 							value={phone}
-							editable={false}
 						/>
 						<Text style={styles.text}>City</Text>
-						<TextInput
-							style={styles.textInput}
-							placeholder={'Enter Full Name '}
-							maxLength={50}
-							onChangeText={(text) => setCity(text)}
+						<View style={styles.citycontainer}>
+						<Dropdown
+							placeholder={'Select City'}
+							data={data}
+							enableSearch
 							value={city}
-							editable={false}
+							onChange={setAreaforCityFunc}
 						/>
+						</View>
 						<Text style={styles.text}>Area</Text>
-						<TextInput
-							style={styles.textInput}
-							placeholder={'Enter Full Name '}
-							maxLength={50}
-							onChangeText={(text) => setArea(text)}
+						<View style={styles.citycontainer}>
+						<Dropdown
+							placeholder={'Select Area'}
+							data={area_city}
+							enableSearch
 							value={area}
-							editable={false}
+							onChange={setArea}
 						/>
+						</View>
 						<Text style={styles.text}>Street Address</Text>
 						<TextInput
 							style={styles.textInput}
@@ -95,9 +202,18 @@ function ProfileScreen({navigation: { navigate }})
 							maxLength={20}
 							onChangeText={(text) => setAddress(text)}
 							value={address}
-							editable={false}
-						/>	
-						<View style={styles.bottom}></View>
+						/>
+						<LinearGradient
+							colors={[colors.orange, colors.red]}
+							style={styles.button}
+						>
+							<TouchableOpacity
+								style={{ width: '100%', alignItems: 'center' }}
+								onPress={update}
+							>
+								<Text style={styles.textBtn}>Save</Text>
+							</TouchableOpacity>
+						</LinearGradient>		
 		</ScrollView>
 		</View>
 		</View>
@@ -105,9 +221,6 @@ function ProfileScreen({navigation: { navigate }})
 }
 
 const styles = StyleSheet.create({
-	bottom:{
-       marginBottom:40
-	},
 	heading:{
        color:colors.red,
 	   fontSize:40,
@@ -365,4 +478,15 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default ProfileScreen;
+const mapStateToProps = ({
+	user: { token },
+	mainRecords: { user, records, loading },
+}) => ({
+	token,
+	user,
+	records,
+	loading,
+});
+
+
+export default EditProfileScreen;

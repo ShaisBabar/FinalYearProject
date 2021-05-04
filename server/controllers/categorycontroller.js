@@ -25,7 +25,7 @@ exports.getCategoryByName = (req, res, next, name) => {
 };
 
 //router.get('/categories', getCategories);
-exports.getCategories = (req, res, next, id) => {
+exports.getCategories = (req, res) => {
     Category.find({})
     .then((result) => {
         res.status(200).json({

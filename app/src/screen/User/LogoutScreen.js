@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
-import { ImageBackground, StyleSheet, View, Image } from 'react-native';
+import {View} from 'react-native';
 
-function LogoutScreen({ navigation: { navigate }, token, loading, login }) {
+function LogoutScreen({ navigation: { navigate }}) {
 	
 	useEffect(() => {
-        token = null;
-		navigate('Welcome');
+		global.user = undefined;
+		navigate('Choice');
 	}, []);
 
 	return (
-		<View style={styles.container}>
+		<View>
 		</View>
 	);
 }

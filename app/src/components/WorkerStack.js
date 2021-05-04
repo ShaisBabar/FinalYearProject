@@ -15,7 +15,7 @@ import HomeScreen from '../screen/User/HomeScreen';
 // import PackageDetailsScreen from '../screen/User/PackageDetailsScreen';
 // import PackagesListScreen from '../screen/User/PackagesListScreen';
 // import PackagesEditScreen from '../screen/User/PackagesEditScreen';
-import PackagesAddScreen from '../screen/User/PackagesAddScreen';
+import PostServiceScreen from '../screen/User/PostServiceScreen';
 import ProfileScreen from '../screen/User/ProfileScreen';
 // import SpecialistScreen from '../screen/User/SpecialistScreen';
 // import SpecialistDetailsScreen from '../screen/User/SpecialistDetailsScreen';
@@ -73,7 +73,7 @@ export default class WorkerStack extends Component {
 		<Stack.Navigator>
 	
 			<Stack.Screen
-				name="Account"
+				name="Settings"
 				component={UserSettings}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
@@ -152,7 +152,7 @@ export default class WorkerStack extends Component {
 
 				<Drawer.Screen name="Home" component={HomeScreen} />
 				
-				<Drawer.Screen name="Explore Jobs" component={PackagesAddScreen}
+				<Drawer.Screen name="Explore Jobs" component={PostServiceScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',

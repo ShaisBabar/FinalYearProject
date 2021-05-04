@@ -6,26 +6,32 @@ export const services_data = [
     {
       value: 'Plumbing',
       label: 'Plumbing',
+      image: "2.png"
     },
     {
       value: 'Laundary Work',
       label: 'Laundary Work',
+      image: "6.png"
     },
     {
       value: 'Gardening',
       label: 'Gardening',
+      image: "5.png"
     },
     {
       value: 'Cooking',
       label: 'Cooking',
+      image: "4.png"
     },
     {
         value: 'Carpenting',
         label: 'Carpenting',
+        image: "3.png"
     },
     {
         value: 'Electrician',
         label: 'Electrician',
+        image: "1.png"
     },
 ];
 

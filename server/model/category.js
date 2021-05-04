@@ -8,10 +8,12 @@ const catschema = new Schema(
         type: String, 
         required: true 
       },
-      description: {
+      name: {
         type: String, 
+        required: true,
+        default:'7.png'
       },
-         
+
     }
 );
 

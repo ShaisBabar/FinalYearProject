@@ -1,9 +1,11 @@
 var express = require('express');
-var {getJobById, getJobByUser, getJobByCity, getJobByDate, getJobByPay, getJobByTime, getJobByCategory, getJobs, addJob, editJob, removeJob,addRating, applyJob, unapplyJob,  } = require('./../controllers/jobcontroller')
+var {getJobById, getJobByUser, getJobByCity, getJobByDate, getJobByPay, getJobByTime, getJobByCategory, getJobs, addJob, editJob, removeJob,addRating, applyJob, unapplyJob, getJobByUserActive, getJobByUserCompleted,  } = require('./../controllers/jobcontroller')
 var router = express.Router();
 
 router.get('/jobs', getJobs);
 router.get('/jobsbyuser/:id', getJobByUser);
+router.get('/jobsbyuseractive/:id', getJobByUserActive);
+router.get('/jobsbyusercompleted/:id', getJobByUserCompleted);
 router.get('/jobsbycity/:city', getJobByCity);
 router.get('/jobsbydate', getJobByDate);
 router.get('/jobsbypay/:pay', getJobByPay);

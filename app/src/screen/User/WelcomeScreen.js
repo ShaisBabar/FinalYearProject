@@ -1,25 +1,17 @@
 import React, { useEffect } from 'react';
-import { ImageBackground, StyleSheet, View, Image } from 'react-native';
-import * as Animatable from 'react-native-animatable';
-
+import { ImageBackground, StyleSheet, View} from 'react-native';
 import colors from '../../styles/colors';
-import { connect } from 'react-redux';
 
-function WelcomeScreen({ navigation: { navigate }, token }) {
+function WelcomeScreen({ navigation: { navigate }}) {
 	const [isLoading, setLoading] = React.useState(true);
 
 	useEffect(() => {
-		setTimeout(() => {
-			// if (token) {
-			// 	navigate('MainApp');
-			// } else {
-			// 	navigate('Choice');
-			// }
-			navigate('Choice');
-		}, 3000);
-
+		console.log(global.user)
+		setTimeout(() => {	
+		navigate('Choice');
+		}, 1000);
 		return () => {};
-	}, [token]);
+	}, []);
 
 	return (
 		<View style={styles.container}>
@@ -79,9 +71,8 @@ const styles = StyleSheet.create({
 	},
 });
 
-const mapStateToProps = ({ user: { token } }) => ({ token });
 
-export default connect(mapStateToProps)(WelcomeScreen);
+export default WelcomeScreen;
 
 
 

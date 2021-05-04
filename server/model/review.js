@@ -16,6 +16,11 @@ const reviewschema = new Schema(
             ref: "Worker",
             required: true,
         },
+        job_id:  {
+            type: Schema.Types.ObjectId,
+            ref: "Job",
+            required: true,
+        },
         dateCreated:{
              type: Date,
              default: Date.now

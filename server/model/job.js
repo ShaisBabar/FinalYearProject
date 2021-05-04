@@ -13,12 +13,13 @@ const jobschema = new Schema(
         },
         dateCreated:{
              type: Date,
+             required: true,
              default: Date.now
         },
         description:{
             type: String,
             required: true,
-            default: "Will discuss afterwards."
+            default: "None."
         },
         starting_time:{
             required:true,
@@ -26,9 +27,9 @@ const jobschema = new Schema(
             type: Date,
         },
         expected_time:{
-            required:true,
-            type: Date,
-            default: Date.now
+            type: String,
+            required: true,
+            default: "Unknown."
         },
         max_payment:{
             required:true,
@@ -78,15 +79,6 @@ const jobschema = new Schema(
              type:Boolean,
              default:false
          },
-         remarks:{
-             type: String,
-             default: ""
-         },
-         rating:{
-            type: Number,
-            default: 0
-        }
-        
          
     }
 );

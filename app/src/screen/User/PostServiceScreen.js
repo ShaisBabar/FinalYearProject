@@ -21,8 +21,8 @@ import {
 import { connect } from 'react-redux';
 import { addPackage } from '../../redux/actions/packageAction';
 import { getRecords } from '../../redux/actions/mainRecords';
-import {services_data} from './../../assets/strings';
-import {citydata,isl_data,lahore_data,karachi_data,quetta_data,multan_data} from './../../assets/strings'
+import {services_data} from '../../assets/strings';
+import {citydata,isl_data,lahore_data,karachi_data,quetta_data,multan_data} from '../../assets/strings'
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 function PostServiceScreen(props) {
@@ -33,7 +33,7 @@ function PostServiceScreen(props) {
 	const [description, setDescription] = React.useState('');
 	const [city, setCity] = useState(global.user.city);
 	const [address, setAddress] = useState(global.user.street_address);
-	// const [service_, setservice] = React.useState('Select Service');
+	const [service_, setservice] = React.useState('Select Service');
 	const data = citydata;
 	const [toggle, setToggleCheckBox] = React.useState(true);
 	const [area, setArea] = useState(global.user.area);
@@ -201,14 +201,12 @@ function PostServiceScreen(props) {
 				<ScrollView>
             <Text style={styles.text}>Service</Text>
 			<View style={styles.citycontainer}>
-				
-				<TextInput
-					style={styles.textInput}
-					placeholder={'e.g. Enter job'}
-					maxLength={50}
-					onChangeText={(text) => setTitle(text)}
-					value={service}
-                    editable={false}
+				<Dropdown
+				    placeholder={'Select Service'}
+					data={services_data}
+					enableSearch
+					value={service_}
+					onChange={setservice}
 				/>
 				</View>
 				<Text style={styles.text}>Relavent Details</Text>

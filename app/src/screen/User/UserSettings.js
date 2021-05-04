@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { TouchableOpacity } from 'react-native'
 import {
   StyleSheet,
   Text,
@@ -10,17 +11,18 @@ import {
   Switch,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
+import colors from '../../styles/colors'
 
 import { SettingsScreen, SettingsData, Chevron } from './../../components/lib'
 
 const fontFamily = Platform.OS === 'ios' ? 'Avenir' : 'sans-serif'
-
+const user = global.user;
 const renderHero = () => (
   <View style={styles.heroContainer}>
     <Image source={require('../../assets/images/image_1.jpg')} style={styles.heroImage} />
     <View style={{ flex: 1 }}>
-      <Text style={styles.heroTitle}>Jan Söndermann</Text>
-      <Text style={styles.heroSubtitle}>jan+git@primlo.com</Text>
+      <Text style={styles.heroTitle}>user.name</Text>
+      <Text style={styles.heroSubtitle}>user.email</Text>
     </View>
     <Chevron />
   </View>
@@ -29,6 +31,9 @@ const renderHero = () => (
 export default class App extends React.Component {
   state = {
     refreshing: false,
+  }
+  deleteservices = () =>{
+
   }
 
   settingsData= [
@@ -40,13 +45,29 @@ export default class App extends React.Component {
     //     'Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.',
       rows: [
         {
-          title: 'View Profile',
-          showDisclosureIndicator: true,
+          title: 'View/Edit Profile',
+          //showDisclosureIndicator: true,
+          renderAccessory: () => (
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Edit Profile')}}>
+            {/* <Icon
+              style={{ marginTop: 3, marginRight: 6 }}
+              name="colours"
+              size={32}
+              color="black"
+            /> */}
+            <Image source={require('./../../assets/images/arrow.png')} style={styles.img}/>
+            </TouchableOpacity>
+          ),
         },
         {
-          title: 'Edit Profile',
+          title: 'Change Password',
           //subtitle: 'Change Account Details',
-          showDisclosureIndicator: true,
+          //showDisclosureIndicator: true,
+          renderAccessory: () => (
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Edit Password')}}>
+             <Image source={require('./../../assets/images/arrow.png')} style={styles.img}/>
+            </TouchableOpacity>
+          ),
         },
         // {
         //   title: 'Long title. So long long long long long long long',
@@ -55,11 +76,13 @@ export default class App extends React.Component {
         // },
         {
           title: 'Show Phone no. on Profile',
-          renderAccessory: () => <Switch value onValueChange={() => {}} />,
+          renderAccessory: () => <Switch style={styles.switch} trackColor={{true: colors.red, false: 'grey'}} thumbColor='red' value onValueChange={() => {
+            
+          }} />,
         },
         {
             title: 'Show Address on Profile',
-            renderAccessory: () => <Switch value onValueChange={() => {}} />,
+            renderAccessory: () => <Switch style={styles.switch} trackColor={{true: colors.red, false: 'grey'}} thumbColor='red' value onValueChange={() => {}} />,
           },
         // {
         //   title: 'Text',
@@ -105,24 +128,28 @@ export default class App extends React.Component {
         {
           title: 'Delete Services History',
           renderAccessory: () => (
+            <TouchableOpacity onPress={()=>{this.deleteservices}}>
             <Icon
               style={{ marginTop: 3, marginRight: 6 }}
               name="colours"
               size={32}
               color="black"
             />
+            </TouchableOpacity>
           ),
           showDisclosureIndicator: true,
         },
         {
             title: 'Delete Account',
             renderAccessory: () => (
+              <TouchableOpacity onPress={()=>{this.deleteaccount}}>
               <Icon
                 style={{ marginTop: 3, marginRight: 6 }}
                 name="colours"
                 size={32}
                 color="black"
               />
+              </TouchableOpacity>
             ),
             showDisclosureIndicator: true,
           },
@@ -146,11 +173,21 @@ export default class App extends React.Component {
       rows: [
         {
           title: 'Contact us',
-          showDisclosureIndicator: true,
+          //showDisclosureIndicator: true,
+          renderAccessory: () => (
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Contact')}}>
+           <Image source={require('./../../assets/images/arrow.png')} style={styles.img}/>
+            </TouchableOpacity>
+          )
         },
         {
             title: 'FAQs',
-            showDisclosureIndicator: true,
+            //showDisclosureIndicator: true,
+            renderAccessory: () => (
+              <TouchableOpacity onPress={()=>{this.props.navigation.navigate('FAQ')}}>
+             <Image source={require('./../../assets/images/arrow.png')} style={styles.img}/>
+              </TouchableOpacity>
+            )
           },
       ],
     },
@@ -176,7 +213,6 @@ export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" backgroundColor="#8c231a" />
         <SettingsScreen
           data={this.settingsData}
           globalTextStyle={{ fontFamily }}
@@ -200,6 +236,13 @@ export default class App extends React.Component {
 const statusBarHeight = Platform.OS === 'ios' ? 35 : 0
 
 const styles = StyleSheet.create({
+  img:{
+     width:32,
+     height:32
+  },
+  switch:{
+    color:colors.red
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
