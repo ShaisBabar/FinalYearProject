@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Rating, AirbnbRating } from 'react-native-ratings';
-
 import {
 	Text,
 	TextInput,
@@ -14,31 +12,64 @@ import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 
 import colors from '../../styles/colors';
+import LoadingIndicator from '../../components/LoadingIndicator';
 
-function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
+function LoginScreen({ navigation: { navigate }}) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-    const ratingCompleted = (rating) => {
-        console.log("Rating is: " + rating)
-      }
-	// useEffect(() => {
-	// 	if (token) {
-	// 		navigate('MainApp');
-	// 	}
-	// 	return () => {};
-	// }, [token]);
-  
 
 	const login_user = (email,password) =>{
-		login({ email, password });
-
-		if (token) {
-			navigate('MainApp');
-	 	}
-		 else{
-			Alert.alert(
-				"Invalid Login",
-				"Username or password is incorrect",
+			const user = {
+				email,password
+			}
+			console.log(user)
+			fetch('http://192.168.0.110:5000/users/loginuser', {
+				method: 'POST',
+				headers: {
+				  Accept: 'application/json',
+				  'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(user)
+			})
+			.then((response) => response.json())
+			.then((json) => {
+				console.log(json)
+				if (json.success==true) {
+					global.user = json.user
+					//AsyncStorage.setItem('@Token', json.token);
+					Alert.alert(
+						"Logged in successfully",
+						"Logging in.",
+						[
+						  {
+							text: "Cancel",
+							onPress: () => console.log("Cancel Pressed"),
+							style: "cancel"
+						  },
+						  { text: "OK", onPress: () => console.log("OK Pressed") }
+						]
+					  );
+					navigate('MainApp',{user:json.user});
+				}
+				else{
+					Alert.alert(
+						json.error,
+						"Try again.",
+						[
+						  {
+							text: "Cancel",
+							onPress: () => console.log("Cancel Pressed"),
+							style: "cancel"
+						  },
+						  { text: "OK", onPress: () => console.log("OK Pressed") }
+						]
+					  );
+					  navigate('Login');
+				}
+			})
+			.catch((error) => Alert.alert(
+				"Error occured.",
+				"Try again later.",
 				[
 				  {
 					text: "Cancel",
@@ -47,8 +78,8 @@ function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
 				  },
 				  { text: "OK", onPress: () => console.log("OK Pressed") }
 				]
-			  );
-		 }
+			  ));
+			return;
 	}
 	return (
 		<View style={styles.container}>
@@ -63,26 +94,39 @@ function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
 				/>
 			</LinearGradient>
 			<Animatable.View animation="slideInUp" style={styles.footer}>
-            <Text style={styles.text}>Give Rating</Text>
-            <Rating
-                    type='heart'
-                    ratingCount={5}
-                    imageSize={60}
-                    showRating
-                    onFinishRating={ratingCompleted}
-                    />
-
-				<Text style={styles.text}>Give Review</Text>
+				<Text style={styles.text}>Email</Text>
 				<TextInput
 					autoCapitalize="none"
 					keyboardType="email-address"
 					style={styles.textInput}
-					placeholder={'Enter Review'}
+					placeholder={'Enter Email'}
 					maxLength={50}
 					onChangeText={(text) => setEmail(text)}
 					value={email}
 				/>
-               
+				<Text style={styles.text}>Password</Text>
+				<TextInput
+					style={styles.textInput}
+					placeholder={'Enter Password'}
+					maxLength={20}
+					onChangeText={(text) => setPassword(text)}
+					secureTextEntry={true}
+					value={password}
+				/>
+				{/* <TouchableOpacity onPress={() => navigate('Forget')}>
+					<Text style={styles.textforget}>Forget Password?</Text>
+				</TouchableOpacity> */}
+				<LinearGradient
+					colors={[colors.red, colors.red]}
+					style={[styles.button]}
+				>
+					<TouchableOpacity
+						style={{ width: '100%', alignItems: 'center' }}
+						onPress={() => login_user(email, password)}
+					>
+						<Text style={styles.textBtn}>Sign In</Text>
+					</TouchableOpacity>
+				</LinearGradient>
 				<TouchableOpacity
 					style={[
 						styles.button,
@@ -94,7 +138,7 @@ function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
 					]}
 					onPress={() => navigate('Register')}
 				>
-					<Text style={styles.textBtnSignUp}>Submit Review</Text>
+					<Text style={styles.textBtnSignUp}>Sign Up</Text>
 				</TouchableOpacity>
 			</Animatable.View>
 		</View>
@@ -186,5 +230,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-
-export default ReviewScreen;
+export default LoginScreen;

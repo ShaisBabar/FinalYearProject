@@ -43,6 +43,16 @@ const userschema = new Schema(
         type: Date,
         default: Date.now
       },
+      show_address:{
+        type:Boolean,
+        default:true,
+        required:true
+      },
+      show_phone:{
+        type:Boolean,
+        default:true,
+        required:true
+      }
   
     }
 );

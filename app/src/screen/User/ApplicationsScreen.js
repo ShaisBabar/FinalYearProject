@@ -22,10 +22,10 @@ const images = [
   require(`./../../assets/categories/laundary.png`),
   require(`./../../assets/categories/gardening.png`)
 ];
-class UserActiveJobs extends Component {
+class ApplicationsScreen extends Component {
   constructor(props) {
     super(props);
-
+    console.log(this.props.route.params.applicants)
     this.state = {
       loading: false,
       data: [],
@@ -402,4 +402,4 @@ const styles = StyleSheet.create({
   },
 }); 
 
-export default UserActiveJobs;
+export default ApplicationsScreen;

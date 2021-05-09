@@ -26,10 +26,6 @@ import colors from '../../styles/colors';
 import profileImg from '../../utils/profileImg';
 import LoadingIndicator from '../../components/LoadingIndicator';
 
-import { connect } from 'react-redux';
-import { getUser, updateUser } from '../../redux/actions/mainRecords';
-import axios from '../../../config';
-
 const Tab = createMaterialTopTabNavigator();
 
 const appointment1 = [
@@ -439,11 +435,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-const mapStateToProps = ({ mainRecords: { user, loading } }) => ({
-	user,
-	loading,
-});
-
-const mapActionToProps = { getUser, updateUser };
-
-export default connect(mapStateToProps, mapActionToProps)(ProfileScreen);
+export default ProfileScreen;

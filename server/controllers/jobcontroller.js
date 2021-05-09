@@ -13,9 +13,11 @@ exports.getJobByUser = (req, res, next) => {
     .catch(err => console.log("Error:",err));
 };
 
-exports.getJobByUserActive = (req, res, next) => {
-    Job.find({user_id:req.params.id,is_completed:false})
+exports.getJobByUserActive = (req, res) => {
+    console.log('hereee')
+    Job.find({user_id:req.params.id,is_completed:false}).populate('categories').populate('applicants')
     .then((result) => {
+        console.log(result)
         res.status(200).json({
             result:result,success:true
         });
@@ -129,10 +131,21 @@ exports.getJobs = (req, res) => {
 exports.removeJob = (req, res) => {
     Job.deleteOne({_id:req.params.id }, function(error, results) {
         if (error) {
-            return next(error);
+            return res.json({success:false});;
         }
         console.log('Deleted Job');
-        res.json(results);
+        res.json({success:true});
+    });
+};
+
+//router.delete("/removejobuser/:id", removeJob);
+exports.removeJobUser = (req, res) => {
+    Job.deleteMany({user_id:req.params.id,is_completed:true }, function(error, results) {
+        if (error) {
+            return res.json({success:false});;
+        }
+        console.log('Deleted All User Completed Jobs');
+        res.json({success:true});
     });
 };
 
@@ -140,11 +153,17 @@ exports.removeJob = (req, res) => {
 exports.addJob = async (req, res) => {
     Category.findOne({name:req.body.categories[0]}).then((result)=>{
         req.body.categories = [result._id]
+        if(req.body.description.length==0 || req.body.description==null || req.body.description==undefined){
+            req.body.description="None"
+        }
         const job = new Job(req.body);
         job.save().then(()=>
+        {
+        console.log("Post Added succesfully")
         res.status(200).json({
             message: "Post Added succesfully",success:true
-        })).catch(err=>{
+        })
+        }).catch(err=>{
             console.log('Error: ',err)
             res.status(400).json({
             message: "Post Adding failed",success:false

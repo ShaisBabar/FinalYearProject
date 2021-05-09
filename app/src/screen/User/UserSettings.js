@@ -9,6 +9,7 @@ import {
   Platform,
   RefreshControl,
   Switch,
+  Alert
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 import colors from '../../styles/colors'
@@ -31,9 +32,145 @@ const renderHero = () => (
 export default class App extends React.Component {
   state = {
     refreshing: false,
+    show_add:global.user.show_address,
+    show_phon:global.user.show_phone
+  }
+  updateshowaddress = () =>{
+    fetch('http://192.168.0.110:5000/users/showaddress/'+global.user._id, {
+            method: 'PUT',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({value:!this.state.show_add})
+            
+          })
+		.then((response) => response.json())
+		.then((json) => {
+			console.log(json)
+			if (json.success==true) {
+				Alert.alert(
+					"Updaed visibility of Address on Profile",
+					"",
+					[
+					  {
+						text: "Cancel",
+						onPress: () => console.log("Cancel Pressed"),
+						style: "cancel"
+					  },
+					  { text: "OK", onPress: () => console.log("OK Pressed") }
+					]
+				  );
+          var u =  global.user;
+          u.show_address = !this.state.show_add;
+          global.user=u;
+          this.setState({show_add:!this.state.show_add})
+				  //navigate('Account Settings');
+			}
+			else{
+				Alert.alert(
+					"Something went Wrong",
+					"Try again.",
+					[
+					  {
+						text: "Cancel",
+						onPress: () => console.log("Cancel Pressed"),
+						style: "cancel"
+					  },
+					  { text: "OK", onPress: () => console.log("OK Pressed") }
+					]
+				  );
+				  //navigate('Profile');
+			}
+		})
+		.catch((error) => Alert.alert(
+			"Error occured",
+			"Try again later.",
+			[
+			  {
+				text: "Cancel",
+				onPress: () => console.log("Cancel Pressed"),
+				style: "cancel"
+			  },
+			  { text: "OK", onPress: () => console.log("OK Pressed") }
+			]
+		  )
+		  );
   }
   deleteservices = () =>{
+    Alert.alert(
+      "Are you sure you want to delete all previous completed jobs?",
+      "",
+      [
+        {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel"
+        },
+        { text: "OK", onPress: () => {
+          console.log("OK Pressed");
+          fetch('http://192.168.0.110:5000/jobs/removejobuser/'+global.user._id, {
+            method: 'DELETE',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+          })
+		.then((response) => response.json())
+		.then((json) => {
+			console.log(json)
+			if (json.success==true) {
+				Alert.alert(
+					"Deleted Old Completed Jobs",
+					"",
+					[
+					  {
+						text: "Cancel",
+						onPress: () => console.log("Cancel Pressed"),
+						style: "cancel"
+					  },
+					  { text: "OK", onPress: () => console.log("OK Pressed") }
+					]
+				  );
+				//navigate('Account Settings');
+			}
+			else{
+				Alert.alert(
+					"Something went Wrong",
+					"Try again.",
+					[
+					  {
+						text: "Cancel",
+						onPress: () => console.log("Cancel Pressed"),
+						style: "cancel"
+					  },
+					  { text: "OK", onPress: () => console.log("OK Pressed") }
+					]
+				  );
+				  //navigate('Profile');
+			}
+		})
+		.catch((error) => Alert.alert(
+			"Error occured",
+			"Try again later.",
+			[
+			  {
+				text: "Cancel",
+				onPress: () => console.log("Cancel Pressed"),
+				style: "cancel"
+			  },
+			  { text: "OK", onPress: () => console.log("OK Pressed") }
+			]
+		  )
+		  );
+      } }
+      ]
+      );
+    
+  }
 
+  deleteAccount = () =>{
+     
   }
 
   settingsData= [
@@ -45,7 +182,22 @@ export default class App extends React.Component {
     //     'Donec sed odio dui. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.',
       rows: [
         {
-          title: 'View/Edit Profile',
+          title: 'View Profile',
+          //showDisclosureIndicator: true,
+          renderAccessory: () => (
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Profile')}}>
+            {/* <Icon
+              style={{ marginTop: 3, marginRight: 6 }}
+              name="colours"
+              size={32}
+              color="black"
+            /> */}
+            <Image source={require('./../../assets/images/arrow.png')} style={styles.img}/>
+            </TouchableOpacity>
+          ),
+        },
+        {
+          title: 'Edit Profile',
           //showDisclosureIndicator: true,
           renderAccessory: () => (
             <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Edit Profile')}}>
@@ -64,7 +216,7 @@ export default class App extends React.Component {
           //subtitle: 'Change Account Details',
           //showDisclosureIndicator: true,
           renderAccessory: () => (
-            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Edit Password')}}>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('UpdatePassword')}}>
              <Image source={require('./../../assets/images/arrow.png')} style={styles.img}/>
             </TouchableOpacity>
           ),
@@ -76,13 +228,16 @@ export default class App extends React.Component {
         // },
         {
           title: 'Show Phone no. on Profile',
-          renderAccessory: () => <Switch style={styles.switch} trackColor={{true: colors.red, false: 'grey'}} thumbColor='red' value onValueChange={() => {
-            
+          renderAccessory: () => <Switch style={styles.switch} trackColor={{true: colors.red, false: 'grey'}} thumbColor='red' value={this.state.show_phon}  onValueChange={() => {
+            this.updateshowphone()
           }} />,
         },
         {
             title: 'Show Address on Profile',
-            renderAccessory: () => <Switch style={styles.switch} trackColor={{true: colors.red, false: 'grey'}} thumbColor='red' value onValueChange={() => {}} />,
+            renderAccessory: () => <Switch style={styles.switch} trackColor={{true: colors.red, false: 'grey'}} thumbColor='red' value={this.state.show_add} onValueChange={() => {
+              this.updateshowaddress()
+            }} />,
+          
           },
         // {
         //   title: 'Text',
@@ -127,43 +282,30 @@ export default class App extends React.Component {
         // },
         {
           title: 'Delete Services History',
+          //showDisclosureIndicator: true,
           renderAccessory: () => (
-            <TouchableOpacity onPress={()=>{this.deleteservices}}>
-            <Icon
-              style={{ marginTop: 3, marginRight: 6 }}
-              name="colours"
-              size={32}
-              color="black"
-            />
+            <TouchableOpacity onPress={()=>{this.deleteservices()}}>
+           <Image source={require('./../../assets/images/11.png')} style={styles.img}/>
             </TouchableOpacity>
-          ),
-          showDisclosureIndicator: true,
+          )
         },
         {
-            title: 'Delete Account',
-            renderAccessory: () => (
-              <TouchableOpacity onPress={()=>{this.deleteaccount}}>
-              <Icon
-                style={{ marginTop: 3, marginRight: 6 }}
-                name="colours"
-                size={32}
-                color="black"
-              />
-              </TouchableOpacity>
-            ),
-            showDisclosureIndicator: true,
-          },
-        {
+          title: 'Delete Account',
+          //showDisclosureIndicator: true,
+          renderAccessory: () => (
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Contact')}}>
+           <Image source={require('./../../assets/images/11.png')} style={styles.img}/>
+            </TouchableOpacity> 
+          )
+        },
+          {
             title: 'Logout',
+            //showDisclosureIndicator: true,
             renderAccessory: () => (
-              <Icon
-                style={{ marginTop: 3, marginRight: 6 }}
-                name="colours"
-                size={32}
-                color="black"
-              />
-            ),
-            showDisclosureIndicator: true,
+              <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Logout')}}>
+             <Image source={require('./../../assets/images/10.png')} style={styles.img}/>
+              </TouchableOpacity>
+            )
           },
       ],
     },
@@ -214,6 +356,7 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <SettingsScreen
+          style={{marginTop:20}}
           data={this.settingsData}
           globalTextStyle={{ fontFamily }}
           scrollViewProps={{

@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect } from 'react';
 import {
 	View,
@@ -13,12 +12,6 @@ import {
 import * as Animatable from 'react-native-animatable';
 import GradientHeader from 'react-native-gradient-header';
 import LinearGradient from 'react-native-linear-gradient';
-import ImagePicker from 'react-native-image-picker';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Geolocation from '@react-native-community/geolocation';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {
 	Dropdown,
 

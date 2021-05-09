@@ -18,7 +18,7 @@ function ContactusScreen({navigation: { goBack, navigate }})
 			<View style={styles.headerScreen}>
 				<Animatable.View animation="slideInDown">
 					 				<GradientHeader
-						title={`contact Us`}
+						title={`Contact Us`}
 						subtitle="If you have any queries, feel free to get in touch via email or phone."
 						gradientColors={[colors.red, colors.red]}
 						imageSource={{
@@ -308,16 +308,5 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.light,
 	},
 });
-
-const mapStateToProps = ({
-	user: { token },
-	mainRecords: { user, records, loading },
-}) => ({
-	token,
-	user,
-	records,
-	loading,
-});
-
 
 export default ContactusScreen;

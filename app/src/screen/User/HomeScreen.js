@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import GradientHeader from 'react-native-gradient-header';
 import * as Animatable from 'react-native-animatable';
-import LoadingIndicator from '../../components/LoadingIndicator';
 import colors from '../../styles/colors';
 
 function HomeScreen({navigation: { goBack, navigate }}) 
@@ -204,16 +203,6 @@ const styles = StyleSheet.create({
 		marginBottom: 15,
 		textAlign: "center"
 	  }
-});
-
-const mapStateToProps = ({
-	user: { token },
-	mainRecords: { user, records, loading },
-}) => ({
-	token,
-	user,
-	records,
-	loading,
 });
 
 

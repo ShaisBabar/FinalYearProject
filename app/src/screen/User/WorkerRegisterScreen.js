@@ -18,11 +18,7 @@ import {
   import CheckboxList from './../../components/checkbox/checkList';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
-// import DropDownPicker from 'react-native-dropdown-picker';
-// import LoadingIndicator from '../../components/LoadingIndicator';
 import colors from '../../styles/colors';
-import { connect } from 'react-redux';
-import { signup } from '../../redux/actions/user';
 import {citydata,isl_data,lahore_data,karachi_data,quetta_data,multan_data} from './../../assets/strings'
 
 
@@ -346,8 +342,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-const mapStateToProps = ({ user: { token, loading } }) => ({ token, loading });
-
-const mapActionToProps = { signup };
-
-export default connect(mapStateToProps, mapActionToProps)(WorkerRegisterScreen);
+export default WorkerRegisterScreen;

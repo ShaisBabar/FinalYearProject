@@ -11,10 +11,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 
 import colors from '../../styles/colors';
-import LoadingIndicator from '../../components/LoadingIndicator';
-
-import { connect } from 'react-redux';
-import { login } from '../../redux/actions/user';
 
 function WorkerLoginScreen({ navigation: { navigate }, token, loading, login }) {
 	const [email, setEmail] = useState('');
@@ -198,8 +194,5 @@ const styles = StyleSheet.create({
 	},
 });
 
-const mapStateToProps = ({ user: { token, loading } }) => ({ token, loading });
 
-const mapActionToProps = { login };
-
-export default connect(mapStateToProps, mapActionToProps)(WorkerLoginScreen);
+export default WorkerLoginScreen;

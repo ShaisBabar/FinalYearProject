@@ -17,7 +17,6 @@ import colors from '../../styles/colors';
 function ProfileScreen({navigation: { navigate }}) 
 {
 	const user = global.user;
-	console.log(global.user)
 	const [name, setName] = useState(user?.name || '');
 	const [email, setEmail] = useState(user?.email);
 	const [phone, setPhone] = useState(user?.phoneno);
@@ -60,8 +59,6 @@ function ProfileScreen({navigation: { navigate }})
 							value={email}
 							editable={false}
 						/>
-						{user.show_phone==true && 
-						<>
 						<Text style={styles.text}>Phone no.</Text>
 						<TextInput
 							style={styles.textInput}
@@ -73,10 +70,6 @@ function ProfileScreen({navigation: { navigate }})
 							value={phone}
 							editable={false}
 						/>
-						</>
-
-						}
-						
 						<Text style={styles.text}>City</Text>
 						<TextInput
 							style={styles.textInput}
@@ -95,9 +88,7 @@ function ProfileScreen({navigation: { navigate }})
 							value={area}
 							editable={false}
 						/>
-						{user.show_address==true &&
-                           <>
-						   <Text style={styles.text}>Street Address</Text>
+						<Text style={styles.text}>Street Address</Text>
 						<TextInput
 							style={styles.textInput}
 							placeholder={'Enter Address'}
@@ -106,9 +97,6 @@ function ProfileScreen({navigation: { navigate }})
 							value={address}
 							editable={false}
 						/>	
-						   </>
-						}
-						
 						<View style={styles.bottom}></View>
 		</ScrollView>
 		</View>

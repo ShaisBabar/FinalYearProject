@@ -1,23 +1,18 @@
 import 'react-native-gesture-handler';
 import React, { Component } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
-
 import colors from '../styles/colors';
-
 import HomeScreen from '../screen/User/HomeScreen';
 import PostServiceScreen from '../screen/User/PostServiceScreen';
 import ProfileScreen from '../screen/User/ProfileScreen';
-import AppointmentScreen from '../screen/User/AppointmentScreen';
-import AppointmentDetailScreen from '../screen/User/AppoinmentDetailScreen';
 import ExploreScreen from '../screen/User/ExploreScreen'
 import AddJobScreen from '../screen/User/Addjob';
 import chatScreen from '../screen/chat/chatScreen';
 import ConversationScreen from '../screen/chat/conversations';
 import WelcomeScreen from '../screen/User/WelcomeScreen';
 import UserSettings from '../screen/User/UserSettings';
-import EditPasswordScreen from '../screen/User/EditPasswordScreen';
+import UpdatePasswordScreen from '../screen/User/UpdatePasswordScreen';
 import ReviewScreen from './../screen/User/ReviewScreen';
 import UserActiveJobs from '../screen/User/UserActiveJobs';
 import UserCompletedJobs from '../screen/User/UserCompletedJobs';
@@ -26,6 +21,9 @@ import LogoutScreen from '../screen/User/LogoutScreen';
 import ContactusScreen from '../screen/User/ContactusScreen';
 import FAQScreen from './../screen/User/FAQScreen';
 import EditProfileScreen from './../screen/User/EditProfileScreen';
+import ApplicationsScreen from './../screen/User/ApplicationsScreen';
+import WorkerProfileScreenU from './../screen/User/WorkerProfileScreenU';
+import UpdateJobDetailsScreen from './../screen/User/UpdateJobDetailsScreen';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -79,14 +77,6 @@ export default class UserStack extends Component {
 				}}
 			/>
 			<Stack.Screen
-				name="Edit Password"
-				component={EditPasswordScreen}
-				options={{
-					headerStyle: { backgroundColor: colors.red },
-					headerTintColor: 'white',
-				}}
-			/>
-			<Stack.Screen
 				name="Contact"
 				component={ContactusScreen}
 				options={{
@@ -102,6 +92,14 @@ export default class UserStack extends Component {
 					headerTintColor: 'white',
 				}}
 			/>
+			<Stack.Screen
+				name="UpdatePassword"
+				component={UpdatePasswordScreen}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
 		</Stack.Navigator>
 		);
 
@@ -110,7 +108,7 @@ export default class UserStack extends Component {
 	createAppointmentStack = () => {
         return (
 		<Stack.Navigator>
-			<Stack.Screen
+			{/* <Stack.Screen
 				name="Appointment"
 				component={AppointmentScreen}
 				options={{
@@ -126,7 +124,7 @@ export default class UserStack extends Component {
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',
 				}}
-			/>
+			/> */}
 			<Stack.Screen
 				name="UserActive"
 				component={UserActiveJobs}
@@ -138,6 +136,22 @@ export default class UserStack extends Component {
 			<Stack.Screen
 				name="UserComplete"
 				component={UserCompletedJobs}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
+			<Stack.Screen
+				name="Applications"
+				component={ApplicationsScreen}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
+			<Stack.Screen
+				name="WorkerProfile"
+				component={WorkerProfileScreenU}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',
@@ -160,8 +174,8 @@ export default class UserStack extends Component {
 				}}
 			/>
 			<Stack.Screen
-				name="Post Details"
-				component={AddJobScreen}
+				name="UpdateDetails"
+				component={UpdateJobDetailsScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',

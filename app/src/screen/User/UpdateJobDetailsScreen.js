@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+	Image,
 	Text,
 	TextInput,
 	View,
@@ -8,6 +9,7 @@ import {
 	ScrollView,
 	Alert
 } from 'react-native';
+import ImagePicker from 'react-native-image-picker';
 import LinearGradient from 'react-native-linear-gradient';
 import { Root, Popup } from 'popup-ui';
 import CheckBox from '@react-native-community/checkbox';
@@ -16,40 +18,44 @@ import colors from '../../styles/colors';
 import {
 	Dropdown,
   } from 'sharingan-rn-modal-dropdown';
-import {citydata,isl_data,lahore_data,karachi_data,quetta_data,multan_data} from './../../assets/strings'
+import {services_data} from '../../assets/strings';
+import {citydata,isl_data,lahore_data,karachi_data,quetta_data,multan_data} from '../../assets/strings'
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 function PostServiceScreen(props) {
-	const [price, setPrice] = React.useState('');
-	const [description, setDescription] = React.useState('No description added');
-	const [city, setCity] = useState(global.user.city);
-	const [address, setAddress] = useState(global.user.street_address);
-	const [service_, setservice] = React.useState(props.route.params.service);
+    const job = props.route.params.job;
+
+	const [price, setPrice] = React.useState(job.max_payment);
+	const [description, setDescription] = React.useState(job.description);
+	const [city, setCity] = useState(job.city);
+	const [address, setAddress] = useState(job.street_address);
+	const [service_, setservice] = React.useState(job.categories[0].name);
 	const data = citydata;
 	const [toggle, setToggleCheckBox] = React.useState(true);
-	const [area, setArea] = useState(global.user.area);
+	const [area, setArea] = useState(job.area);
 	const [area_city, setAreaCity] = useState([ {
         value: global.user.area,
         label: global.user.area,
       },]);
 	const [starting_time, setStartTime] = useState('');
-	const [expected_time, setExpectedTime] = useState('');
-	const [date, setDate] = useState(new Date());
+	const [expected_time, setExpectedTime] = useState(job.expected_time);
+	const [date, setDate] = useState(job.dateCreated || new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [timeshow, setTimeShow] = useState(false);
   useEffect(() => {
-	setAreaforCityFunc(global.user.city);
+      setservice(job.categories[0].name);
+      console.log(job.categories[0].name);
+	setAreaforCityFunc(job.city);
 	return () => {};
 }, []);
 useEffect(() => {
-	setArea(global.user.area)
+	setArea(job.area)
+    //setStartTime('Date:'+date?.toLocaleDateString()+' Time:'+date?.toLocaleTimeString())
+    console.log(job.max_payment);
+    console.log(price)
 	return () => {};
 }, []);
-  const ChangeArea = (text) =>{
-	  setArea(text)
-	  console.log(area)
-  }
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === 'ios');
@@ -97,9 +103,37 @@ useEffect(() => {
 		else if(city=='Quetta'){
 			setAreaCity(quetta_data);
 		}
-		setArea(global.user.area)
+		setArea('Add Area')
 		
 	}
+
+    useEffect(() => {
+        console.log(services_data)
+
+	}, []);
+	const selectFile = () => {
+		var options = {
+			title: 'Select Image',
+			storageOptions: {
+				skipBackup: true,
+				path: 'images',
+			},
+		};
+
+		ImagePicker.showImagePicker(options, (res) => {
+			//console.log('Response = ', res);
+
+			if (res.didCancel) {
+				//console.log('User cancelled image picker');
+			} else if (res.error) {
+				//console.log('ImagePicker Error: ', res.error);
+			} else {
+				setApiMage({ type: res.type, data: res.data });
+				const uri = `data:${res.type};base64,${res.data}`;
+				setImagePicked(uri);
+			}
+		});
+	};
 
 	const AddNewPost = () =>{
 
@@ -166,20 +200,18 @@ useEffect(() => {
 	return (
 		<Root>
             <View>
-				<Text style={styles.heading}>Get Service</Text>
+				<Text style={styles.heading}>Update Service</Text>
 			</View>
 			<View style={styles.container}>
 				<ScrollView>
             <Text style={styles.text}>Service</Text>
 			<View style={styles.citycontainer}>
-				
-				<TextInput
-					style={styles.textInput}
-					placeholder={'e.g. Enter job'}
-					maxLength={50}
-					onChangeText={(text) => setTitle(text)}
+				<Dropdown
+				    placeholder={'Select Service'}
+					data={services_data}
+					enableSearch
 					value={service_}
-                    editable={false}
+					onChange={setservice}
 				/>
 				</View>
 				<Text style={styles.text}>Relavent Details</Text>
@@ -190,7 +222,7 @@ useEffect(() => {
 					onChangeText={(text) => setDescription(text)}
 					value={description}
 				/>
-				<Text style={styles.text}>Select Start Date/Time</Text>
+				<Text style={styles.text}>Start Date/Time</Text>
 				<TouchableOpacity
 					style={[
 						styles.textInput,
@@ -255,18 +287,11 @@ useEffect(() => {
 				<TextInput
 					style={styles.textInput}
 					placeholder={'e.g. 150'}
-					keyboardType="numeric"
-					maxLength={5}
-					onChangeText={(text) => setPrice(text)}
-					value={price}
+					// keyboardType="numeric"
+					// onChangeText={(text) => setPrice(text)}
+					value={job.max_payment}
 				/>
-				<CheckBox
-                 value={toggle}
-				 onValueChange={(newValue) => setToggleCheckBox(newValue)}
-				 />
-				 <Text style={styles.text}>Same Address as current address</Text>
-				 {!toggle &&
-				    <>
+			
 					<Text style={styles.text}>Select City</Text>
 				<View style={styles.citycontainer}>
 				<Dropdown
@@ -284,9 +309,7 @@ useEffect(() => {
 					data={area_city}
 					enableSearch
 					value={area}
-					onChange={(text)=>{
-						ChangeArea(text);
-						}}
+					onChange={setArea}
 				/>
 				<Text style={styles.text}>Enter Street Address</Text>
 				<TextInput
@@ -297,11 +320,7 @@ useEffect(() => {
 					value={address}
 				/>
 				</View>
-					</>
-
-				 }
-				
-				
+			
 				<LinearGradient
 					colors={[colors.red, colors.red]}
 					style={[styles.button]}
@@ -311,7 +330,7 @@ useEffect(() => {
 							AddNewPost();
 						}}
 					>
-						<Text style={styles.textBtn}>Post Request</Text>
+						<Text style={styles.textBtn}>Update Post</Text>
 					</TouchableOpacity>
 				</LinearGradient>
 				</ScrollView>

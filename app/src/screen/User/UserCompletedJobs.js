@@ -1,10 +1,28 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, ActivityIndicator,Image,StyleSheet,Dimensions,TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator,Image,StyleSheet,Dimensions,TouchableOpacity,Alert } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
 import colors from '../../styles/colors';
 const { width, height } = Dimensions.get('window');
+//import {images} from './../../assets/strings';
 
-class UserCompletedJobs extends Component {
+const images_name = [
+  'electrician.png',
+  'plumbing.png',
+  'carpenter.png',
+  'cooking.png',
+  'laundary.png',
+  'gardening.png'
+];
+
+const images = [
+  require(`./../../assets/categories/electrician.png`),
+  require(`./../../assets/categories/plumbing.png`),
+  require(`./../../assets/categories/carpenter.png`),
+  require(`./../../assets/categories/cooking.png`),
+  require(`./../../assets/categories/laundary.png`),
+  require(`./../../assets/categories/gardening.png`)
+];
+class UserActiveJobs extends Component {
   constructor(props) {
     super(props);
 
@@ -18,41 +36,65 @@ class UserCompletedJobs extends Component {
   }
 
   componentDidMount() {
-    fetch('http://192.168.0.110:5000/jobs/jobsbyusercompleted/'+global.user._id)
-		.then((response) => response.json())
-		.then((json) => {
-			console.log(json)
-			if (json.success==true) {
-			}
-			else{
-				Alert.alert(
-					"Error Loading Jobs",
-					"Try again.",
-					[
-					  {
-						text: "Cancel",
-						onPress: () => console.log("Cancel Pressed"),
-						style: "cancel"
-					  },
-					  { text: "OK", onPress: () => console.log("OK Pressed") }
-					]
-				  );
-			}
-		})
-		.catch((error) => Alert.alert(
-			"Error occured",
-			"Try again later.",
-			[
-			  {
-				text: "Cancel",
-				onPress: () => console.log("Cancel Pressed"),
-				style: "cancel"
-			  },
-			  { text: "OK", onPress: () => console.log("OK Pressed") }
-			]
-		  )
-		  );
-    //this.makeRemoteRequest();
+      this.setState({ loading: true });
+      fetch('http://192.168.0.110:5000/jobs/jobsbyuseractive/'+global.user._id)
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.success==true) {
+          json.result.forEach(element => {
+            element.categories.forEach(el => {
+              console.log(el.image);
+              images_name.forEach(i => {
+                console.log(i);
+                if(el.image==i){
+                  console.log(images_name.indexOf(i))
+                  el.image = images[images_name.indexOf(i)];
+                }
+              });
+            
+          });
+          });
+
+          this.setState({
+            data: json.result,
+            error: json.error || null,
+            loading: false,
+          });
+          this.arrayholder = json.result;
+          console.log('jjjjj')
+          console.log(this.state.data)
+        }
+        else{
+          Alert.alert(
+            "Error Loading Jobs",
+            "Try again.",
+            [
+              {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel"
+              },
+              { text: "OK", onPress: () => console.log("OK Pressed") }
+            ]
+            );
+        }
+      })
+      .catch((error) => Alert.alert(
+        "Error occured"+error,
+        "Try again later.",
+        [
+          {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+          },
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ]
+        )
+        );
+      //this.makeRemoteRequest();
+    
+  
   }
 
   makeRemoteRequest = () => {
@@ -95,12 +137,15 @@ class UserCompletedJobs extends Component {
       value: text,
     });
 
-    const newData = this.arrayholder.filter(item => {
-      const itemData = `${item.name.title.toUpperCase()} ${item.name.first.toUpperCase()} ${item.name.last.toUpperCase()}`;
-      const textData = text.toUpperCase();
 
-      return itemData.indexOf(textData) > -1;
+    const newData = this.arrayholder.filter(item => {
+      // const itemData = `${item._id} ${item.categories[0].name.toUpperCase()}`;
+      // const textData = text.toUpperCase();
+      console.log(item._id,text)
+      return `${item._id}`.includes(text) || `${item.categories[0].name}`.includes(text);
     });
+    console.log(newData);
+
     this.setState({
       data: newData,
     });
@@ -109,7 +154,7 @@ class UserCompletedJobs extends Component {
   renderHeader = () => {
     return (
       <SearchBar
-        placeholder="Search..."
+        placeholder="Search by job id or category..."
         lightTheme
         round
         onChangeText={text => this.searchFilterFunction(text)}
@@ -129,34 +174,39 @@ class UserCompletedJobs extends Component {
     }
     return (
       <View style={{ flex: 1 }}>
-        <FlatList
+        {this.state.data && this.state.data.length>0 &&
+          <FlatList
           data={this.state.data}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Chat Details')}}>
             <View style={styles.eachMsg}>
-            <Image source={{ uri: item.picture.thumbnail}} style={styles.userPic} />
+            <Image source={item.categories[0].image} style={styles.userPic} />
             <View>
-              <Text style={styles.msgTxt}>{item.name.first}</Text>
+              <Text style={styles.msgTxt}>Job Id: {item._id}</Text>
+              <Text style={styles.msgTxt}>Date: {item.dateCreated}</Text>
+        <TouchableOpacity
+					style={[
+						styles.button,
+						{
+							backgroundColor: colors.light,
+							borderColor: colors.red,
+							borderWidth: 1,
+						},
+					]}
+					onPress={() => this.props.navigation.navigate('JobDetails',{job:item})}
+				>
+					<Text style={styles.textBtnSignUp}>View Details</Text>
+				</TouchableOpacity>
             </View>
            
-          </View>
-          </TouchableOpacity>
-            //   {
-            //     <Image source={{ uri: item.image}} style={styles.userPic} />
-            //     <Text>hhhhh</Text>
-            //   }
-            // <ListItem
-            //   leftAvatar={{ source: { uri: item.picture.thumbnail } }}
-            //   title={`${item.name.first} ${item.name.last}`}
-            //   subtitle='kkkkkkk'
-            // />
-            // <Image source:{{ uri: item.picture.thumbnail }}/>
-           
+          </View>     
           )}
           keyExtractor={item => item.email}
           ItemSeparatorComponent={this.renderSeparator}
-          //ListHeaderComponent={this.renderHeader}
+          ListHeaderComponent={this.renderHeader}
         />
+
+        }
+        
       </View>
     );
   }
@@ -305,12 +355,17 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   userPic: {
-    height: 40,
-    width: 40,
+    height: 70,
+    width: 70,
     margin: 5,
-    borderRadius: 20,
+    borderRadius: 50,
     backgroundColor: '#f8f8f8',
   },
+  textBtnSignUp: {
+		color: colors.red,
+		fontSize: 18,
+		textTransform: 'uppercase',
+	},
   msgBlock: {
     width: 220,
     borderRadius: 5,
@@ -347,4 +402,4 @@ const styles = StyleSheet.create({
   },
 }); 
 
-export default UserCompletedJobs;
+export default UserActiveJobs;

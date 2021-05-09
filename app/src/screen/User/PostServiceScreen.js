@@ -26,11 +26,8 @@ import {citydata,isl_data,lahore_data,karachi_data,quetta_data,multan_data} from
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 function PostServiceScreen(props) {
-	const [apiMage, setApiMage] = useState({});
-	const [imagePicked, setImagePicked] = useState();
-	const [title, setTitle] = React.useState('');
 	const [price, setPrice] = React.useState('');
-	const [description, setDescription] = React.useState('');
+	const [description, setDescription] = React.useState('No description added');
 	const [city, setCity] = useState(global.user.city);
 	const [address, setAddress] = useState(global.user.street_address);
 	const [service_, setservice] = React.useState('Select Service');
@@ -43,12 +40,16 @@ function PostServiceScreen(props) {
       },]);
 	const [starting_time, setStartTime] = useState('');
 	const [expected_time, setExpectedTime] = useState('');
-	const [date, setDate] = useState(new Date(1598051730000));
+	const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [timeshow, setTimeShow] = useState(false);
   useEffect(() => {
 	setAreaforCityFunc(global.user.city);
+	return () => {};
+}, []);
+useEffect(() => {
+	setArea(global.user.area)
 	return () => {};
 }, []);
   const onChange = (event, selectedDate) => {

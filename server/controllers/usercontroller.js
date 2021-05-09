@@ -73,6 +73,34 @@ exports.edituser = (req, res) =>{
 });
 }
 
+//router.put('/showphone/:id', showphone);
+exports.showphone = (req, res) =>{
+    User.findOneAndUpdate({_id:req.params._id},{show_phone:!show_phone},function(error, results) {
+        if (error) {
+            console.log('Updating User Failed ',error);
+            res.json({success:false});
+        }
+        else{
+            console.log('Updated User Details');
+            res.json({success:true});
+        }   
+});
+}
+
+//router.put('/showaddress/:id', showaddress);
+exports.showaddress = (req, res) =>{
+    User.findOneAndUpdate({_id:req.params.id},{show_address:!this.show_address},function(error, results) {
+        if (error) {
+            console.log('Updating User Failed ',error);
+            res.json({success:false});
+        }
+        else{
+            console.log('Updated User Details');
+            res.json({success:true});
+        }   
+});
+}
+
 //router.delete('/removeuser', removeuser);
 exports.removeuser = (req, res) => {
     User.deleteOne({_id:req.params.id }, function(error, results) {

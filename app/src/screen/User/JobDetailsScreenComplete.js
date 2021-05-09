@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState, useEffect } from 'react';
 import {
 	View,
@@ -10,14 +9,15 @@ import {
 	TouchableOpacity,
 	Alert,
 } from 'react-native';
-import * as Animatable from 'react-native-animatable';
 import GradientHeader from 'react-native-gradient-header';
-import colors from '../../styles/colors';
+import LinearGradient from 'react-native-linear-gradient';
+import * as Animatable from 'react-native-animatable';
 
-function ProfileScreen({navigation: { navigate }}) 
+import colors from '../../styles/colors';
+function JobDetailScreen(props) 
 {
+	const job = props.route.params.job;
 	const user = global.user;
-	console.log(global.user)
 	const [name, setName] = useState(user?.name || '');
 	const [email, setEmail] = useState(user?.email);
 	const [phone, setPhone] = useState(user?.phoneno);
@@ -29,8 +29,8 @@ function ProfileScreen({navigation: { navigate }})
 			<View style={styles.headerScreen}>
 				<Animatable.View animation="slideInDown">
 					 				<GradientHeader
-						title={`Your Profile`}
-						subtitle="This is your public profile which workers can view."
+						title={`Job Details`}
+						subtitle=""
 						gradientColors={[colors.red, colors.red]}
 						imageSource={{
 							uri: '../../assets/images/user.png'
@@ -40,16 +40,16 @@ function ProfileScreen({navigation: { navigate }})
 			</View>
 			<View style={styles.flatContainer}>
 			<ScrollView style={styles.container}>
- 						<Text style={styles.text}>Full Name</Text>
+ 						<Text style={styles.text}>Job ID</Text>
 						<TextInput
 							style={styles.textInput}
 							placeholder={'Enter Full Name '}
 							maxLength={50}
 							onChangeText={(text) => setName(text)}
-							value={name}
+							value={job._id}
 							editable={false}
 						/>
-						<Text style={styles.text}>Email</Text>
+						<Text style={styles.text}>Category</Text>
 						<TextInput
 							style={styles.textInput}
 							autoCapitalize="none"
@@ -57,57 +57,70 @@ function ProfileScreen({navigation: { navigate }})
 							placeholder={'Enter Email'}
 							maxLength={50}
 							onChangeText={(text) => setEmail(text)}
-							value={email}
+							value={job.categories[0].name}
 							editable={false}
 						/>
-						{user.show_phone==true && 
-						<>
-						<Text style={styles.text}>Phone no.</Text>
+						<Text style={styles.text}>Date Created</Text>
 						<TextInput
 							style={styles.textInput}
 							placeholder={'Enter Phone no.'}
-							keyboardType={'phone-pad'}
-							maxLength={13}
-							minLength={11}
 							onChangeText={(text) => setPhone(text)}
-							value={phone}
+							value={job.dateCreated}
 							editable={false}
 						/>
-						</>
-
-						}
-						
-						<Text style={styles.text}>City</Text>
+						<Text style={styles.text}>Description</Text>
 						<TextInput
 							style={styles.textInput}
 							placeholder={'Enter Full Name '}
-							maxLength={50}
 							onChangeText={(text) => setCity(text)}
-							value={city}
+							value={job.description}
 							editable={false}
 						/>
-						<Text style={styles.text}>Area</Text>
+						<Text style={styles.text}>User Address</Text>
 						<TextInput
 							style={styles.textInput}
 							placeholder={'Enter Full Name '}
-							maxLength={50}
 							onChangeText={(text) => setArea(text)}
-							value={area}
+							value={job.street_address+", "+job.area+", "+job.city}
 							editable={false}
 						/>
-						{user.show_address==true &&
-                           <>
-						   <Text style={styles.text}>Street Address</Text>
-						<TextInput
-							style={styles.textInput}
-							placeholder={'Enter Address'}
-							maxLength={20}
-							onChangeText={(text) => setAddress(text)}
-							value={address}
-							editable={false}
-						/>	
-						   </>
-						}
+						<LinearGradient
+					colors={[colors.red, colors.red]}
+					style={[styles.button]}
+				>
+					<TouchableOpacity
+						style={{ width: '100%', alignItems: 'center' }}
+						onPress={() => navigate('Login')}
+					>
+						<Text style={styles.textBtn}>View Applications</Text>
+					</TouchableOpacity>
+				</LinearGradient>
+				<TouchableOpacity
+					style={[
+						styles.button,
+						{
+							backgroundColor: colors.light,
+							borderColor: colors.red,
+							borderWidth: 1,
+						},
+					]}
+					onPress={() => navigate('WorkerLogin')}
+				>
+					<Text style={styles.textBtnSignUp}>Update Details</Text>
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={[
+						styles.button,
+						{
+							backgroundColor: colors.light,
+							borderColor: colors.red,
+							borderWidth: 1,
+						},
+					]}
+					onPress={() => navigate('WorkerLogin')}
+				>
+					<Text style={styles.textBtnSignUp}>Delete Post</Text>
+				</TouchableOpacity>
 						
 						<View style={styles.bottom}></View>
 		</ScrollView>
@@ -375,6 +388,16 @@ const styles = StyleSheet.create({
 		elevation: 5,
 		backgroundColor: colors.light,
 	},
+	textBtn: {
+		color: colors.white,
+		fontSize: 18,
+		textTransform: 'uppercase',
+	},
+	textBtnSignUp: {
+		color: colors.red,
+		fontSize: 18,
+		textTransform: 'uppercase',
+	},
 });
 
-export default ProfileScreen;
+export default JobDetailScreen;

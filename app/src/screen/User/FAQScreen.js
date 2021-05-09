@@ -1,316 +1,374 @@
-import React, { Component } from 'react';
-import { View, Text, FlatList, ActivityIndicator,Image,StyleSheet,Dimensions,TouchableOpacity } from 'react-native';
-import { ListItem, SearchBar } from 'react-native-elements';
+import * as React from 'react';
+import { List } from 'react-native-paper';
+import {
+	View,
+	StyleSheet,
+	Text,
+	TextInput,
+} from 'react-native';
+import * as Animatable from 'react-native-animatable';
+import GradientHeader from 'react-native-gradient-header';
 import colors from '../../styles/colors';
-const { width, height } = Dimensions.get('window');
 
-class ConversationScreen extends Component {
-  constructor(props) {
-    super(props);
+const FAQScreen = () => {
 
-    this.state = {
-      loading: false,
-      data: [],
-      error: null,
-    };
+  return (
+    <View style={styles.screen}>
+        <View style={styles.headerScreen}>
+				<Animatable.View animation="slideInDown">
+					 				<GradientHeader
+						title={`FAQs`}
+						subtitle=""
+						gradientColors={[colors.red, colors.red]}
+						imageSource={{
+							uri: '../../assets/images/user.png'
+						}}
+					/>
+				</Animatable.View>
+			</View>
+    <List.Section title="If you're still confused, feel free to contact us!" style={{marginTop:180}}>
+      <List.Accordion
+        title="Q1"
+        left={props => <List.Icon {...props} icon="frequently-asked-questions" />}
+        
+         >
+        <List.Item title="First item" />
+        {/* <List.Item title="Second item" /> */}
+      </List.Accordion>
+      <List.Accordion
+        title="Q2"
+        left={props => <List.Icon {...props} icon="frequently-asked-questions" />}
+        
+         >
+        <List.Item title="First item" />
+        {/* <List.Item title="Second item" /> */}
+      </List.Accordion>
+      <List.Accordion
+        title="Q3"
+        left={props => <List.Icon {...props} icon="frequently-asked-questions" />}
+        
+         >
+        <List.Item title="First item" />
+        {/* <List.Item title="Second item" /> */}
+      </List.Accordion>
+      <List.Accordion
+        title="Q4"
+        left={props => <List.Icon {...props} icon="frequently-asked-questions" />}
+        
+         >
+        <List.Item title="First item" />
+        {/* <List.Item title="Second item" /> */}
+      </List.Accordion>
+      <List.Accordion
+        title="Q5"
+        left={props => <List.Icon {...props} icon="frequently-asked-questions" />}
+        
+         >
+        <List.Item title="First item" />
+        {/* <List.Item title="Second item" /> */}
+      </List.Accordion>
+      <List.Accordion
+        title="Q6"
+        left={props => <List.Icon {...props} icon="frequently-asked-questions" />}
+        
+         >
+        <List.Item title="First item" />
+        {/* <List.Item title="Second item" /> */}
+      </List.Accordion>
+      <List.Accordion
+        title="Q7"
+        left={props => <List.Icon {...props} icon="frequently-asked-questions" />}
+        
+         >
+        <List.Item title="First item" />
+        {/* <List.Item title="Second item" /> */}
+      </List.Accordion>
+      <List.Accordion
+        title="Q8"
+        left={props => <List.Icon {...props} icon="frequently-asked-questions" />}
+        
+         >
+        <List.Item title="First item" />
+        {/* <List.Item title="Second item" /> */}
+      </List.Accordion>
+      <List.Accordion
+        title="Q9"
+        left={props => <List.Icon {...props} icon="frequently-asked-questions" />}
+        
+         >
+        <List.Item title="First item" />
+        {/* <List.Item title="Second item" /> */}
+      </List.Accordion>
+      <List.Accordion
+        title="Q10"
+        left={props => <List.Icon {...props} icon="frequently-asked-questions" />}
+        
+         >
+        <List.Item title="First item" />
+        {/* <List.Item title="Second item" /> */}
+      </List.Accordion>
 
-    this.arrayholder = [];
-  }
-
-  componentDidMount() {
-    this.makeRemoteRequest();
-  }
-
-  makeRemoteRequest = () => {
-    const url = `https://randomuser.me/api/?&results=20`;
-    this.setState({ loading: true });
-
-    fetch(url)
-      .then(res => res.json())
-      .then(res => {
-        console.log("kkk",res.results)
-        this.setState({
-          data: res.results,
-          error: res.error || null,
-          loading: false,
-        });
-        this.arrayholder = res.results;
-      })
-      .catch(error => {
-        this.setState({ error, loading: false });
-      });
-
-      console.log(this.state.data)
-  };
-
-  renderSeparator = () => {
-    return (
-      <View
-        style={{
-          height: 1,
-          width: '86%',
-          backgroundColor: 'grey',
-          marginLeft: '14%',
-        }}
-      />
-    );
-  };
-
-  searchFilterFunction = text => {
-    this.setState({
-      value: text,
-    });
-
-    const newData = this.arrayholder.filter(item => {
-      const itemData = `${item.name.title.toUpperCase()} ${item.name.first.toUpperCase()} ${item.name.last.toUpperCase()}`;
-      const textData = text.toUpperCase();
-
-      return itemData.indexOf(textData) > -1;
-    });
-    this.setState({
-      data: newData,
-    });
-  };
-
-  renderHeader = () => {
-    return (
-      <SearchBar
-        placeholder="Search..."
-        lightTheme
-        round
-        onChangeText={text => this.searchFilterFunction(text)}
-        autoCorrect={false}
-        value={this.state.value}
-      />
-    );
-  };
-
-  render() {
-    if (this.state.loading) {
-      return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <ActivityIndicator />
-        </View>
-      );
-    }
-    return (
-      <View style={{ flex: 1 }}>
-        <FlatList
-          data={this.state.data}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Chat Details')}}>
-            <View style={styles.eachMsg}>
-            <Image source={{ uri: item.picture.thumbnail}} style={styles.userPic} />
-            <View>
-              <Text style={styles.msgTxt}>{item.name.first}</Text>
-            </View>
-           
-          </View>
-          </TouchableOpacity>
-            //   {
-            //     <Image source={{ uri: item.image}} style={styles.userPic} />
-            //     <Text>hhhhh</Text>
-            //   }
-            // <ListItem
-            //   leftAvatar={{ source: { uri: item.picture.thumbnail } }}
-            //   title={`${item.name.first} ${item.name.last}`}
-            //   subtitle='kkkkkkk'
-            // />
-            // <Image source:{{ uri: item.picture.thumbnail }}/>
-           
-          )}
-          keyExtractor={item => item.email}
-          ItemSeparatorComponent={this.renderSeparator}
-          ListHeaderComponent={this.renderHeader}
-        />
-      </View>
-    );
-  }
-}
-
+    </List.Section>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-    container:{
-        flex:1
-      },
-      list:{
-        paddingHorizontal: 17,
-        marginTop:40
-      },
-      footer:{
-        flexDirection: 'row',
-        height:60,
-        backgroundColor: '#eeeeee',
-        paddingHorizontal:10,
-        padding:5,
-      },
-      btnSend:{
-        backgroundColor:"#00BFFF",
-        width:40,
-        height:40,
-        borderRadius:360,
-        alignItems:'center',
-        justifyContent:'center',
-      },
-      iconSend:{
-        width:30,
-        height:30,
-        alignSelf:'center',
-      },
-      inputContainer: {
-        borderBottomColor: '#F5FCFF',
-        backgroundColor: '#FFFFFF',
-        borderRadius:30,
-        borderBottomWidth: 1,
-        height:40,
-        flexDirection: 'row',
-        alignItems:'center',
-        flex:1,
-        marginRight:10,
-      },
-      inputs:{
-        height:40,
-        marginLeft:16,
-        borderBottomColor: '#FFFFFF',
-        flex:1,
-      },
-      balloon: {
-        maxWidth: 250,
-        padding: 15,
-        borderRadius: 20,
-      },
-      itemIn: {
-        alignSelf: 'flex-start'
-      },
-      itemOut: {
-        alignSelf: 'flex-end'
-      },
-      time: {
-        alignSelf: 'flex-end',
-        margin: 15,
-        fontSize:12,
-        color:"#808080",
-      },
-      item: {
-        marginVertical: 14,
-        flex: 1,
-        flexDirection: 'row',
-        backgroundColor:"#eeeeee",
-        borderRadius:300,
-        padding:5,
-      },
-    textInput: {
+	heading:{
+       color:colors.red,
+	   fontSize:40,
+	   fontWeight:'bold',
+	   textAlign:'center',
+	   marginTop:15
+	},
+	screen: {
+		flex: 1,
+		backgroundColor: colors.white,
+	},
+	headerScreen: {
+		flex: 1,
+	},
+	flatContainer: {
+		flex: 3,
+		zIndex: -1,
+		paddingHorizontal: 20,
+	},
+	flatScreen: {
+		flex: 1,
+		paddingTop: 10,
+	},
+	textBtn: {
+		color: colors.white,
+		fontSize: 18,
+		textTransform: 'uppercase',
+	},
+	button: {
+		backgroundColor: colors.red,
+		borderRadius: 25,
+		justifyContent: 'center',
+		alignItems: 'center',
+		padding: 10,
+		elevation: 5,
+		marginBottom: 10,
+		marginHorizontal: 90,
+	},
+	overlay: {
+		opacity: 1,
+		backgroundColor: '#000000'
+	  },
+	  img: {
+		width:60,
+		height: 60,
+		marginTop:10,
+		//justifyContent: 'center',
+		//alignContent: 'center',
+		position: 'absolute'
+	  },
+	  midstyling:{
+		top: 20,
+	  },
+	  firsttwo: {
+		flexDirection: 'row',
+	   // marginTop:10
+	  },
+	  container: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+		//marginTop: 160
+	  },
+	  loginBtn:{
+		width:"40%",
+		backgroundColor: colors.red,
+		borderRadius:30,
+		height:100,
+		flexDirection: 'row',
+		alignItems:"center",
+		justifyContent:"center",
+		color:"white",
+		fontSize:50,
+		marginLeft: 20,
+		marginRight:2,
+		marginBottom:20
+	  },
+	  loginText:{
+		color:"white",
+		fontSize:15,
+		marginTop:70,
+		marginBottom:10,
+		borderRadius:100
+		
+	  },
+	  avatar: {
+		width:60,
+		height:60,
+		borderRadius: 63,
+		borderWidth: 4,
+		borderColor: "white",
+		marginBottom:10,
+		alignSelf:'center',
+		marginBottom:-100,
+	   marginTop:-390,
+		marginLeft: 320
+	  },
+	  centeredView: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		marginTop: 22
+	  },
+	  modalView: {
+		margin: 20,
+		backgroundColor: "white",
+		borderRadius: 20,
+		padding: 35,
+		alignItems: "center",
+		shadowColor: "#000",
+		shadowOffset: {
+		  width: 0,
+		  height: 2
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
+		elevation: 5
+	  },
+	  openButton: {
+		backgroundColor: "#F194FF",
+		borderRadius: 20,
+		padding: 10,
+		elevation: 2
+	  },
+	  textStyle: {
+		color: "white",
+		fontWeight: "bold",
+		textAlign: "center"
+	  },
+	  modalText: {
+		marginBottom: 15,
+		textAlign: "center"
+	  },
+	  	screen: {
+		flex: 1,
+		backgroundColor: colors.white,
+	},
+	flatScreen: {
+		flex: 1,
+		paddingTop: 10,
+	},
+	textBtn: {
+		color: colors.white,
+		fontSize: 18,
+		textTransform: 'uppercase',
+	},
+	button: {
+		backgroundColor: colors.red,
+		borderRadius: 25,
+		justifyContent: 'center',
+		alignItems: 'center',
+		padding: 10,
+		elevation: 5,
+		marginVertical: 20,
+		marginHorizontal: 90,
+	},
+	container: {
+		flex: 1,
+		alignContent: 'center',
+		backgroundColor: colors.white,
+	},
+	imageContainer: {
+		alignItems: 'center',
+		marginHorizontal: 100,
+	},
+	profileImage: {
+		height: 160,
+		width: 160,
+		borderRadius: 80,
+		borderColor: colors.red,
+		borderWidth: 3,
+		marginVertical: 40,
+	},
+	CoverImage: {
+		position: 'absolute',
+		right: 0,
+		top: 0,
+		height: 250,
+		width: '100%',
+		borderBottomRightRadius: 50,
+	},
+	profileData: {
+		paddingHorizontal: 15,
+	},
+	row: {
+		flexDirection: 'row',
+		alignContent: 'center',
+		justifyContent: 'space-between',
+	},
+	rowInput: {
+		width: 180,
+	},
+	text: {
+		color: colors.black,
+		fontSize: 14,
+		paddingHorizontal: 20,
+		marginBottom:10,
+		marginTop:15
+	},
+	textInput: {
 		height: 40,
 		fontSize: 14,
-		borderRadius: 2,
-		elevation: 2,
+		borderRadius: 25,
+		elevation: 5,
 		backgroundColor: colors.light,
 		paddingHorizontal: 20,
 		paddingVertical: 5,
 		marginHorizontal: 10,
 		marginTop: 5,
-		marginBottom: 20,
+		marginBottom: 15,
 	},
+	timeRow: {
+		flexDirection: 'row',
+		height: 40,
+		fontSize: 14,
+		borderRadius: 25,
+		elevation: 5,
+		backgroundColor: colors.light,
+		paddingHorizontal: 15,
+		marginHorizontal: 10,
+		marginTop: 5,
+		marginBottom: 15,
 
-  image: {
-    width,
-    height,
-  },
-  header: {
-    height: 65,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#075e54',
-  },
-  left: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  right: {
-    flexDirection: 'row',
-  },
-  chatTitle: {
-    color: '#fff',
-    fontWeight: '600',
-    margin: 10,
-    fontSize: 15,
-  },
-  chatImage: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    margin: 5,
-  },
-  input: {
-    flexDirection: 'row',
-    alignSelf: 'flex-end',
-    padding: 10,
-    height: 40,
-    width: width - 20,
-    backgroundColor: '#fff',
-    margin: 10,
-    shadowColor: '#3d3d3d',
-    shadowRadius: 2,
-    shadowOpacity: 0.5,
-    shadowOffset: {
-      height: 1,
-    },
-    borderColor:'#696969',
-    borderWidth:1,
-  },
-  eachMsg: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    margin: 5,
-  },
-  rightMsg: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    margin: 5,
-    alignSelf: 'flex-end',
-  },
-  userPic: {
-    height: 40,
-    width: 40,
-    margin: 5,
-    borderRadius: 20,
-    backgroundColor: '#f8f8f8',
-  },
-  msgBlock: {
-    width: 220,
-    borderRadius: 5,
-    backgroundColor: '#ffffff',
-    padding: 10,
-    shadowColor: '#3d3d3d',
-    shadowRadius: 2,
-    shadowOpacity: 0.5,
-    shadowOffset: {
-      height: 1,
-    },
-  },
-  rightBlock: {
-    width: 220,
-    borderRadius: 5,
-    backgroundColor: colors.red,
-    padding: 10,
-    shadowColor: '#3d3d3d',
-    shadowRadius: 2,
-    shadowOpacity: 0.5,
-    shadowOffset: {
-      height: 1,
-    },
-  },
-  msgTxt: {
-    fontSize: 15,
-    color: '#555',
-    fontWeight: '600',
-  },
-  rightTxt: {
-    fontSize: 15,
-    color: '#202020',
-    fontWeight: '600',
-  },
-}); 
+		justifyContent: 'space-between',
+	},
+	getLocation: {
+		fontSize: 14,
+		color: colors.white,
+		backgroundColor: colors.red,
+		justifyContent: 'center',
+		alignItems: 'center',
+		textAlign: 'center',
+	},
+	mapContainer: {
+		// ...StyleSheet.absoluteFillObject,
+		height: 400,
+		width: '100%',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	map: {
+		...StyleSheet.absoluteFillObject,
+		margin: 10,
+		borderRadius: 10,
+	},
+	weekPicker: {
+		paddingVertical: 30,
+		paddingHorizontal: 10,
+		justifyContent: 'space-between',
+	},
+	day: {
+		margin: 5,
+		elevation: 5,
+		backgroundColor: colors.light,
+	},
+});
 
-export default ConversationScreen;
+export default FAQScreen;

@@ -21,8 +21,8 @@ import ProfileScreen from '../screen/User/ProfileScreen';
 // import SpecialistDetailsScreen from '../screen/User/SpecialistDetailsScreen';
 // import SpecialistEditScreen from '../screen/User/SpecialistEditScreen';
 // import SpecialistAddScreen from '../screen/User/SpecialistAddScreen';
-import AppointmentScreen from '../screen/User/AppointmentScreen';
-import AppointmentDetailScreen from '../screen/User/AppoinmentDetailScreen';
+// import AppointmentScreen from '../screen/User/AppointmentScreen';
+// import AppointmentDetailScreen from '../screen/User/AppoinmentDetailScreen';
 // import GalleryScreen from '../screen/User/GalleryScreen';
 import ExploreScreen from '../screen/User/ExploreScreen'
 // import WelcomeScreen from '../screen/User/WelcomeScreen';
@@ -34,7 +34,7 @@ import chatScreen from '../screen/chat/chatScreen';
 import ConversationScreen from '../screen/chat/conversations';
 import WelcomeScreen from '../screen/User/WelcomeScreen';
 import UserSettings from '../screen/User/UserSettings';
-import EditPasswordScreen from '../screen/User/EditPasswordScreen';
+import UpdatePasswordScreen from '../screen/User/UpdatePasswordScreen';
 import ReviewScreen from './../screen/User/ReviewScreen';
 
 const Drawer = createDrawerNavigator();
@@ -81,8 +81,8 @@ export default class WorkerStack extends Component {
 				}}
 			/>
 			<Stack.Screen
-				name="Edit Password"
-				component={EditPasswordScreen}
+				name="UpdatePassword"
+				component={UpdatePasswordScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',
@@ -96,7 +96,7 @@ export default class WorkerStack extends Component {
 	createAppointmentStack = () => {
         return (
 		<Stack.Navigator>
-			<Stack.Screen
+			{/* <Stack.Screen
 				name="Appointment"
 				component={AppointmentScreen}
 				options={{
@@ -112,7 +112,7 @@ export default class WorkerStack extends Component {
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',
 				}}
-			/>
+			/> */}
 			<Stack.Screen
 				name="Post Details"
 				component={AddJobScreen}

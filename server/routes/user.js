@@ -1,10 +1,12 @@
 var express = require('express');
-var {getusers, adduser, edituser, removeuser, loginuser, logoutuser, getuserbyid, getuserbycity } = require('./../controllers/usercontroller')
+var {getusers, adduser, edituser, removeuser, loginuser, logoutuser, getuserbyid, getuserbycity,showaddress,showphone } = require('./../controllers/usercontroller')
 var router = express.Router();
 
 router.get('/getusers', getusers);
 router.post('/adduser', adduser);
 router.put('/edituser', edituser);
+router.put('/showphone/:id', showphone);
+router.put('/showaddress/:id', showaddress);
 router.delete('/removeuser', removeuser);
 router.post('/loginuser', loginuser);
 router.post('/logoutuser', logoutuser);
