@@ -1,23 +1,44 @@
 var Job = require('../model/job');
 var Category = require('../model/category');
 var _ = require('lodash');
+var mongoose = require('mongoose')
 
 //router.get('/jobsbyuser/:id', getJobByUser);
 exports.getJobByUser = (req, res, next) => {
-    Job.find({user_id:req.params.id})
+    Job.find({user_id:req.params.id}).populate('categories').populate('applicants.worker_id')
     .then((result) => {
         res.status(200).json({
-            result
+            result:result,success:true
         });
     })
-    .catch(err => console.log("Error:",err));
+    .catch(err => {console.log("Error:",err)
+    res.status(200).json({
+        error:err,success:false
+    })});
+};
+
+//router.get('/jobsbyuserapplicants/:id/:jobid', getJobByUserApplicants);
+exports.getJobByUserApplicants = (req, res) => {
+    Job.findOne({user_id:req.params.id,_id:req.params.jobid}).populate('categories').populate('applicants.worker_id')
+    .then((result) => {
+        res.status(200).json({
+            result:result,success:true
+        });
+    })
+    .catch(err => {console.log("Error:",err)
+    res.status(200).json({
+        error:err,success:false
+    })});
 };
 
 exports.getJobByUserActive = (req, res) => {
     console.log('hereee')
-    Job.find({user_id:req.params.id,is_completed:false}).populate('categories').populate('applicants')
+    Job.find({user_id:req.params.id,is_completed:false}).populate('categories').populate('applicants.worker_id')
     .then((result) => {
         console.log(result)
+        result.forEach(element => {
+            console.log(element.applicants)
+        });
         res.status(200).json({
             result:result,success:true
         });
@@ -118,13 +139,18 @@ exports.getJobByCategory = (req, res, next) => {
 
 //router.get('/jobs', getJobs);
 exports.getJobs = (req, res) => {
-    Job.find({})
+    Job.find({}).populate('categories').populate('applicants.worker_id').populate('user_id')
     .then((result) => {
         res.status(200).json({
-            result
+            result:result,success:true
         });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+        console.log("Error:",err)
+        res.status(200).json({
+            error:err,success:false
+        });
+        });
 };
 
 //router.delete("/removejob/:id", removeJob);
@@ -189,29 +215,29 @@ exports.editJob = (req, res, next) =>{
 exports.applyJob = (req, res, next) =>{
     Job.findById(req.body.id).exec(function(error, result) {
         if (error) {
-           
-            return next(error);
+            res.status(400).json({success:false});
         }
         result.applicants.push(req.body.application);
         result.save().then(user => console.log(user)).catch((err)=>{throw err;});
         // Respond with valid data
         console.log('added application')
-        res.json(result);
+        res.status(200).json({success:true});
     });
 };
 
 //router.put('/unapplyJob', unapplyJob);
-exports.unapplyJob = (req, res, next) =>{
-    Job.findById(req.params.id)
+exports.unapplyJob = (req, res) =>{
+    console.log("kk",req.body)
+    Job.findById(req.body.id)
     .then((job_) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        var ans = job_.applicants.filter(r=>r._id!=req.params.catid)
+        var ans = job_.applicants.filter(r=>r.worker_id!=req.body.workerid)
         job_.applicants = ans;
         job_.save().then(user => console.log("Deleted application")).catch((err)=>{throw err;});
-        res.json({sucess: true});
-    }, (err) => next(err))
-    .catch((err) => next(err));
+        res.json({success: true});
+    })
+    .catch((err) => res.json({success: false}));
  };
 
 //router.put("/addrating", addRating);
@@ -222,6 +248,21 @@ exports.addRating = (req, res, next) =>{
         }
         console.log('Updated Job Details');
         res.json(results);
+        });
+   
+};
+
+//router.put("/addworker", addWorker);
+exports.addWorker = (req, res) =>{
+    console.log('llll')
+    req.body.workerid = mongoose.Types.ObjectId(req.body.workerid)
+    Job.findOneAndUpdate({_id:req.body.id},{assigned_to:req.body.workerid},function(error, results) {
+        if (error) {
+            console.log(error)
+            res.status(400).json({success: false})
+        }
+        console.log('Job Assigned');
+        res.status(200).json({results:results,success:true});
         });
    
 };

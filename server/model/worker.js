@@ -31,10 +31,6 @@ const workerschema = new Schema(
          type: Date,
          default: Date.now
        },
-       profile_picture:{
-          data: Buffer,
-          contentType: String
-         },
          street_address:{
           type:String,
           required:true,
@@ -57,8 +53,25 @@ const workerschema = new Schema(
          ],
          avg_rating:{
            type:Number,
-           default:0
-         }
+           default:0,
+           required:true
+         },
+         completed_jobs:{
+          type:Number,
+          default:0,
+          required:true
+        },
+         show_address:{
+          type:Boolean,
+          default:true,
+          required:true
+        },
+        show_phone:{
+          type:Boolean,
+          default:true,
+          required:true
+        }
+
          
          
     }

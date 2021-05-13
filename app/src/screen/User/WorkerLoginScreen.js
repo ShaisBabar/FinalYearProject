@@ -6,13 +6,14 @@ import {
 	Image,
 	TouchableOpacity,
 	StyleSheet,
+	Alert
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 
 import colors from '../../styles/colors';
 
-function WorkerLoginScreen({ navigation: { navigate }, token, loading, login }) {
+function WorkerLoginScreen({ navigation: { navigate }}) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
@@ -23,26 +24,68 @@ function WorkerLoginScreen({ navigation: { navigate }, token, loading, login }) 
 	// 	return () => {};
 	// }, [token]);
 
-	const login_user = (email,password) =>{
-		login({ email, password });
-
-		if (token) {
-			navigate('WorkerApp');
-	 	}
-		 else{
-			Alert.alert(
-				"Invalid Login",
-				"Username or password is incorrect",
-				[
-				  {
-					text: "Cancel",
-					onPress: () => console.log("Cancel Pressed"),
-					style: "cancel"
-				  },
-				  { text: "OK", onPress: () => console.log("OK Pressed") }
-				]
-			  );
-		 }
+	const login_worker = () =>{
+		const user = {
+			email,password
+		}
+		console.log(user)
+		fetch('http://192.168.0.110:5000/workers/loginworker', {
+			method: 'POST',
+			headers: {
+			  Accept: 'application/json',
+			  'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(user)
+		})
+		.then((response) => response.json())
+		.then((json) => {
+			console.log(json)
+			if (json.success==true) {
+				global.user = json.user
+				//AsyncStorage.setItem('@Token', json.token);
+				Alert.alert(
+					"Logged in successfully",
+					"Logging in.",
+					[
+					  {
+						text: "Cancel",
+						onPress: () => console.log("Cancel Pressed"),
+						style: "cancel"
+					  },
+					  { text: "OK", onPress: () => console.log("OK Pressed") }
+					]
+				  );
+				navigate('WorkerApp',{user:json.user});
+			}
+			else{
+				Alert.alert(
+					json.error,
+					"Try again.",
+					[
+					  {
+						text: "Cancel",
+						onPress: () => console.log("Cancel Pressed"),
+						style: "cancel"
+					  },
+					  { text: "OK", onPress: () => console.log("OK Pressed") }
+					]
+				  );
+				  navigate('workerLogin');
+			}
+		})
+		.catch((error) => Alert.alert(
+			"Error occured.",
+			"Try again later.",
+			[
+			  {
+				text: "Cancel",
+				onPress: () => console.log("Cancel Pressed"),
+				style: "cancel"
+			  },
+			  { text: "OK", onPress: () => console.log("OK Pressed") }
+			]
+		  ));
+		return;
 	}
 
 	return (
@@ -86,7 +129,7 @@ function WorkerLoginScreen({ navigation: { navigate }, token, loading, login }) 
 				>
 					<TouchableOpacity
 						style={{ width: '100%', alignItems: 'center' }}
-						onPress={() => login({ email, password })}
+						onPress={() => login_worker()}
 					>
 						<Text style={styles.textBtn}>Sign In</Text>
 					</TouchableOpacity>

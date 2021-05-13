@@ -11,7 +11,7 @@ import {
 	FlatList,
 	ToastAndroid,
 } from 'react-native';
-
+import axios  from 'axios';
 import LinearGradient from 'react-native-linear-gradient';
 import ImagePicker from 'react-native-image-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -232,21 +232,21 @@ function BarberAbout({ user, updateUser, loading }) {
 function barberReviews(props) {
 	const [reviews, setReviews] = useState([]);
 
-	useEffect(() => {
-		axios.get('http://localhost:5000/jobs/jobsbyuser/'+AsyncStorage.getItem('@Token')).then((res) => {
-			setReviews(
-				res.data?.map((val) => ({
-					id: val?._id,
-					name: val?.user?.firstName,
-					time: val?.review?.date?.split('T')[0],
-					image: `data:${val?.user?.image?.type};base64,${val?.user?.image?.data}`,
-					text: val?.review?.userReview,
-					rated: Number(val?.review?.stars),
-				})),
-			);
-		});
-		return () => {};
-	}, []);
+	// useEffect(() => {
+	// 	axios.get('http://localhost:5000/jobs/jobsbyuser/'+AsyncStorage.getItem('@Token')).then((res) => {
+	// 		setReviews(
+	// 			res.data?.map((val) => ({
+	// 				id: val?._id,
+	// 				name: val?.user?.firstName,
+	// 				time: val?.review?.date?.split('T')[0],
+	// 				image: `data:${val?.user?.image?.type};base64,${val?.user?.image?.data}`,
+	// 				text: val?.review?.userReview,
+	// 				rated: Number(val?.review?.stars),
+	// 			})),
+	// 		);
+	// 	});
+	// 	return () => {};
+	// }, []);
 	return (
 		<View style={styles.screen}>
 			<FlatList
@@ -268,10 +268,10 @@ function barberReviews(props) {
 	);
 }
 
-function ProfileScreen({ user, updateUser, loading }) {
+function WorkerProfileScreen({ user, updateUser, loading }) {
 	useEffect(() => {
 		if (!user) {
-			getUser();
+			user = global.user
 		}
 		return () => {};
 	}, []);
@@ -435,4 +435,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default ProfileScreen;
+export default WorkerProfileScreen;

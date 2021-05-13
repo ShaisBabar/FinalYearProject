@@ -25,10 +25,10 @@ const images = [
 class ApplicationsScreen extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props.route.params.applicants)
+    console.log("jj",this.props.route.params.applicants)
     this.state = {
       loading: false,
-      data: [],
+      data: this.props.route.params.applicants,
       error: null,
     };
 
@@ -36,33 +36,16 @@ class ApplicationsScreen extends Component {
   }
 
   componentDidMount() {
-      this.setState({ loading: true });
-      fetch('http://192.168.0.110:5000/jobs/jobsbyuseractive/'+global.user._id)
+      fetch('http://192.168.0.110:5000/jobs/jobsbyuserapplicants/'+global.user._id+'/'+this.props.route.params.jobid)
       .then((response) => response.json())
       .then((json) => {
         if (json.success==true) {
-          json.result.forEach(element => {
-            element.categories.forEach(el => {
-              console.log(el.image);
-              images_name.forEach(i => {
-                console.log(i);
-                if(el.image==i){
-                  console.log(images_name.indexOf(i))
-                  el.image = images[images_name.indexOf(i)];
-                }
-              });
-            
-          });
-          });
-
           this.setState({
-            data: json.result,
+            data: json.result.applicants,
             error: json.error || null,
-            loading: false,
           });
-          this.arrayholder = json.result;
-          console.log('jjjjj')
-          console.log(this.state.data)
+          this.arrayholder = json.result.applicants;
+          console.log(json.result.applicants)
         }
         else{
           Alert.alert(
@@ -92,32 +75,11 @@ class ApplicationsScreen extends Component {
         ]
         )
         );
+        console.log('llllll')
       //this.makeRemoteRequest();
     
   
   }
-
-  makeRemoteRequest = () => {
-    const url = `https://randomuser.me/api/?&results=20`;
-    this.setState({ loading: true });
-
-    fetch(url)
-      .then(res => res.json())
-      .then(res => {
-        console.log("kkk",res.results)
-        this.setState({
-          data: res.results,
-          error: res.error || null,
-          loading: false,
-        });
-        this.arrayholder = res.results;
-      })
-      .catch(error => {
-        this.setState({ error, loading: false });
-      });
-
-      console.log(this.state.data)
-  };
 
   renderSeparator = () => {
     return (
@@ -131,7 +93,65 @@ class ApplicationsScreen extends Component {
       />
     );
   };
-
+ 
+  assignjob = (workerid) =>{
+    var data = {id:this.props.route.params.jobid,workerid:workerid}
+    console.log(data)
+    fetch('http://192.168.0.110:5000/jobs/addworker', {
+			method: 'PUT',
+			headers: {
+			  Accept: 'application/json',
+			  'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		})
+    .then((response) => response.json())
+    .then((json) => {
+      if (json.success==true) {
+        Alert.alert(
+          "Worker Assigned.",
+          "Hope this worker is suited to your needs!",
+          [
+            {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+            },
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ]
+          );
+          this.props.navigation.navigate('UserActive')
+      }
+      else{
+        Alert.alert(
+          "Error Assigning Job",
+          "Try again.",
+          [
+            {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+            },
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ]
+          );
+          this.props.navigation.navigate('UserActive')
+      }
+    })
+    .catch((error) => Alert.alert(
+      "Error occured. "+error,
+      "Try again later.",
+      [
+        {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel"
+        },
+        { text: "OK", onPress: () => console.log("OK Pressed") }
+      ]
+      )
+      );
+  }
   searchFilterFunction = text => {
     this.setState({
       value: text,
@@ -139,10 +159,7 @@ class ApplicationsScreen extends Component {
 
 
     const newData = this.arrayholder.filter(item => {
-      // const itemData = `${item._id} ${item.categories[0].name.toUpperCase()}`;
-      // const textData = text.toUpperCase();
-      console.log(item._id,text)
-      return `${item._id}`.includes(text) || `${item.categories[0].name}`.includes(text);
+      return `${item.worker_id.name}`.includes(text);
     });
     console.log(newData);
 
@@ -154,7 +171,7 @@ class ApplicationsScreen extends Component {
   renderHeader = () => {
     return (
       <SearchBar
-        placeholder="Search by job id or category..."
+        placeholder="Search by name..."
         lightTheme
         round
         onChangeText={text => this.searchFilterFunction(text)}
@@ -174,15 +191,29 @@ class ApplicationsScreen extends Component {
     }
     return (
       <View style={{ flex: 1 }}>
-        {this.state.data && this.state.data.length>0 &&
+        {this.state.data &&
           <FlatList
           data={this.state.data}
           renderItem={({ item }) => (
             <View style={styles.eachMsg}>
-            <Image source={item.categories[0].image} style={styles.userPic} />
+            <Image source={require(`./../../assets/categories/worker.png`)} style={styles.userPic} />
             <View>
-              <Text style={styles.msgTxt}>Job Id: {item._id}</Text>
-              <Text style={styles.msgTxt}>Date: {item.dateCreated}</Text>
+              <Text style={styles.msgTxt}>Worker Id: {item._id}</Text>
+              <Text style={styles.msgTxt}>Worker Name: {item.worker_id.name}</Text>
+              <Text style={styles.msgTxt}>Date: {item.Date_Applied}</Text>
+              <TouchableOpacity
+					style={[
+						styles.button,
+						{
+							backgroundColor: colors.light,
+							borderColor: colors.red,
+							borderWidth: 1,
+						},
+					]}
+					onPress={() => this.assignjob(item._id)}
+				>
+					<Text style={styles.textBtnSignUp}>Assign Job</Text>
+				</TouchableOpacity>
         <TouchableOpacity
 					style={[
 						styles.button,
@@ -192,9 +223,9 @@ class ApplicationsScreen extends Component {
 							borderWidth: 1,
 						},
 					]}
-					onPress={() => this.props.navigation.navigate('JobDetails',{job:item})}
+					onPress={() => this.props.navigation.navigate('WorkerProfile',{user:item.worker_id})}
 				>
-					<Text style={styles.textBtnSignUp}>View Details</Text>
+					<Text style={styles.textBtnSignUp}>View Profile</Text>
 				</TouchableOpacity>
             </View>
            
@@ -206,6 +237,9 @@ class ApplicationsScreen extends Component {
         />
 
         }
+        {/* {this.state.data && this.state.data.length==0 &&
+          <Text style={styles.msgTxt}>No Applications yet!</Text>
+        } */}
         
       </View>
     );

@@ -17,9 +17,9 @@ function ChoiceScreen({ navigation: { navigate }}) {
     
 	useEffect(() => {
 		// console.log("jjj",global.user)
-		if (global.user!=null && global.user != undefined) {
-			navigate('MainApp',{user:global.user});
-		}
+		// if (global.user!=null && global.user != undefined) {
+		// 	navigate('MainApp',{user:global.user});
+		// }
 
 		fetch('http://192.168.0.110:5000/category/categories')
 		.then((response) => response.json())

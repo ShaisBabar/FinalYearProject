@@ -1,5 +1,6 @@
 var Worker_ = require("../model/worker");
 const Bcrypt = require("bcryptjs");
+const mongoose = require('mongoose');
 
 
 //router.get('/getworkers', getworkers);
@@ -16,24 +17,35 @@ exports.getworkers = (req, res) => {
 
 //router.post('/addworker', addworker);
 exports.addworker= (req, res) => {
+    console.log("here",req.body)
     Worker_.findOne({
-        email:request.body.email
+        email:req.body.email
     }).then(user=> {
           if(user){
             res.status(200).json({
                 message: "Worker already exists",
+                success:false
             });
           }
           else{
             req.body.password = Bcrypt.hashSync(req.body.password, 10);
+            req.body.categories.forEach(element => {
+                element = [mongoose.Types.ObjectId(element)];
+            });
             const user = new Worker_(req.body);
             user.save();
             res.status(200).json({
                 message: "Worker Added succesfully",
+                success:true
             });
               
           }
-        }).catch(err => console.log(err));
+            }).catch(err => {
+                console.log(err)
+                res.status(401).json({
+                message: "Worker Registration Failed",
+                success:false
+            })});
    
 };
 
