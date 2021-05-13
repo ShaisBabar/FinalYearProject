@@ -31,20 +31,22 @@ def classifyReview(review):
 
 @app.route('/predict',methods=['POST'])
 def predict():
-
-    review = request.get_json()['review']
-    prediction = classifyReview(review)
-    if prediction[0]==1:
-        good_review=1
-        return jsonify(good_review)
-    else :
-        good_review=0
-        return jsonify(good_review)
-    # return json.dump(prediction)
+    try:
+        review = request.get_json()['review']
+        prediction = classifyReview(review)
+        if prediction[0]==1:
+            good_review=1
+            return jsonify({'result':good_review,'success':True})
+        else :
+            good_review=0
+            return jsonify({'result': good_review,'success':True})
+    except Exception as e:
+        print("error: ",e)
+        return jsonify({'success':False})
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return 'hellooo'
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,port=4001,host="0.0.0.0")

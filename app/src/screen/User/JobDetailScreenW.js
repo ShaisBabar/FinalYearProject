@@ -14,7 +14,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 
 import colors from '../../styles/colors';
-function JobDetailScreen(props) 
+function JobDetailScreenW(props) 
 {
 	const job = props.route.params.job;
 	const user = global.user;
@@ -24,61 +24,143 @@ function JobDetailScreen(props)
 	const [address, setAddress] = useState(user?.street_address);
 	const [city, setCity] = useState(user?.city);
 	const [area, setArea] = useState(user?.area);
-	const DeletePost = () =>{
-		fetch('http://192.168.0.110:5000/jobs/removejob/'+job._id, {
-			method: 'DELETE',
-			headers: {
-			  Accept: 'application/json',
-			  'Content-Type': 'application/json'
-			}
-		})
-		.then((response) => response.json())
-		.then((json) => {
-			console.log(json)
-			if (json.success==true) {
-				Alert.alert(
-					"Post Deleted Successfully",
-					"",
-					[
-					  {
-						text: "Cancel",
-						onPress: () => console.log("Cancel Pressed"),
-						style: "cancel"
-					  },
-					  { text: "OK", onPress: () => console.log("OK Pressed") }
-					]
-				  );
-				  props.navigation.navigate('UserActive');
-			}
-			else{
-				Alert.alert(
-					"Something Went Wrong.",
-					"Try again.",
-					[
-					  {
-						text: "Cancel",
-						onPress: () => console.log("Cancel Pressed"),
-						style: "cancel"
-					  },
-					  { text: "OK", onPress: () => console.log("OK Pressed") }
-					]
-				  );
-			}
-		})
-		.catch((error) => Alert.alert(
-			"Error occured.",
-			"Try again.",
-			[
-			  {
-				text: "Cancel",
-				onPress: () => console.log("Cancel Pressed"),
-				style: "cancel"
-			  },
-			  { text: "OK", onPress: () => console.log("OK Pressed") }
-			]
-		  ));
-		return;
-	}
+    const [exists, setExists] = useState(false);
+    useEffect(() => {
+        if (job.applicants.filter(e => e.worker_id === user._id).length > 0) {
+             setExists(true)
+          }
+          else{
+              setExists(false)
+          }
+        //console.log(job.applicants.include(global.user._id))
+
+
+    },[]);
+	const applyforjob = () =>{
+        const user = {
+            id:job._id,
+            application:{worker_id:global.user._id}
+        }
+        job.applicants.push({worker_id:global.user._id})
+        console.log(user)
+        fetch('http://192.168.0.110:5000/jobs/applyjob', {
+            method: 'PUT',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+        .then((response) => response.json())
+        .then((json) => {
+            if (json.success==true) {
+                Alert.alert(
+                    "Applied for Job",
+                    "Best of luck.",
+                    [
+                      {
+                        text: "Cancel",
+                        onPress: () => console.log("Cancel Pressed"),
+                        style: "cancel"
+                      },
+                      { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                  );
+                props.navigation.navigate('Explore Jobs');
+            }
+            else{
+                Alert.alert(
+                    "Something Went Wrong.",
+                    "Try again.",
+                    [
+                      {
+                        text: "Cancel",
+                        onPress: () => console.log("Cancel Pressed"),
+                        style: "cancel"
+                      },
+                      { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                  );
+                  props.navigation.navigate('Explore Jobs');
+            }
+        })
+        .catch((error) => Alert.alert(
+            "Error occured."+error,
+            "Try again later.",
+            [
+              {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel"
+              },
+              { text: "OK", onPress: () => console.log("OK Pressed") }
+            ]
+          ));
+        return;
+    }
+
+    const unapplyforjob = () =>{
+        const user = {
+            id:job._id,
+            workerid:global.user._id
+        }
+        job.applicants = job.applicants.filter(r=>r.worker_id!=global.user._id)
+        console.log(user)
+        fetch('http://192.168.0.110:5000/jobs/unapplyjob', {
+            method: 'PUT',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+        .then((response) => response.json())
+        .then((json) => {
+            if (json.success==true) {
+                Alert.alert(
+                    "Unapplied for Job",
+                    "Try another job.",
+                    [
+                      {
+                        text: "Cancel",
+                        onPress: () => console.log("Cancel Pressed"),
+                        style: "cancel"
+                      },
+                      { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                  );
+                props.navigation.navigate('Explore Jobs');
+            }
+            else{
+                Alert.alert(
+                    "Something Went Wrong.",
+                    "Try again.",
+                    [
+                      {
+                        text: "Cancel",
+                        onPress: () => console.log("Cancel Pressed"),
+                        style: "cancel"
+                      },
+                      { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                  );
+                  props.navigation.navigate('Explore Jobs');
+            }
+        })
+        .catch((error) => Alert.alert(
+            "Error occured."+error,
+            "Try again later.",
+            [
+              {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel"
+              },
+              { text: "OK", onPress: () => console.log("OK Pressed") }
+            ]
+          ));
+        return;
+    }
 	return (
 		<View style={styles.screen}>
 			<View style={styles.headerScreen}>
@@ -139,54 +221,36 @@ function JobDetailScreen(props)
 							value={job.street_address+", "+job.area+", "+job.city}
 							editable={false}
 						/>
-						<LinearGradient
-					colors={[colors.red, colors.red]}
-					style={[styles.button]}
-				>
-					{job.assigned_to &&
-					   <TouchableOpacity
-					   style={{ width: '100%', alignItems: 'center' }}
-					   onPress={() => props.navigation.navigate('Confirmation',{applicants:job.applicants,jobid:job._id})}
-				      >
-					<Text style={styles.textBtn}>Mark as Completed</Text>
-				   </TouchableOpacity>
-					}
-					{!job.assigned_to &&
-					  <TouchableOpacity
-					  style={{ width: '100%', alignItems: 'center' }}
-					  onPress={() => props.navigation.navigate('Applications',{applicants:job.applicants,jobid:job._id})}
-				  >
-					  <Text style={styles.textBtn}>View Applications</Text>
-				  </TouchableOpacity>
-					}
-				</LinearGradient>
-				<TouchableOpacity
-					style={[
-						styles.button,
-						{
-							backgroundColor: colors.light,
-							borderColor: colors.red,
-							borderWidth: 1,
-						},
-					]}
-					onPress={() => props.navigation.navigate('UpdateDetails',{job:job})}
-				>
-					<Text style={styles.textBtnSignUp}>Update Details</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
-					style={[
-						styles.button,
-						{
-							backgroundColor: colors.light,
-							borderColor: colors.red,
-							borderWidth: 1,
-						},
-					]}
-					onPress={() => DeletePost()}
-				>
-					<Text style={styles.textBtnSignUp}>Delete Post</Text>
-				</TouchableOpacity>
+                        {exists==true && 
+                        <LinearGradient
+                        colors={[colors.red, colors.red]}
+                        style={[styles.button]}
+                    >
+                        <TouchableOpacity
+                            style={{ width: '100%', alignItems: 'center' }}
+                            onPress={() => unapplyforjob()}
+                        >
+                            <Text style={styles.textBtn}>Unpply for Job</Text>
+                        </TouchableOpacity>
+                    </LinearGradient>
+                        
+                    }
+                    {exists==false && 
+                        <LinearGradient
+                        colors={[colors.red, colors.red]}
+                        style={[styles.button]}
+                    >
+                        <TouchableOpacity
+                            style={{ width: '100%', alignItems: 'center' }}
+                            onPress={() => applyforjob()}
+                        >
+                            <Text style={styles.textBtn}>Apply for Job</Text>
+                        </TouchableOpacity>
+                    </LinearGradient>
+                        
+                    }
 						
+				
 						<View style={styles.bottom}></View>
 		</ScrollView>
 		</View>
@@ -465,4 +529,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default JobDetailScreen;
+export default JobDetailScreenW;

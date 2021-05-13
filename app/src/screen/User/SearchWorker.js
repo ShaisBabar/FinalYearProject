@@ -33,7 +33,7 @@ const service_data = [
   ];
 
 var sd = [];
-function WorkerRegisterScreen({ navigation: { navigate } }) {
+function SearchWorker({ navigation: { navigate } }) {
 	const data = citydata;
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
@@ -60,42 +60,30 @@ function WorkerRegisterScreen({ navigation: { navigate } }) {
 		console.log('My updated list :: ', ids)
 		setServices(ids)
 	}
-	const register = () =>{
-		const worker = {
-			name,email,phoneno:phone,password,city,street_address:address,categories:sd,area
+	const search = () =>{
+		const data = {
+			city,categories:sd,area
 		}
-		console.log(worker);
-		fetch('http://192.168.0.110:5000/workers/addworker', {
+		console.log(data);
+		fetch('http://192.168.0.110:4000/search', {
 			method: 'POST',
 			headers: {
 			  Accept: 'application/json',
 			  'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(worker)
+			body: JSON.stringify(data)
 		})
 		.then((response) => response.json())
 		.then((json) => {
 			console.log(json)
 			if (json.success==true) {
-				global.user = json.user
-				//AsyncStorage.setItem('@Token', json.token);
-				Alert.alert(
-					json.message,
-					"Logging in.",
-					[
-					  {
-						text: "Cancel",
-						onPress: () => console.log("Cancel Pressed"),
-						style: "cancel"
-					  },
-					  { text: "OK", onPress: () => console.log("OK Pressed") }
-					]
-				  );
-				navigate('WorkerApp',{user:json.user});
+			  let workerss = json.result;
+        console.log(workerss);
+				//navigate('Results',{workers:workerss});
 			}
 			else{
 				Alert.alert(
-					json.message,
+					"Something Went Wrong",
 					"Try again.",
 					[
 					  {
@@ -106,11 +94,11 @@ function WorkerRegisterScreen({ navigation: { navigate } }) {
 					  { text: "OK", onPress: () => console.log("OK Pressed") }
 					]
 				  );
-				  //navigate('WorkerRegister');
+				  
 			}
 		})
 		.catch((error) => Alert.alert(
-			"Error occured",
+			"Error occured, "+ error,
 			"Try again later.",
 			[
 			  {
@@ -158,57 +146,11 @@ function WorkerRegisterScreen({ navigation: { navigate } }) {
 			>
 				<Image
 					style={styles.logo}
-					source={require('../../assets/images/worker.png')}
+					source={require('../../assets/images/search.png')}
 				/>
 			</LinearGradient>
 			<Animatable.View animation="slideInUp" style={styles.footer}>
 				<ScrollView>
-				<Text style={styles.text}>Full Name</Text>
-				<TextInput
-					style={styles.textInput}
-					placeholder={'Enter Full Name '}
-					maxLength={50}
-					onChangeText={(text) => setName(text)}
-					value={name}
-				/>
-				<Text style={styles.text}>Email</Text>
-				<TextInput
-					style={styles.textInput}
-					autoCapitalize="none"
-					keyboardType="email-address"
-					placeholder={'Enter Email'}
-					maxLength={50}
-					onChangeText={(text) => setEmail(text)}
-					value={email}
-				/>
-				<Text style={styles.text}>Phone no.</Text>
-				<TextInput
-					style={styles.textInput}
-					placeholder={'Enter Phone no.'}
-					keyboardType={'phone-pad'}
-					maxLength={13}
-					minLength={11}
-					onChangeText={(text) => setPhone(text)}
-					value={phone}
-				/>
-				<Text style={styles.text}>Password</Text>
-				<TextInput
-					style={styles.textInput}
-					placeholder={'Enter Password'}
-					maxLength={20}
-					onChangeText={(text) => setPassword(text)}
-					secureTextEntry={true}
-					value={password}
-				/>
-				<Text style={styles.text}>Confirm-Password</Text>
-				<TextInput
-					style={styles.textInput}
-					placeholder={'Confirm Password'}
-					maxLength={20}
-					onChangeText={(text) => setConPassword(text)}
-					secureTextEntry={true}
-					value={conPassword}
-				/>
 				<Text style={styles.text}>Select City</Text>
 				<View style={styles.citycontainer}>
 				<Dropdown
@@ -229,14 +171,6 @@ function WorkerRegisterScreen({ navigation: { navigate } }) {
 					onChange={setArea}
 				/>
 				</View>
-				<Text style={styles.text}>Enter Street Address</Text>
-				<TextInput
-					style={styles.textInput}
-					placeholder={'Enter Address'}
-					maxLength={20}
-					onChangeText={(text) => setAddress(text)}
-					value={address}
-				/>
 				<Text style={styles.text}>Select Services</Text>
 				<CheckboxList
 				headerName="Select All"
@@ -289,11 +223,11 @@ function WorkerRegisterScreen({ navigation: { navigate } }) {
 					<TouchableOpacity
 						style={{ width: '100%', alignItems: 'center' }}
 						onPress={() =>
-							register()
+							search()
 							// navigate('Services')
 						}
 					>
-						<Text style={styles.textBtn}>Register</Text>
+						<Text style={styles.textBtn}>Find Best Workers!</Text>
 					</TouchableOpacity>
 				</LinearGradient>
 				</ScrollView>
@@ -386,4 +320,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default WorkerRegisterScreen;
+export default SearchWorker;

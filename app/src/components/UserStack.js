@@ -22,8 +22,11 @@ import ContactusScreen from '../screen/User/ContactusScreen';
 import FAQScreen from './../screen/User/FAQScreen';
 import EditProfileScreen from './../screen/User/EditProfileScreen';
 import ApplicationsScreen from './../screen/User/ApplicationsScreen';
-import WorkerProfileScreenU from './../screen/User/WorkerProfileScreenU';
+import WorkerProfileScreen from './../screen/User/WorkerProfileScreen';
 import UpdateJobDetailsScreen from './../screen/User/UpdateJobDetailsScreen';
+import ConfirmationScreen from './../screen/User/ConfirmationScreen';
+import SearchWorker from './../screen/User/SearchWorker';
+import SearchResults from './../screen/User/SearchResults';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -108,23 +111,6 @@ export default class UserStack extends Component {
 	createAppointmentStack = () => {
         return (
 		<Stack.Navigator>
-			{/* <Stack.Screen
-				name="Appointment"
-				component={AppointmentScreen}
-				options={{
-					// headerStyle: { backgroundColor: colors.red },
-					// headerTintColor: 'white',
-					headerShown: false,
-				}}
-			/>
-			<Stack.Screen
-				name="Appointment Details"
-				component={AppointmentDetailScreen}
-				options={{
-					headerStyle: { backgroundColor: colors.red },
-					headerTintColor: 'white',
-				}}
-			/> */}
 			<Stack.Screen
 				name="UserActive"
 				component={UserActiveJobs}
@@ -151,7 +137,15 @@ export default class UserStack extends Component {
 			/>
 			<Stack.Screen
 				name="WorkerProfile"
-				component={WorkerProfileScreenU}
+				component={WorkerProfileScreen}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
+			<Stack.Screen
+				name="Confirmation"
+				component={ConfirmationScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',
@@ -176,6 +170,14 @@ export default class UserStack extends Component {
 			<Stack.Screen
 				name="UpdateDetails"
 				component={UpdateJobDetailsScreen}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
+			<Stack.Screen
+				name="Results"
+				component={SearchResults}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',
@@ -215,6 +217,29 @@ export default class UserStack extends Component {
 		</Stack.Navigator>
 		);
 	}
+
+	createSearchStack = () => {
+        return (
+		<Stack.Navigator>
+			<Stack.Screen
+				name="Search"
+				component={SearchWorker}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
+			<Stack.Screen
+				name="Results"
+				component={SearchResults}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
+		</Stack.Navigator>
+		);
+	}
 	
 	render() {
 		return (
@@ -240,6 +265,7 @@ export default class UserStack extends Component {
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',
 				}}/>
+				<Drawer.Screen name="Search Worker" children={this.createSearchStack}  />
 				<Drawer.Screen
 					name="Services History"
 					children={this.createAppointmentStack}

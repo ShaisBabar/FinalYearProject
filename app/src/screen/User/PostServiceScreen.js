@@ -18,9 +18,6 @@ import colors from '../../styles/colors';
 import {
 	Dropdown,
   } from 'sharingan-rn-modal-dropdown';
-import { connect } from 'react-redux';
-import { addPackage } from '../../redux/actions/packageAction';
-import { getRecords } from '../../redux/actions/mainRecords';
 import {services_data} from '../../assets/strings';
 import {citydata,isl_data,lahore_data,karachi_data,quetta_data,multan_data} from '../../assets/strings'
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -401,11 +398,5 @@ const styles = StyleSheet.create({
 	},
 });
 
-const mapStateToProps = ({ packageReducer: { packages, loading } }) => ({
-	packages,
-	loading,
-});
 
-const mapActionToProps = { addPackage, getRecords };
-
-export default connect(mapStateToProps, mapActionToProps)(PostServiceScreen);
+export default PostServiceScreen;

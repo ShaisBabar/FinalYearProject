@@ -16,29 +16,61 @@ import * as Animatable from 'react-native-animatable';
 import colors from '../../styles/colors';
 
 function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
+	const [reviewtext, setReview] = useState('');
+	const [rating, setRating] = useState('');
     const ratingCompleted = (rating) => {
         console.log("Rating is: " + rating)
+		setRating(rating);
       }
-	// useEffect(() => {
-	// 	if (token) {
-	// 		navigate('MainApp');
-	// 	}
-	// 	return () => {};
-	// }, [token]);
-  
-
-	const login_user = (email,password) =>{
-		login({ email, password });
-
-		if (token) {
-			navigate('MainApp');
-	 	}
-		 else{
-			Alert.alert(
-				"Invalid Login",
-				"Username or password is incorrect",
+	const submitreview = () =>{
+		let data ={review:reviewtext,rating:rating}
+		fetch('http://192.168.0.110:4001/predict', {
+				method: 'POST',
+				headers: {
+				  Accept: 'application/json',
+				  'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			})
+			.then((response) => response.json())
+			.then((json) => {
+				console.log(json)
+				if (json.success==true) {
+					global.user = json.user
+					//AsyncStorage.setItem('@Token', json.token);
+					Alert.alert(
+						"Review Submitted!",
+						"Thank you for your feedback.",
+						[
+						  {
+							text: "Cancel",
+							onPress: () => console.log("Cancel Pressed"),
+							style: "cancel"
+						  },
+						  { text: "OK", onPress: () => console.log("OK Pressed") }
+						]
+					  );
+					navigate('Home');
+				}
+				else{
+					Alert.alert(
+						'Something Went Wrong.',
+						"Try again.",
+						[
+						  {
+							text: "Cancel",
+							onPress: () => console.log("Cancel Pressed"),
+							style: "cancel"
+						  },
+						  { text: "OK", onPress: () => console.log("OK Pressed") }
+						]
+					  );
+					  
+				}
+			})
+			.catch((error) => Alert.alert(
+				"Error occured. "+error,
+				"Try again later.",
 				[
 				  {
 					text: "Cancel",
@@ -47,8 +79,8 @@ function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
 				  },
 				  { text: "OK", onPress: () => console.log("OK Pressed") }
 				]
-			  );
-		 }
+			  ));
+			return;
 	}
 	return (
 		<View style={styles.container}>
@@ -59,7 +91,7 @@ function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
 			>
 				<Image
 					style={styles.logo}
-					source={require('../../assets/images/user.png')}
+					source={require('../../assets/images/13.png')}
 				/>
 			</LinearGradient>
 			<Animatable.View animation="slideInUp" style={styles.footer}>
@@ -74,13 +106,11 @@ function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
 
 				<Text style={styles.text}>Give Review</Text>
 				<TextInput
-					autoCapitalize="none"
-					keyboardType="email-address"
 					style={styles.textInput}
 					placeholder={'Enter Review'}
 					maxLength={50}
-					onChangeText={(text) => setEmail(text)}
-					value={email}
+					onChangeText={(text) => setReview(text)}
+					value={reviewtext}
 				/>
                
 				<TouchableOpacity
@@ -92,7 +122,7 @@ function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
 							borderWidth: 1,
 						},
 					]}
-					onPress={() => navigate('Register')}
+					onPress={() => submitreview()}
 				>
 					<Text style={styles.textBtnSignUp}>Submit Review</Text>
 				</TouchableOpacity>

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, ActivityIndicator,Image,StyleSheet,Dimensions,TouchableOpacity,Alert,ScrollView } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator,Image,StyleSheet,Dimensions,TouchableOpacity,Alert } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
 import colors from '../../styles/colors';
 const { width, height } = Dimensions.get('window');
-import GradientHeader from 'react-native-gradient-header';
-import * as Animatable from 'react-native-animatable';
+//import {images} from './../../assets/strings';
 
 const images_name = [
   'electrician.png',
@@ -23,102 +22,64 @@ const images = [
   require(`./../../assets/categories/laundary.png`),
   require(`./../../assets/categories/gardening.png`)
 ];
-class ExploreScreen extends Component {
+class SearchResults extends Component {
   constructor(props) {
     super(props);
-
+    console.log("jj",this.props.route.params.workers)
     this.state = {
       loading: false,
-      data: [],
+      data: this.props.route.params.workers,
       error: null,
     };
 
-    this.arrayholder = [];
+    this.arrayholder = this.props.route.params.workers;
   }
 
   componentDidMount() {
-      this.setState({ loading: true });
-      fetch('http://192.168.0.110:5000/jobs/jobs')
-      .then((response) => response.json())
-      .then((json) => {
-        if (json.success==true) {
-          json.result.forEach(element => {
-            element.categories.forEach(el => {
-              console.log(el.image);
-              images_name.forEach(i => {
-                console.log(i);
-                if(el.image==i){
-                  console.log(images_name.indexOf(i))
-                  el.image = images[images_name.indexOf(i)];
-                }
-              });
-            
-          });
-          });
-
-          this.setState({
-            data: json.result,
-            error: json.error || null,
-            loading: false,
-          });
-          this.arrayholder = json.result;
-          console.log('jjjjj')
-          console.log(this.state.data)
-        }
-        else{
-          Alert.alert(
-            "Error Loading Jobs",
-            "Try again.",
-            [
-              {
-              text: "Cancel",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel"
-              },
-              { text: "OK", onPress: () => console.log("OK Pressed") }
-            ]
-            );
-        }
-      })
-      .catch((error) => Alert.alert(
-        "Error occured"+error,
-        "Try again later.",
-        [
-          {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-          },
-          { text: "OK", onPress: () => console.log("OK Pressed") }
-        ]
-        )
-        );
+    //   fetch('http://192.168.0.110:5000/jobs/jobsbyuserapplicants/'+global.user._id+'/'+this.props.route.params.jobid)
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     if (json.success==true) {
+    //       this.setState({
+    //         data: json.result.applicants,
+    //         error: json.error || null,
+    //       });
+    //       this.arrayholder = json.result.applicants;
+    //       console.log(json.result.applicants)
+    //     }
+    //     else{
+    //       Alert.alert(
+    //         "Error Loading Jobs",
+    //         "Try again.",
+    //         [
+    //           {
+    //           text: "Cancel",
+    //           onPress: () => console.log("Cancel Pressed"),
+    //           style: "cancel"
+    //           },
+    //           { text: "OK", onPress: () => console.log("OK Pressed") }
+    //         ]
+    //         );
+    //     }
+    //   })
+    //   .catch((error) => Alert.alert(
+    //     "Error occured"+error,
+    //     "Try again later.",
+    //     [
+    //       {
+    //       text: "Cancel",
+    //       onPress: () => console.log("Cancel Pressed"),
+    //       style: "cancel"
+    //       },
+    //       { text: "OK", onPress: () => console.log("OK Pressed") }
+    //     ]
+    //     )
+    //     );
+    //     console.log('llllll')
       //this.makeRemoteRequest();
     
   
   }
-
-  makeRemoteRequest = () => {
-    const url = `https://randomuser.me/api/?&results=20`;
-    this.setState({ loading: true });
-
-    fetch(url)
-      .then(res => res.json())
-      .then(res => {
-        console.log("kkk",res.results)
-        this.setState({
-          data: res.results,
-          error: res.error || null,
-          loading: false,
-        });
-        this.arrayholder = res.results;
-      })
-      .catch(error => {
-        this.setState({ error, loading: false });
-      });
-
-      console.log(this.state.data)
-  };
 
   renderSeparator = () => {
     return (
@@ -132,7 +93,65 @@ class ExploreScreen extends Component {
       />
     );
   };
-
+ 
+  assignjob = (workerid) =>{
+    var data = {id:this.props.route.params.jobid,workerid:workerid}
+    console.log(data)
+    fetch('http://192.168.0.110:5000/jobs/addworker', {
+			method: 'PUT',
+			headers: {
+			  Accept: 'application/json',
+			  'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		})
+    .then((response) => response.json())
+    .then((json) => {
+      if (json.success==true) {
+        Alert.alert(
+          "Worker Assigned.",
+          "Hope this worker is suited to your needs!",
+          [
+            {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+            },
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ]
+          );
+          this.props.navigation.navigate('UserActive')
+      }
+      else{
+        Alert.alert(
+          "Error Assigning Job",
+          "Try again.",
+          [
+            {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+            },
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ]
+          );
+          this.props.navigation.navigate('UserActive')
+      }
+    })
+    .catch((error) => Alert.alert(
+      "Error occured. "+error,
+      "Try again later.",
+      [
+        {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel"
+        },
+        { text: "OK", onPress: () => console.log("OK Pressed") }
+      ]
+      )
+      );
+  }
   searchFilterFunction = text => {
     this.setState({
       value: text,
@@ -140,10 +159,7 @@ class ExploreScreen extends Component {
 
 
     const newData = this.arrayholder.filter(item => {
-      // const itemData = `${item._id} ${item.categories[0].name.toUpperCase()}`;
-      // const textData = text.toUpperCase();
-      console.log(item._id,text)
-      return `${item._id}`.includes(text) || `${item.categories[0].name}`.includes(text);
+      return `${item.worker_id.name}`.includes(text);
     });
     console.log(newData);
 
@@ -155,7 +171,7 @@ class ExploreScreen extends Component {
   renderHeader = () => {
     return (
       <SearchBar
-        placeholder="Search by job id or category..."
+        placeholder="Search by name..."
         lightTheme
         round
         onChangeText={text => this.searchFilterFunction(text)}
@@ -174,29 +190,18 @@ class ExploreScreen extends Component {
       );
     }
     return (
-      <View style={styles.screen}>
-		<View style={styles.headerScreen}>
- 				<Animatable.View animation="slideInDown">
- 					<GradientHeader
- 						title={`Hello, ${user ? user.name : ''}`}
- 						subtitle="Get started to sell your services!"
- 						gradientColors={[colors.red, colors.red]}
- 						imageSource={{
- 							uri: '../../assets/images/user.png'
- 						}}
- 					/>
- 				</Animatable.View>
- 			</View>
-			 <View style={{marginTop:190}}>
- 			</View>
- 			<View>
- 				<Text style={styles.heading}>APPLY FOR SERVICE</Text>
- 			</View>
-
-
-        {this.state.data && this.state.data.length>0 &&
-		  <>
-		  <TouchableOpacity
+      <View style={{ flex: 1 }}>
+        {this.state.data &&
+          <FlatList
+          data={this.state.data}
+          renderItem={({ item }) => (
+            <View style={styles.eachMsg}>
+            <Image source={require(`./../../assets/categories/worker.png`)} style={styles.userPic} />
+            <View>
+              <Text style={styles.msgTxt}>Worker Id: {item._id}</Text>
+              <Text style={styles.msgTxt}>Worker Name: {item.worker_id.name}</Text>
+              <Text style={styles.msgTxt}>Date: {item.Date_Applied}</Text>
+              <TouchableOpacity
 					style={[
 						styles.button,
 						{
@@ -205,32 +210,22 @@ class ExploreScreen extends Component {
 							borderWidth: 1,
 						},
 					]}
-					onPress={() => navigate('WorkerLogin')}
+					onPress={() => this.assignjob(item._id)}
 				>
-					<Text style={styles.textBtnSignUp}>Apply Filters</Text>
-		</TouchableOpacity>
-          <ScrollView>
-          <FlatList
-          data={this.state.data}
-          renderItem={({ item }) => (
-            <View style={styles.eachMsg}>
-            <Image source={item.categories[0].image} style={styles.userPic} />
-            <View>
-              <Text style={styles.msgTxt}>Job Id: {item._id}</Text>
-			  <Text style={styles.msgTxt}>Posted By: {item.user_id.name}</Text>
-              <Text style={styles.msgTxt}>Date: {item.dateCreated}</Text>
+					<Text style={styles.textBtnSignUp}>Message</Text>
+				</TouchableOpacity>
         <TouchableOpacity
 					style={[
-						styles.hbutton,
+						styles.button,
 						{
 							backgroundColor: colors.light,
 							borderColor: colors.red,
 							borderWidth: 1,
 						},
 					]}
-					onPress={() => this.props.navigation.navigate('JobDetails',{job:item})}
+					onPress={() => this.props.navigation.navigate('WorkerProfile',{user:item.worker_id})}
 				>
-					<Text style={styles.textBtnSignUp}>View Details</Text>
+					<Text style={styles.textBtnSignUp}>View Profile</Text>
 				</TouchableOpacity>
             </View>
            
@@ -238,12 +233,14 @@ class ExploreScreen extends Component {
           )}
           keyExtractor={item => item.email}
           ItemSeparatorComponent={this.renderSeparator}
-          //ListHeaderComponent={this.renderHeader}
-        /></ScrollView>
-         <View style={{marginBottom:20}}></View>
-        </>
+          ListHeaderComponent={this.renderHeader}
+        />
+
         }
-       
+        {/* {this.state.data && this.state.data.length==0 &&
+          <Text style={styles.msgTxt}>No Applications yet!</Text>
+        } */}
+        
       </View>
     );
   }
@@ -251,45 +248,9 @@ class ExploreScreen extends Component {
 
 
 const styles = StyleSheet.create({
-  button: {
-		// backgroundColor: colors.red,
-		borderRadius: 2,
-		justifyContent: 'center',
-		alignItems: 'center',
-		padding: 10,
-		elevation: 5,
-        height:40,
-		marginVertical: 10,
-		marginHorizontal: 10,
-        marginBottom:10
-	},
-  hbutton: {
-		// backgroundColor: colors.red,
-		borderRadius: 2,
-		justifyContent: 'center',
-		alignItems: 'center',
-		padding: 10,
-		elevation: 5,
-        height:30,
-		marginVertical: 10,
-		marginHorizontal: 10,
-        marginBottom:10
-	},
-		heading:{
-       color:colors.red,
-	   fontSize:30,
-	   fontWeight:'bold',
-	   textAlign:'center',
-	   marginBottom:40,
-	   marginTop:15
-	},
     container:{
         flex:1
       },
-	  	screen: {
-		flex: 1,
-		backgroundColor: colors.white,
-	  },
       list:{
         paddingHorizontal: 17,
         marginTop:40
@@ -475,4 +436,4 @@ const styles = StyleSheet.create({
   },
 }); 
 
-export default ExploreScreen;
+export default SearchResults;

@@ -62,9 +62,6 @@ const jobschema = new Schema(
                     ref: "Worker",
                     required: true,
                  },
-                 message:{
-                    type: String,
-                 },
                  Date_Applied:{
                      type:Date,
                      default:Date.now

@@ -9,7 +9,7 @@ import {
 	Alert
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { Root, Popup } from 'popup-ui';
+import { Root} from 'popup-ui';
 import CheckBox from '@react-native-community/checkbox';
 
 import colors from '../../styles/colors';
