@@ -34,7 +34,16 @@ const jobschema = new Schema(
         max_payment:{
             required:true,
             type: Number,
+        },
+        actual_payment:{
             required:true,
+            type: Number,
+            default:0
+        },
+        is_paid:{
+            required:true,
+            type: Boolean,
+            default:false
         },
         categories: [
             {
@@ -76,6 +85,7 @@ const jobschema = new Schema(
              type:Boolean,
              default:false
          },
+
          
     }
 );

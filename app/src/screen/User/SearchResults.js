@@ -210,7 +210,7 @@ class SearchResults extends Component {
 							borderWidth: 1,
 						},
 					]}
-					onPress={() => this.assignjob(item._id)}
+					onPress={() => this.props.navigation.navigate('Chat Details',{workerid:item.worker_id,userid:global.user._id})}
 				>
 					<Text style={styles.textBtnSignUp}>Message</Text>
 				</TouchableOpacity>

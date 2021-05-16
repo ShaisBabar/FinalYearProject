@@ -8,6 +8,9 @@ import re
 from flask import Flask, request, jsonify, json, render_template
 import joblib
 from sklearn.feature_extraction.text import CountVectorizer
+from pymongo import MongoClient
+from bson.json_util import loads, dumps
+client = MongoClient()
 
 app = Flask(__name__)
 model = joblib.load('review_classifier_model_saved.pkl')
@@ -33,7 +36,26 @@ def classifyReview(review):
 def predict():
     try:
         review = request.get_json()['review']
+        user_id = request.get_json()['user_id']
+        worker_id = request.get_json()['worker_id']
+        job_id = request.get_json()['job_id']
+        rating = request.get_json()['rating']
+
         prediction = classifyReview(review)
+        client = MongoClient("mongodb+srv://Mominadar:oth009@database.sxhxy.mongodb.net/doorstep?retryWrites=true&w=majority")
+        db = client.get_database('doorstep')
+        rec = db.reviews 
+        review_obj = {
+            'user_id':  user_id,
+            'worker_id': worker_id,
+            'job_id': job_id,
+            'review_text':review,
+            'sentiment':'{}'.format(prediction[0]),
+            'rating':rating
+        }
+        print(review_obj)
+        rec.insert_one(review_obj)
+
         if prediction[0]==1:
             good_review=1
             return jsonify({'result':good_review,'success':True})

@@ -15,7 +15,7 @@ import * as Animatable from 'react-native-animatable';
 
 import colors from '../../styles/colors';
 
-function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
+function ReviewScreen(props) {
 	const [reviewtext, setReview] = useState('');
 	const [rating, setRating] = useState('');
     const ratingCompleted = (rating) => {
@@ -23,7 +23,8 @@ function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
 		setRating(rating);
       }
 	const submitreview = () =>{
-		let data ={review:reviewtext,rating:rating}
+		let data ={review:reviewtext,rating:rating,user_id:global.user._id,worker_id:props.route.params.worker,job_id:props.route.params.jobid}
+		console.log(data)
 		fetch('http://192.168.0.110:4001/predict', {
 				method: 'POST',
 				headers: {
@@ -50,7 +51,7 @@ function ReviewScreen({ navigation: { navigate }, token, loading, login }) {
 						  { text: "OK", onPress: () => console.log("OK Pressed") }
 						]
 					  );
-					navigate('Home');
+					props.navigation.navigate('Home');
 				}
 				else{
 					Alert.alert(

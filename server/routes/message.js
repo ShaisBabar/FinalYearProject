@@ -1,5 +1,5 @@
 var express = require('express');
-var {getmessagesbyuser, getmessagesbyworker, sendmessage, getalluserconversations, getallworkerconversations, getcovnersationsbyworker, getcovnersationsbyuser} = require('./../controllers/messagecontroller')
+var {getmessagesbyuser, getmessagesbyworker, getconversations, sendmessage, getalluserconversations, getallworkerconversations, getcovnersationsbyworker, getcovnersationsbyuser} = require('./../controllers/messagecontroller')
 var router = express.Router();
 
 router.get('/getmessagesbyuser/:id', getmessagesbyuser);
@@ -9,5 +9,5 @@ router.get('/getalluserconversations/:id', getalluserconversations);
 router.get('/getallworkerconversations/:id', getallworkerconversations);
 router.post('/getcovnersationsbyworker', getcovnersationsbyworker);
 router.post('/getcovnersationsbyuser', getcovnersationsbyuser);
-
+router.post('/getcovnersations', getconversations);
 module.exports = router;

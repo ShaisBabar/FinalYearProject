@@ -14,7 +14,7 @@ import * as Animatable from 'react-native-animatable';
 import colors from '../../styles/colors';
 import LoadingIndicator from '../../components/LoadingIndicator';
 
-function ConfirmationScreen({ navigation: { navigate }}) {
+function ConfirmationScreen(props) {
 	const [price, setPrice] = useState('');
 	const [visible, setVisible] = useState(false);
 
@@ -73,7 +73,7 @@ function ConfirmationScreen({ navigation: { navigate }}) {
                >
                    <TouchableOpacity
                        style={{ width: '100%', alignItems: 'center' }}
-                       onPress={() => navigate('Review', {payment:price})}
+                       onPress={() => props.navigation.navigate('Review', {payment:price,worker: props.route.params.worker,jobid:props.route.params.jobid})}
                    >
                        <Text style={styles.textBtn}>Add Review</Text>
                    </TouchableOpacity>

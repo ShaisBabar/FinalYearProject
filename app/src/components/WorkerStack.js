@@ -31,7 +31,7 @@ import ExploreScreen from '../screen/User/ExploreScreen'
 // import Chat from '../screen/chat/Chat';
 import AddJobScreen from '../screen/User/Addjob';
 import chatScreen from '../screen/chat/chatScreen';
-import ConversationScreen from '../screen/chat/conversations';
+import ConversationScreen from '../screen/chat/workerconversations';
 import WelcomeScreen from '../screen/User/WelcomeScreen';
 import UserSettings from '../screen/User/UserSettings';
 import UpdatePasswordScreen from '../screen/User/UpdatePasswordScreen';

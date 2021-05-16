@@ -36,34 +36,121 @@ export default class Chat extends Component {
     this.reply = this.reply.bind(this);
     this.renderItem   = this._renderItem.bind(this);
   }
-
-  reply() {
-    var messages = this.state.messages;
-    messages.push({
-      id:Math.floor((Math.random() * 99999999999999999) + 1),
-      sent: false,
-      msg: 'llllll',
-      image:'https://www.bootdey.com/img/Content/avatar/avatar6.png'
-    });
-    this.setState({msg:'', messages:messages});
+  componentDidMount(){
+    fetch('http://192.168.0.110:5000/messages/getconversations/'+this.props.route.params.userid+'/'+this.props.route.params.workerid)
+    .then((response) => response.json())
+    .then((json) => {
+      if (json.success==true) {
+        this.setState({
+          messages:json.result,
+        });
+      }
+      else{
+        Alert.alert(
+          "Error Loading Messages",
+          "Try again.",
+          [
+            {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+            },
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ]
+          );
+      }
+    })
+    .catch((error) => Alert.alert(
+      "Error occured. "+error,
+      "Try again later.",
+      [
+        {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel"
+        },
+        { text: "OK", onPress: () => console.log("OK Pressed") }
+      ]
+      )
+      );
+      console.log('llllll')
+    //this.makeRemoteRequest();
   }
+  // reply() {
+  //   var messages = this.state.messages;
+  //   messages.push({
+  //     id:Math.floor((Math.random() * 99999999999999999) + 1),
+  //     sent: false,
+  //     msg: 'llllll',
+  //     image:'https://www.bootdey.com/img/Content/avatar/avatar6.png'
+  //   });
+  //   this.setState({msg:'', messages:messages});
+  // }
 
   send() {
-    if (this.state.msg.length > 0) {
-      var messages = this.state.messages;
-      messages.push({
-        id:Math.floor((Math.random() * 99999999999999999) + 1),
-        sent: true,
-        msg: this.state.msg,
-        image:'https://www.bootdey.com/img/Content/avatar/avatar1.png'
-      });
-    //   this.setState({msg:''});
-      this.setState({messages:messages});
-      setTimeout(() => {
-        this.reply();
-      }, 2000);
+      // setTimeout(() => {
+      //   this.reply();
+      // }, 2000);
+      const message_obj = {
+        user_id:this.props.route.params.userid,
+        worker_id:this.props.route.params.workerid,
+        message:this.state.msg
+      }
+      fetch('http://192.168.0.110:5000/messages/sendmessage', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(message_obj)
+      })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json)
+        if (json.success==true) {
+          if (this.state.msg.length > 0) {
+            var messages = this.state.messages;
+            messages.push({
+              id:Math.floor((Math.random() * 99999999999999999) + 1),
+              sent: true,
+              msg: this.state.msg,
+              image:'https://www.bootdey.com/img/Content/avatar/avatar1.png'
+            });
+      
+          //   this.setState({msg:''});
+            this.setState({messages:messages});
+          
+        }
+      }
+        else{
+          Alert.alert(
+            "Error sending message",
+            "Try again.",
+            [
+              {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel"
+              },
+              { text: "OK", onPress: () => console.log("OK Pressed") }
+            ]
+            );
+        }
+      })
+      .catch((error) => Alert.alert(
+        "Error occured",
+        "Try again later.",
+        [
+          {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+          },
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ]
+        )
+        );
     }
-  }
 
   _renderItem = ({item}) => {
     if (item.sent === false) {

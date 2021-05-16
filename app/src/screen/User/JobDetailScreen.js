@@ -143,24 +143,45 @@ function JobDetailScreen(props)
 					colors={[colors.red, colors.red]}
 					style={[styles.button]}
 				>
-					{job.assigned_to &&
+					{job.is_paid==true &&
+					
+					<TouchableOpacity
+					style={{ width: '100%', alignItems: 'center' }}
+					onPress={() =>  Alert.alert(
+						"Waiting for Worker to confirm payment is received.",
+						"After that, job will be moved from active to complete state.",
+						[
+						  {
+							text: "Cancel",
+							onPress: () => console.log("Cancel Pressed"),
+							style: "cancel"
+						  },
+						  { text: "OK", onPress: () => console.log("OK Pressed") }
+						]
+					  )}
+				   >
+				 <Text style={styles.textBtn}>Waiting for Confirmation</Text>
+				</TouchableOpacity>
+				 }
+
+					{job.assigned_to && job.is_paid==false &&
+					
 					   <TouchableOpacity
 					   style={{ width: '100%', alignItems: 'center' }}
-					   onPress={() => props.navigation.navigate('Confirmation',{applicants:job.applicants,jobid:job._id})}
+					   onPress={() => props.navigation.navigate('Confirmation',{applicants:job.applicants,jobid:job._id,worker:job.assigned_to})}
 				      >
 					<Text style={styles.textBtn}>Mark as Completed</Text>
 				   </TouchableOpacity>
 					}
-					{!job.assigned_to &&
+					{!job.assigned_to && job.is_paid==false &&
+					<>
 					  <TouchableOpacity
 					  style={{ width: '100%', alignItems: 'center' }}
 					  onPress={() => props.navigation.navigate('Applications',{applicants:job.applicants,jobid:job._id})}
 				  >
 					  <Text style={styles.textBtn}>View Applications</Text>
 				  </TouchableOpacity>
-					}
-				</LinearGradient>
-				<TouchableOpacity
+				  <TouchableOpacity
 					style={[
 						styles.button,
 						{
@@ -186,6 +207,11 @@ function JobDetailScreen(props)
 				>
 					<Text style={styles.textBtnSignUp}>Delete Post</Text>
 				</TouchableOpacity>
+				  </>
+				  
+					}
+				</LinearGradient>
+				
 						
 						<View style={styles.bottom}></View>
 		</ScrollView>

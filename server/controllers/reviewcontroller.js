@@ -13,6 +13,23 @@ exports.getreviews = (req, res, next, id) => {
     .catch(err => console.log(err));
 };
 
+//router.get('/getreviewsbyworker/:id', getreviewsbyworker);
+exports.getreviewsbyworker = (req, res) => {
+    Review.find({worker_id:req.params.id})
+    .then((result) => {
+        res.status(200).json({
+            result:result,success:true
+        });
+    })
+    .catch(err => {
+    console.log(err)
+    res.status(200).json({
+        success:false
+    });
+    });
+};
+
+
 //router.post('/addreview', addreview);
 exports.addreview = (req, res) => {
     const review = new Review(req.body);

@@ -98,7 +98,7 @@ class ConversationScreen extends Component {
         <FlatList
           data={this.state.data}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Chat Details')}}>
+            <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Chat Details',{userid:global.user._id,workerid:item.userid})}}>
             <View style={styles.eachMsg}>
             <Image source={{ uri: item.picture.thumbnail}} style={styles.userPic} />
             <View>

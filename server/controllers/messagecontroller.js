@@ -15,6 +15,21 @@ exports.getmessagesbyuser = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
+//router.get('/getconversations/:userid/:workerid', getconversations);
+exports.getconversations = (req, res) => {
+    Message.find({user_id:req.params.userid,worker_id:req.params.workerid})
+    .then((result) => {
+        res.status(200).json({
+            result:result,success:true
+        });
+    })
+    .catch(err => {
+    console.log(err)
+    res.status(400).json({
+        success:false
+    });});
+};
+
 //router.get('/getmessagesbyworker/:id', getmessagesbyworker);
 exports.getmessagesbyworker = (req, res, next) => {
     Message.find({worker_id:req.params.id})

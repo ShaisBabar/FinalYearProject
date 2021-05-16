@@ -37,7 +37,7 @@ class UserActiveJobs extends Component {
 
   componentDidMount() {
       this.setState({ loading: true });
-      fetch('http://192.168.0.110:5000/jobs/jobsbyuseractive/'+global.user._id)
+      fetch('http://192.168.0.110:5000/jobs/jobsbyusercompleted/'+global.user._id)
       .then((response) => response.json())
       .then((json) => {
         if (json.success==true) {

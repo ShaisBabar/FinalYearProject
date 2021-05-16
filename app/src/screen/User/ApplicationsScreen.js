@@ -227,6 +227,19 @@ class ApplicationsScreen extends Component {
 				>
 					<Text style={styles.textBtnSignUp}>View Profile</Text>
 				</TouchableOpacity>
+        <TouchableOpacity
+					style={[
+						styles.button,
+						{
+							backgroundColor: colors.light,
+							borderColor: colors.red,
+							borderWidth: 1,
+						},
+					]}
+					onPress={() => this.props.navigation.navigate('Chat Details',{user:item.worker_id})}
+				>
+					<Text style={styles.textBtnSignUp}>Send Message</Text>
+				</TouchableOpacity>
             </View>
            
           </View>     

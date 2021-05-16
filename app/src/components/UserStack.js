@@ -9,7 +9,7 @@ import ProfileScreen from '../screen/User/ProfileScreen';
 import ExploreScreen from '../screen/User/ExploreScreen'
 import AddJobScreen from '../screen/User/Addjob';
 import chatScreen from '../screen/chat/chatScreen';
-import ConversationScreen from '../screen/chat/conversations';
+import ConversationScreen from '../screen/chat/workerconversations';
 import WelcomeScreen from '../screen/User/WelcomeScreen';
 import UserSettings from '../screen/User/UserSettings';
 import UpdatePasswordScreen from '../screen/User/UpdatePasswordScreen';
@@ -27,6 +27,7 @@ import UpdateJobDetailsScreen from './../screen/User/UpdateJobDetailsScreen';
 import ConfirmationScreen from './../screen/User/ConfirmationScreen';
 import SearchWorker from './../screen/User/SearchWorker';
 import SearchResults from './../screen/User/SearchResults';
+import JobsScreen from '../screen/User/JobsScreen';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -111,6 +112,14 @@ export default class UserStack extends Component {
 	createAppointmentStack = () => {
         return (
 		<Stack.Navigator>
+			<Stack.Screen
+				name="Jobs"
+				component={JobsScreen}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
 			<Stack.Screen
 				name="UserActive"
 				component={UserActiveJobs}

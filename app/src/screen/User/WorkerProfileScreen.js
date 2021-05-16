@@ -9,6 +9,7 @@ import {
 	TextInput,
 	TouchableOpacity,
 	FlatList,
+	Alert,
 	ToastAndroid,
 } from 'react-native';
 import axios  from 'axios';
@@ -25,6 +26,7 @@ import ReviewCard from '../../components/ReviewCard';
 import colors from '../../styles/colors';
 import profileImg from '../../utils/profileImg';
 import LoadingIndicator from '../../components/LoadingIndicator';
+import { set } from 'react-native-reanimated';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -232,35 +234,57 @@ function BarberAbout({ user, updateUser, loading }) {
 function barberReviews(props) {
 	const [reviews, setReviews] = useState([]);
 
-	// useEffect(() => {
-	// 	axios.get('http://localhost:5000/jobs/jobsbyuser/'+AsyncStorage.getItem('@Token')).then((res) => {
-	// 		setReviews(
-	// 			res.data?.map((val) => ({
-	// 				id: val?._id,
-	// 				name: val?.user?.firstName,
-	// 				time: val?.review?.date?.split('T')[0],
-	// 				image: `data:${val?.user?.image?.type};base64,${val?.user?.image?.data}`,
-	// 				text: val?.review?.userReview,
-	// 				rated: Number(val?.review?.stars),
-	// 			})),
-	// 		);
-	// 	});
-	// 	return () => {};
-	// }, []);
+	useEffect(() => {
+		fetch('http://192.168.0.110:5000/reviews/getreviewsbyworker/'+global.user._id)
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.success==true) {
+          setReviews(json.result)
+        }
+        else{
+          Alert.alert(
+            "Error Loading Reviews",
+            "Try again.",
+            [
+              {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel"
+              },
+              { text: "OK", onPress: () => console.log("OK Pressed") }
+            ]
+            );
+        }
+      })
+      .catch((error) => Alert.alert(
+        "Error occured. "+error,
+        "Try again later.",
+        [
+          {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+          },
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ]
+        )
+        );
+		return () => {};
+	}, []);
 	return (
 		<View style={styles.screen}>
 			<FlatList
 				contentContainerStyle={{ paddingBottom: 15 }}
 				style={styles.flatScreen}
 				data={reviews}
-				keyExtractor={(review) => review.id.toString()}
+				keyExtractor={(review) => review._id.toString()}
 				renderItem={({ item }) => (
 					<ReviewCard
-						title={item.name}
-						time={item.time}
-						image={item.image}
-						text={item.text}
-						rated={item.rated}
+						title={item.user_id}
+						time={item.dateCreated}
+						//image={item.image}
+						text={item.review_text+', '+item.sentiment}
+						rated={item.rating}
 					/>
 				)}
 			/>

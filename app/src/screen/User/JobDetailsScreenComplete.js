@@ -24,6 +24,61 @@ function JobDetailScreen(props)
 	const [address, setAddress] = useState(user?.street_address);
 	const [city, setCity] = useState(user?.city);
 	const [area, setArea] = useState(user?.area);
+	const DeletePost = () =>{
+		fetch('http://192.168.0.110:5000/jobs/removejob/'+job._id, {
+			method: 'DELETE',
+			headers: {
+			  Accept: 'application/json',
+			  'Content-Type': 'application/json'
+			}
+		})
+		.then((response) => response.json())
+		.then((json) => {
+			console.log(json)
+			if (json.success==true) {
+				Alert.alert(
+					"Post Deleted Successfully",
+					"",
+					[
+					  {
+						text: "Cancel",
+						onPress: () => console.log("Cancel Pressed"),
+						style: "cancel"
+					  },
+					  { text: "OK", onPress: () => console.log("OK Pressed") }
+					]
+				  );
+				  props.navigation.navigate('UserActive');
+			}
+			else{
+				Alert.alert(
+					"Something Went Wrong.",
+					"Try again.",
+					[
+					  {
+						text: "Cancel",
+						onPress: () => console.log("Cancel Pressed"),
+						style: "cancel"
+					  },
+					  { text: "OK", onPress: () => console.log("OK Pressed") }
+					]
+				  );
+			}
+		})
+		.catch((error) => Alert.alert(
+			"Error occured.",
+			"Try again.",
+			[
+			  {
+				text: "Cancel",
+				onPress: () => console.log("Cancel Pressed"),
+				style: "cancel"
+			  },
+			  { text: "OK", onPress: () => console.log("OK Pressed") }
+			]
+		  ));
+		return;
+	}
 	return (
 		<View style={styles.screen}>
 			<View style={styles.headerScreen}>
@@ -84,43 +139,16 @@ function JobDetailScreen(props)
 							value={job.street_address+", "+job.area+", "+job.city}
 							editable={false}
 						/>
-						<LinearGradient
-					colors={[colors.red, colors.red]}
-					style={[styles.button]}
-				>
-					<TouchableOpacity
-						style={{ width: '100%', alignItems: 'center' }}
-						onPress={() => navigate('Login')}
-					>
-						<Text style={styles.textBtn}>View Applications</Text>
-					</TouchableOpacity>
-				</LinearGradient>
-				<TouchableOpacity
-					style={[
-						styles.button,
-						{
-							backgroundColor: colors.light,
-							borderColor: colors.red,
-							borderWidth: 1,
-						},
-					]}
-					onPress={() => navigate('WorkerLogin')}
-				>
-					<Text style={styles.textBtnSignUp}>Update Details</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
-					style={[
-						styles.button,
-						{
-							backgroundColor: colors.light,
-							borderColor: colors.red,
-							borderWidth: 1,
-						},
-					]}
-					onPress={() => navigate('WorkerLogin')}
-				>
-					<Text style={styles.textBtnSignUp}>Delete Post</Text>
-				</TouchableOpacity>
+			
+			<TouchableOpacity
+					   style={{ width: '100%', alignItems: 'center' }}
+					   onPress={() => props.navigation.goback()}
+				      >
+					<Text style={styles.textBtn}>Go Back</Text>
+				   </TouchableOpacity>
+					
+					
+				
 						
 						<View style={styles.bottom}></View>
 		</ScrollView>
