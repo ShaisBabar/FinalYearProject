@@ -64,7 +64,7 @@ function EditProfileScreen({navigation: { goBack, navigate }})
 			name, email, phoneno:phone,city,street_address:address,city,area,password:global.user.password,_id:global.user._id
 		}
 		console.log(user)
-		fetch('http://192.168.0.110:5000/users/edituser', {
+		fetch('http://192.168.1.100:5000/users/edituser', {
 			method: 'PUT',
 			headers: {
 			  Accept: 'application/json',

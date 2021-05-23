@@ -21,25 +21,18 @@ export default class Chat extends Component {
     super(props);
     this.state = {
       msg: '',
-      messages: [
-        {id:1, sent: true,  msg: 'Lorem ipsum dolom nnjnjnjniiir',   image:'https://www.bootdey.com/img/Content/avatar/avatar1.png'},
-        {id:2, sent: true,  msg: 'sit amet, consectetuer',   image:'https://www.bootdey.com/img/Content/avatar/avatar1.png'},
-        {id:3, sent: false, msg: 'adipiscing elit. Aenean ', image:'https://www.bootdey.com/img/Content/avatar/avatar6.png'},
-        {id:4, sent: true,  msg: 'commodo ligula eget dolor.',   image:'https://www.bootdey.com/img/Content/avatar/avatar1.png'},
-        {id:5, sent: false, msg: 'Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes', image:'https://www.bootdey.com/img/Content/avatar/avatar6.png'},
-        {id:6, sent: true,  msg: 'nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo',   image:'https://www.bootdey.com/img/Content/avatar/avatar1.png'},
-        {id:7, sent: false, msg: 'rhoncus ut, imperdiet', image:'https://www.bootdey.com/img/Content/avatar/avatar6.png'},
-        {id:8, sent: false, msg: 'a, venenatis vitae', image:'https://www.bootdey.com/img/Content/avatar/avatar6.png'},
-      ]
+      messages: []
     };
     this.send = this.send.bind(this);
-    this.reply = this.reply.bind(this);
     this.renderItem   = this._renderItem.bind(this);
   }
   componentDidMount(){
-    fetch('http://192.168.0.110:5000/messages/getconversations/'+this.props.route.params.userid+'/'+this.props.route.params.workerid)
+    // console.log('user',this.props.route.params.userid)
+    // console.log('worker',this.props.route.params.workerid)
+    fetch('http://192.168.1.100:5000/messages/getconversations/'+this.props.route.params.userid+'/'+this.props.route.params.workerid)
     .then((response) => response.json())
     .then((json) => {
+      //console.log("res",json)
       if (json.success==true) {
         this.setState({
           messages:json.result,
@@ -73,30 +66,33 @@ export default class Chat extends Component {
       ]
       )
       );
-      console.log('llllll')
-    //this.makeRemoteRequest();
+      //console.log('llllll')
   }
-  // reply() {
-  //   var messages = this.state.messages;
-  //   messages.push({
-  //     id:Math.floor((Math.random() * 99999999999999999) + 1),
-  //     sent: false,
-  //     msg: 'llllll',
-  //     image:'https://www.bootdey.com/img/Content/avatar/avatar6.png'
-  //   });
-  //   this.setState({msg:'', messages:messages});
-  // }
+  
 
   send() {
-      // setTimeout(() => {
-      //   this.reply();
-      // }, 2000);
+      if (this.state.msg.length == 0) {
+        Alert.alert(
+          "Cannot send empty message",
+          "Try again.",
+          [
+            {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+            },
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ]
+          );
+          return
+
+      }
       const message_obj = {
         user_id:this.props.route.params.userid,
         worker_id:this.props.route.params.workerid,
         message:this.state.msg
       }
-      fetch('http://192.168.0.110:5000/messages/sendmessage', {
+      fetch('http://192.168.1.100:5000/messages/sendmessage', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -106,21 +102,12 @@ export default class Chat extends Component {
       })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json)
+        //console.log(json.msg)
         if (json.success==true) {
-          if (this.state.msg.length > 0) {
-            var messages = this.state.messages;
-            messages.push({
-              id:Math.floor((Math.random() * 99999999999999999) + 1),
-              sent: true,
-              msg: this.state.msg,
-              image:'https://www.bootdey.com/img/Content/avatar/avatar1.png'
-            });
-      
-          //   this.setState({msg:''});
+           var messages = this.state.messages;
+            messages.push(json.msg);
+            this.setState({msg:''});
             this.setState({messages:messages});
-          
-        }
       }
         else{
           Alert.alert(
@@ -156,9 +143,9 @@ export default class Chat extends Component {
     if (item.sent === false) {
       return (
         <View style={styles.eachMsg}>
-          <Image source={{ uri: item.image}} style={styles.userPic} />
+          <Image source={require(`./../../assets/images/avatar.png`)} style={styles.userPic} />
           <View style={styles.msgBlock}>
-            <Text style={styles.msgTxt}>{item.msg}</Text>
+            <Text style={styles.msgTxt}>{item.message}</Text>
           </View>
         </View>
       );
@@ -166,9 +153,9 @@ export default class Chat extends Component {
       return (
         <View style={styles.rightMsg} >
           <View style={styles.rightBlock} >
-            <Text style={styles.rightTxt}>{item.msg}</Text>
+            <Text style={styles.rightTxt}>{item.message}</Text>
           </View>
-          <Image source={{uri: item.image}} style={styles.userPic} />
+          <Image source={require(`./../../assets/images/avatar.png`)} style={styles.userPic} />
         </View>
       );
     }
@@ -177,38 +164,6 @@ export default class Chat extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-          {/* <KeyboardAvoidingView behavior="padding" style={styles.keyboard}>
-            <FlatList 
-              style={styles.list}
-              extraData={this.state}
-              data={this.state.messages}
-              keyExtractor = {(item) => {
-                return item.id;
-              }}
-              renderItem={this.renderItem}/>
-            <View style={styles.input}>
-              <TextInput
-                style={{flex: 1 }}
-                value={this.state.msg}
-                placeholderTextColor = "#696969"
-                onChangeText={msg => this.setState({ msg })}
-                blurOnSubmit={false}
-                onSubmitEditing={() => this.send()}
-                placeholder="Type a message"
-                returnKeyType="send"/>
-            </View>
-          </KeyboardAvoidingView> */}
-          {/* <View>
-              <TextInput
-                style={{flex: 1 }}
-                value={this.state.msg}
-                placeholderTextColor = "black"
-                onChangeText={msg => this.setState({ msg })}
-                blurOnSubmit={false}
-                onSubmitEditing={() => this.send()}
-                placeholder="Type a message"
-                returnKeyType="send"/>
-            </View> */}
          <FlatList 
               style={styles.list}
               extraData={this.state}
@@ -230,7 +185,7 @@ export default class Chat extends Component {
           </View>
 
             <TouchableOpacity style={styles.btnSend} onPress={()=>{this.send()}}>
-              <Image source={{uri:"https://img.icons8.com/small/75/ffffff/filled-sent.png"}} style={styles.iconSend}  />
+              <Image source={require(`./../../assets/images/send.png`)} style={styles.iconSend}  />
             </TouchableOpacity>
         </View>
       </View>
@@ -254,7 +209,7 @@ const styles = StyleSheet.create({
         padding:5,
       },
       btnSend:{
-        backgroundColor:"#00BFFF",
+        backgroundColor:colors.red,
         width:40,
         height:40,
         borderRadius:360,
@@ -381,10 +336,10 @@ const styles = StyleSheet.create({
   },
   userPic: {
     height: 40,
-    width: 40,
+    width: 47,
     margin: 5,
     borderRadius: 20,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: colors.red,
   },
   msgBlock: {
     width: 220,
@@ -412,12 +367,12 @@ const styles = StyleSheet.create({
   },
   msgTxt: {
     fontSize: 15,
-    color: '#555',
+    color: 'white',
     fontWeight: '600',
   },
   rightTxt: {
     fontSize: 15,
-    color: '#202020',
+    color: 'white',
     fontWeight: '600',
   },
 }); 

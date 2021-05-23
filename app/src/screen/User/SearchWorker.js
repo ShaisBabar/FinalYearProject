@@ -50,12 +50,6 @@ function SearchWorker({ navigation: { navigate } }) {
       },]);
 	const theme = 'red';
 	const border = 'grey';
-	// useEffect(() => {
-	// 	if (token) {
-	// 		navigate('MainApp');
-	// 	}
-	// 	return () => {};
-	// }, [token]);
 	const settingServices = (ids) =>{
 		console.log('My updated list :: ', ids)
 		setServices(ids)
@@ -65,7 +59,7 @@ function SearchWorker({ navigation: { navigate } }) {
 			city,categories:sd,area
 		}
 		console.log(data);
-		fetch('http://192.168.0.110:4000/search', {
+		fetch('http://192.168.1.100:4000/search', {
 			method: 'POST',
 			headers: {
 			  Accept: 'application/json',
@@ -77,9 +71,11 @@ function SearchWorker({ navigation: { navigate } }) {
 		.then((json) => {
 			console.log(json)
 			if (json.success==true) {
-			  let workerss = json.result;
-        console.log(workerss);
-				//navigate('Results',{workers:workerss});
+			  let workerss = JSON.parse(json.result);
+				workerss.forEach(element => {
+					console.log("ll",element._id.$oid)
+				});
+				 navigate('Results',{workers:workerss});
 			}
 			else{
 				Alert.alert(

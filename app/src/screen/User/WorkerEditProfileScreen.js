@@ -9,35 +9,89 @@ import {
 	TouchableOpacity,
 	Alert,
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import GradientHeader from 'react-native-gradient-header';
 import LinearGradient from 'react-native-linear-gradient';
-import * as Animatable from 'react-native-animatable';
+import {
+	Dropdown,
 
+  } from 'sharingan-rn-modal-dropdown';
 import colors from '../../styles/colors';
-function JobDetailScreen(props) 
+import {citydata,isl_data,lahore_data,karachi_data,quetta_data,multan_data} from './../../assets/strings'
+import CheckboxList from './../../components/checkbox/checkList';
+const service_data = [
+	{ id: "60534d726bd01c37c46e47dc", name: 'Plumbing' },
+	{ id: "60578a34816e0b1cbc5a57e7", name: 'Gardening' },
+	{ id: "608dbf89e00c57b3549bd875", name: 'Cooking' },
+	{ id: "608dbfe4e00c57b3549bd876", name: 'Laundary Work' },
+	{ id: "608dc018e00c57b3549bd877", name: 'Carpenting' },
+	{ id: "608dc03ae00c57b3549bd878", name: 'Electrician' },
+   
+  ];
+
+var sd = [];
+function WorkerEditProfileScreen({navigation: { goBack, navigate }}) 
 {
-	const job = props.route.params.job;
 	const user = global.user;
+	const border = 'grey';
 	const [name, setName] = useState(user?.name || '');
 	const [email, setEmail] = useState(user?.email);
 	const [phone, setPhone] = useState(user?.phoneno);
 	const [address, setAddress] = useState(user?.street_address);
 	const [city, setCity] = useState(user?.city);
-	const [area, setArea] = useState(user?.area);
-	const DeletePost = () =>{
-		fetch('http://192.168.1.100:5000/jobs/removejob/'+job._id, {
-			method: 'DELETE',
+	const [area, setArea] = useState('Add Area');
+	const [area_city, setAreaCity] = useState([ {
+        value: 'Add Area',
+        label: 'Add Area',
+      },]);
+	const data = citydata;
+
+	const setAreaforCityFunc = (city) =>{
+		setCity(city);
+		if(city=='Islamabad'){
+			setAreaCity(isl_data);
+		}
+		else if(city=='Karachi'){
+			setAreaCity(karachi_data);
+		}
+		else if(city=='Lahore'){
+			setAreaCity(lahore_data);
+		}
+		else if(city=='Karachi'){
+			setAreaCity(karachi_data);
+		}
+		else if(city=='Multan'){
+			setAreaCity(multan_data);
+		}
+		else if(city=='Quetta'){
+			setAreaCity(quetta_data);
+		}
+		setArea('Add Area')
+		
+	}
+
+	const update = () =>{
+		console.log(global.user)
+		const user = {
+			name, email, phoneno:phone,city,street_address:address,city,area,password:global.user.password,_id:global.user._id
+		}
+		console.log(user)
+		fetch('http://192.168.1.100:5000/users/edituser', {
+			method: 'PUT',
 			headers: {
 			  Accept: 'application/json',
 			  'Content-Type': 'application/json'
-			}
+			},
+			body: JSON.stringify(user)
 		})
 		.then((response) => response.json())
 		.then((json) => {
 			console.log(json)
 			if (json.success==true) {
+				global.user = user
+				//AsyncStorage.setItem('@Token', json.token);
 				Alert.alert(
-					"Post Deleted Successfully",
+					"Updated User",
 					"",
 					[
 					  {
@@ -48,11 +102,11 @@ function JobDetailScreen(props)
 					  { text: "OK", onPress: () => console.log("OK Pressed") }
 					]
 				  );
-				  props.navigation.navigate('UserActive');
+				navigate('Profile');
 			}
 			else{
 				Alert.alert(
-					"Something Went Wrong.",
+					"Could not perform Update",
 					"Try again.",
 					[
 					  {
@@ -63,11 +117,12 @@ function JobDetailScreen(props)
 					  { text: "OK", onPress: () => console.log("OK Pressed") }
 					]
 				  );
+				  navigate('Profile');
 			}
 		})
 		.catch((error) => Alert.alert(
-			"Error occured.",
-			"Try again.",
+			"Error occured",
+			"Try again later.",
 			[
 			  {
 				text: "Cancel",
@@ -76,16 +131,18 @@ function JobDetailScreen(props)
 			  },
 			  { text: "OK", onPress: () => console.log("OK Pressed") }
 			]
-		  ));
+		  )
+		  );
 		return;
 	}
+	
 	return (
 		<View style={styles.screen}>
 			<View style={styles.headerScreen}>
 				<Animatable.View animation="slideInDown">
 					 				<GradientHeader
-						title={`Job Details`}
-						subtitle=""
+						title={`Your Profile`}
+						subtitle="This is your public profile which workers can view."
 						gradientColors={[colors.red, colors.red]}
 						imageSource={{
 							uri: '../../assets/images/user.png'
@@ -95,16 +152,15 @@ function JobDetailScreen(props)
 			</View>
 			<View style={styles.flatContainer}>
 			<ScrollView style={styles.container}>
- 						<Text style={styles.text}>Job ID</Text>
+ 						<Text style={styles.text}>Full Name</Text>
 						<TextInput
 							style={styles.textInput}
 							placeholder={'Enter Full Name '}
 							maxLength={50}
 							onChangeText={(text) => setName(text)}
-							value={job._id}
-							editable={false}
+							value={name}
 						/>
-						<Text style={styles.text}>Category</Text>
+						<Text style={styles.text}>Email</Text>
 						<TextInput
 							style={styles.textInput}
 							autoCapitalize="none"
@@ -112,45 +168,100 @@ function JobDetailScreen(props)
 							placeholder={'Enter Email'}
 							maxLength={50}
 							onChangeText={(text) => setEmail(text)}
-							value={job.categories[0].name}
-							editable={false}
+							value={email}
 						/>
-						<Text style={styles.text}>Date Created</Text>
+						<Text style={styles.text}>Phone no.</Text>
 						<TextInput
 							style={styles.textInput}
 							placeholder={'Enter Phone no.'}
+							keyboardType={'phone-pad'}
+							maxLength={13}
+							minLength={11}
 							onChangeText={(text) => setPhone(text)}
-							value={job.dateCreated}
-							editable={false}
+							value={phone}
 						/>
-						<Text style={styles.text}>Description</Text>
+						<Text style={styles.text}>City</Text>
+						<View style={styles.citycontainer}>
+						<Dropdown
+							placeholder={'Select City'}
+							data={data}
+							enableSearch
+							value={city}
+							onChange={setAreaforCityFunc}
+						/>
+						</View>
+						<Text style={styles.text}>Area</Text>
+						<View style={styles.citycontainer}>
+						<Dropdown
+							placeholder={'Select Area'}
+							data={area_city}
+							enableSearch
+							value={area}
+							onChange={setArea}
+						/>
+						</View>
+						<Text style={styles.text}>Street Address</Text>
 						<TextInput
 							style={styles.textInput}
-							placeholder={'Enter Full Name '}
-							onChangeText={(text) => setCity(text)}
-							value={job.description}
-							editable={false}
+							placeholder={'Enter Address'}
+							maxLength={20}
+							onChangeText={(text) => setAddress(text)}
+							value={address}
 						/>
-						<Text style={styles.text}>User Address</Text>
-						<TextInput
-							style={styles.textInput}
-							placeholder={'Enter Full Name '}
-							onChangeText={(text) => setArea(text)}
-							value={job.street_address+", "+job.area+", "+job.city}
-							editable={false}
-						/>
-			
-			<TouchableOpacity
-					   style={{ width: '100%', alignItems: 'center' }}
-					   onPress={() => props.navigation.goback()}
-				      >
-					<Text style={styles.textBtn}>Go Back</Text>
-				   </TouchableOpacity>
-					
-					
-				
-						
-						<View style={styles.bottom}></View>
+						<Text style={styles.text}>Select Services</Text>
+				<CheckboxList
+				headerName="Select All"
+				theme={theme}
+				listItems={service_data}
+				onChange={({ ids, items }) => {
+					//settingServices(ids)
+					console.log(ids);
+					sd = ids;
+				 }}
+				onLoading={() => (
+					<View
+					style={{
+						flex: 1,
+						marginTop:20,
+						justifyContent: 'center',
+						alignItems: 'center'
+					}}
+               >
+              <ActivityIndicator size="large" color="red" />
+              <Text style={{ fontSize: 16, color: '#555555' }}>
+                Loading....
+              </Text>
+            </View>
+          )}
+          //selectedListItems={service_data.slice(0, 4)}
+          checkboxProp={Platform.select({
+            // Optional
+            ios: {
+              // iOS (supported from v0.3.0)
+              boxType: 'square',
+              tintColor: border,
+              onTintColor: theme,
+              onCheckColor: '#fff',
+              onFillColor: theme
+            },
+            android: {
+              tintColors: { true: theme, false: border }
+            }
+          })}
+          // listItemStyle={{ borderBottomColor: "#eee", borderBottomWidth: 1 }}
+          
+        />
+						<LinearGradient
+							colors={[colors.orange, colors.red]}
+							style={styles.button}
+						>
+							<TouchableOpacity
+								style={{ width: '100%', alignItems: 'center' }}
+								onPress={update}
+							>
+								<Text style={styles.textBtn}>Save</Text>
+							</TouchableOpacity>
+						</LinearGradient>		
 		</ScrollView>
 		</View>
 		</View>
@@ -158,9 +269,6 @@ function JobDetailScreen(props)
 }
 
 const styles = StyleSheet.create({
-	bottom:{
-       marginBottom:40
-	},
 	heading:{
        color:colors.red,
 	   fontSize:40,
@@ -416,16 +524,17 @@ const styles = StyleSheet.create({
 		elevation: 5,
 		backgroundColor: colors.light,
 	},
-	textBtn: {
-		color: colors.white,
-		fontSize: 18,
-		textTransform: 'uppercase',
-	},
-	textBtnSignUp: {
-		color: colors.red,
-		fontSize: 18,
-		textTransform: 'uppercase',
-	},
 });
 
-export default JobDetailScreen;
+const mapStateToProps = ({
+	user: { token },
+	mainRecords: { user, records, loading },
+}) => ({
+	token,
+	user,
+	records,
+	loading,
+});
+
+
+export default WorkerEditProfileScreen;

@@ -43,7 +43,7 @@ function JobDetailScreenW(props)
         }
         job.applicants.push({worker_id:global.user._id})
         console.log(user)
-        fetch('http://192.168.0.110:5000/jobs/applyjob', {
+        fetch('http://192.168.1.100:5000/jobs/applyjob', {
             method: 'PUT',
             headers: {
               Accept: 'application/json',
@@ -106,7 +106,7 @@ function JobDetailScreenW(props)
         }
         job.applicants = job.applicants.filter(r=>r.worker_id!=global.user._id)
         console.log(user)
-        fetch('http://192.168.0.110:5000/jobs/unapplyjob', {
+        fetch('http://192.168.1.100:5000/jobs/unapplyjob', {
             method: 'PUT',
             headers: {
               Accept: 'application/json',

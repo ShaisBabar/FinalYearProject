@@ -9,7 +9,7 @@ import ProfileScreen from '../screen/User/ProfileScreen';
 import ExploreScreen from '../screen/User/ExploreScreen'
 import AddJobScreen from '../screen/User/Addjob';
 import chatScreen from '../screen/chat/chatScreen';
-import ConversationScreen from '../screen/chat/workerconversations';
+import UserConversationScreen from '../screen/chat/userconversations';
 import WelcomeScreen from '../screen/User/WelcomeScreen';
 import UserSettings from '../screen/User/UserSettings';
 import UpdatePasswordScreen from '../screen/User/UpdatePasswordScreen';
@@ -41,7 +41,7 @@ export default class UserStack extends Component {
 	
 			<Stack.Screen
 				name="Conversations"
-				component={ConversationScreen}
+				component={UserConversationScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',

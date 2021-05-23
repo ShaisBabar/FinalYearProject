@@ -36,7 +36,7 @@ class SearchResults extends Component {
   }
 
   componentDidMount() {
-    //   fetch('http://192.168.0.110:5000/jobs/jobsbyuserapplicants/'+global.user._id+'/'+this.props.route.params.jobid)
+    //   fetch('http://192.168.1.100:5000/jobs/jobsbyuserapplicants/'+global.user._id+'/'+this.props.route.params.jobid)
     //   .then((response) => response.json())
     //   .then((json) => {
     //     if (json.success==true) {
@@ -97,7 +97,7 @@ class SearchResults extends Component {
   assignjob = (workerid) =>{
     var data = {id:this.props.route.params.jobid,workerid:workerid}
     console.log(data)
-    fetch('http://192.168.0.110:5000/jobs/addworker', {
+    fetch('http://192.168.1.100:5000/jobs/addworker', {
 			method: 'PUT',
 			headers: {
 			  Accept: 'application/json',
@@ -159,7 +159,7 @@ class SearchResults extends Component {
 
 
     const newData = this.arrayholder.filter(item => {
-      return `${item.worker_id.name}`.includes(text);
+      return `${item.name}`.includes(text);
     });
     console.log(newData);
 
@@ -198,9 +198,9 @@ class SearchResults extends Component {
             <View style={styles.eachMsg}>
             <Image source={require(`./../../assets/categories/worker.png`)} style={styles.userPic} />
             <View>
-              <Text style={styles.msgTxt}>Worker Id: {item._id}</Text>
-              <Text style={styles.msgTxt}>Worker Name: {item.worker_id.name}</Text>
-              <Text style={styles.msgTxt}>Date: {item.Date_Applied}</Text>
+              <Text style={styles.msgTxt}>Worker Id: {item._id.$oid}</Text>
+              <Text style={styles.msgTxt}>Worker Name: {item.name}</Text>
+              <Text style={styles.msgTxt}>Average Rating: {item.avg_rating}</Text>
               <TouchableOpacity
 					style={[
 						styles.button,
@@ -210,7 +210,7 @@ class SearchResults extends Component {
 							borderWidth: 1,
 						},
 					]}
-					onPress={() => this.props.navigation.navigate('Chat Details',{workerid:item.worker_id,userid:global.user._id})}
+					onPress={() => this.props.navigation.navigate('Chat Details',{workerid:item._id.$oid,userid:global.user._id})}
 				>
 					<Text style={styles.textBtnSignUp}>Message</Text>
 				</TouchableOpacity>
@@ -223,7 +223,7 @@ class SearchResults extends Component {
 							borderWidth: 1,
 						},
 					]}
-					onPress={() => this.props.navigation.navigate('WorkerProfile',{user:item.worker_id})}
+					onPress={() => this.props.navigation.navigate('WorkerProfile',{user:item})}
 				>
 					<Text style={styles.textBtnSignUp}>View Profile</Text>
 				</TouchableOpacity>
@@ -237,9 +237,6 @@ class SearchResults extends Component {
         />
 
         }
-        {/* {this.state.data && this.state.data.length==0 &&
-          <Text style={styles.msgTxt}>No Applications yet!</Text>
-        } */}
         
       </View>
     );

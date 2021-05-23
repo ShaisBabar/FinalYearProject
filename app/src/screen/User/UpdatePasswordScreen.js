@@ -14,17 +14,32 @@ import * as Animatable from 'react-native-animatable';
 import colors from '../../styles/colors';
 import LoadingIndicator from '../../components/LoadingIndicator';
 
-function LoginScreen({ navigation: { navigate }}) {
-	const [email, setEmail] = useState('');
+function UpdatePasswordScreen({ navigation: { navigate }}) {
 	const [password, setPassword] = useState('');
+	const [cpassword, setCPassword] = useState('');
 
-	const login_user = (email,password) =>{
-			const user = {
-				email,password
+	const update_password = () =>{
+		    if(password!=cpassword){
+				Alert.alert(
+					"Password and Confirm Password do not match!",
+					"",
+					[
+					  {
+						text: "Cancel",
+						onPress: () => console.log("Cancel Pressed"),
+						style: "cancel"
+					  },
+					  { text: "OK", onPress: () => console.log("OK Pressed") }
+					]
+				  );
+				return;
 			}
-			console.log(user)
-			fetch('http://192.168.0.110:5000/users/loginuser', {
-				method: 'POST',
+			const user = {
+				id:global.user._id,
+				password
+			}
+			fetch('http://192.168.1.100:5000/users/editpassword', {
+				method: 'PUT',
 				headers: {
 				  Accept: 'application/json',
 				  'Content-Type': 'application/json'
@@ -35,11 +50,10 @@ function LoginScreen({ navigation: { navigate }}) {
 			.then((json) => {
 				console.log(json)
 				if (json.success==true) {
-					global.user = json.user
-					//AsyncStorage.setItem('@Token', json.token);
+					global.user.password = json.password
 					Alert.alert(
-						"Logged in successfully",
-						"Logging in.",
+						"Password Updated Successfully",
+						"",
 						[
 						  {
 							text: "Cancel",
@@ -49,11 +63,11 @@ function LoginScreen({ navigation: { navigate }}) {
 						  { text: "OK", onPress: () => console.log("OK Pressed") }
 						]
 					  );
-					navigate('MainApp',{user:json.user});
+					//navigate('MainApp',{user:json.user});
 				}
 				else{
 					Alert.alert(
-						json.error,
+						"Error Occured.",
 						"Try again.",
 						[
 						  {
@@ -90,22 +104,13 @@ function LoginScreen({ navigation: { navigate }}) {
 			>
 				<Image
 					style={styles.logo}
-					source={require('../../assets/images/user.png')}
+					source={require('../../assets/images/lock.png')}
 				/>
 			</LinearGradient>
 			<Animatable.View animation="slideInUp" style={styles.footer}>
-				<Text style={styles.text}>Email</Text>
-				<TextInput
-					autoCapitalize="none"
-					keyboardType="email-address"
-					style={styles.textInput}
-					placeholder={'Enter Email'}
-					maxLength={50}
-					onChangeText={(text) => setEmail(text)}
-					value={email}
-				/>
 				<Text style={styles.text}>Password</Text>
 				<TextInput
+					autoCapitalize="none"
 					style={styles.textInput}
 					placeholder={'Enter Password'}
 					maxLength={20}
@@ -113,33 +118,27 @@ function LoginScreen({ navigation: { navigate }}) {
 					secureTextEntry={true}
 					value={password}
 				/>
-				{/* <TouchableOpacity onPress={() => navigate('Forget')}>
-					<Text style={styles.textforget}>Forget Password?</Text>
-				</TouchableOpacity> */}
+				<Text style={styles.text}>Confirm Password</Text>
+				<TextInput
+					style={styles.textInput}
+					autoCapitalize="none"
+					placeholder={'Confirm Password'}
+					maxLength={20}
+					onChangeText={(text) => setCPassword(text)}
+					secureTextEntry={true}
+					value={cpassword}
+				/>
 				<LinearGradient
 					colors={[colors.red, colors.red]}
 					style={[styles.button]}
 				>
 					<TouchableOpacity
 						style={{ width: '100%', alignItems: 'center' }}
-						onPress={() => login_user(email, password)}
+						onPress={() => update_password()}
 					>
-						<Text style={styles.textBtn}>Sign In</Text>
+						<Text style={styles.textBtn}>Update Password</Text>
 					</TouchableOpacity>
 				</LinearGradient>
-				<TouchableOpacity
-					style={[
-						styles.button,
-						{
-							backgroundColor: colors.light,
-							borderColor: colors.red,
-							borderWidth: 1,
-						},
-					]}
-					onPress={() => navigate('Register')}
-				>
-					<Text style={styles.textBtnSignUp}>Sign Up</Text>
-				</TouchableOpacity>
 			</Animatable.View>
 		</View>
 	);
@@ -210,8 +209,8 @@ const styles = StyleSheet.create({
 	},
 	logo: {
 		// tintColor: colors.red,
-		width: 250,
-		height: 200,
+		width: 200,
+		height: 180,
 	},
 	header: {
 		flex: 1,
@@ -230,4 +229,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default LoginScreen;
+export default UpdatePasswordScreen;

@@ -29,7 +29,7 @@ function WorkerLoginScreen({ navigation: { navigate }}) {
 			email,password
 		}
 		console.log(user)
-		fetch('http://192.168.0.110:5000/workers/loginworker', {
+		fetch('http://192.168.1.100:5000/workers/loginworker', {
 			method: 'POST',
 			headers: {
 			  Accept: 'application/json',

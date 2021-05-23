@@ -19,24 +19,37 @@ function ReviewCard({ title, text, rated, time, image }) {
 			// onPress={onPress}
 		>
 			<View style={styles.card}>
-				<Image style={styles.image} source={{ uri: image }} />
+				{image=='like.png' && 
+				 <Image style={styles.image} source={require(`./../assets/images/like.png`)} />
+				}
+				{image=='unlike.png' && 
+				 <Image style={styles.image} source={require(`./../assets/images/unlike.png`)} />
+				}
+				
 				<View style={{ flex: 1 }}>
 					<View style={styles.detailsContainer}>
 						<View style={styles.leftContainer}>
 							<Text style={styles.title}>{title}</Text>
-							<Text style={styles.time}>{time}</Text>
+							<Text style={styles.time}>By: {time}</Text>
 						</View>
 						<View style={styles.rightContainer}>
 							<Rating
+							    type='heart'
 								style={styles.rating}
-								imageSize={14}
+								imageSize={18}
 								ratingCount={5}
 								startingValue={rated}
 								readonly={true}
 							/>
 						</View>
 					</View>
-					<Text style={styles.text}>{text}</Text>
+					{text==1 &&
+					<Text style={styles.text}>Sentiment: Positive</Text>
+					}
+					{text==0 &&
+					<Text style={styles.text}>Sentiment: Negative</Text>
+					}
+					
 				</View>
 			</View>
 		</TouchableHighlight>
@@ -86,18 +99,20 @@ const styles = StyleSheet.create({
 		// backgroundColor: colors.red,
 	},
 	image: {
-		width: 70,
-		height: 70,
-		borderRadius: 35,
+		width: 80,
+		height: 80,
+		borderRadius: 20,
 		margin: 10,
+		padding:30
 	},
 	title: {
 		fontWeight: 'bold',
+		fontSize: 18,
 	},
 	time: {
 		color: colors.medium,
 		fontWeight: '100',
-		fontSize: 12,
+		fontSize: 15,
 		marginTop: 5,
 	},
 	text: {
@@ -106,6 +121,7 @@ const styles = StyleSheet.create({
 		paddingBottom: 10,
 		marginRight: 5,
 		paddingHorizontal: 10,
+		fontSize: 15,
 		// backgroundColor: colors.red,
 	},
 	rating: {

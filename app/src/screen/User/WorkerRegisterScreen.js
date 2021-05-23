@@ -65,7 +65,7 @@ function WorkerRegisterScreen({ navigation: { navigate } }) {
 			name,email,phoneno:phone,password,city,street_address:address,categories:sd,area
 		}
 		console.log(worker);
-		fetch('http://192.168.0.110:5000/workers/addworker', {
+		fetch('http://192.168.1.100:5000/workers/addworker', {
 			method: 'POST',
 			headers: {
 			  Accept: 'application/json',

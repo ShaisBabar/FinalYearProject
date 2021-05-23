@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, ActivityIndicator,Image,StyleSheet,Dimensions,TouchableOpacity,Alert,ScrollView } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator,Image,StyleSheet,Dimensions,TouchableOpacity,Alert } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
 import colors from '../../styles/colors';
 const { width, height } = Dimensions.get('window');
-import GradientHeader from 'react-native-gradient-header';
-import * as Animatable from 'react-native-animatable';
+//import {images} from './../../assets/strings';
 
 const images_name = [
   'electrician.png',
@@ -23,7 +22,7 @@ const images = [
   require(`./../../assets/categories/laundary.png`),
   require(`./../../assets/categories/gardening.png`)
 ];
-class ExploreScreen extends Component {
+class WorkerCompletedJobs extends Component {
   constructor(props) {
     super(props);
 
@@ -38,7 +37,7 @@ class ExploreScreen extends Component {
 
   componentDidMount() {
       this.setState({ loading: true });
-      fetch('http://192.168.1.100:5000/jobs/jobs')
+      fetch('http://192.168.1.100:5000/jobs/jobsbyuseractive/'+global.user._id)
       .then((response) => response.json())
       .then((json) => {
         if (json.success==true) {
@@ -93,32 +92,8 @@ class ExploreScreen extends Component {
         ]
         )
         );
-      //this.makeRemoteRequest();
     
-  
   }
-
-  makeRemoteRequest = () => {
-    const url = `https://randomuser.me/api/?&results=20`;
-    this.setState({ loading: true });
-
-    fetch(url)
-      .then(res => res.json())
-      .then(res => {
-        console.log("kkk",res.results)
-        this.setState({
-          data: res.results,
-          error: res.error || null,
-          loading: false,
-        });
-        this.arrayholder = res.results;
-      })
-      .catch(error => {
-        this.setState({ error, loading: false });
-      });
-
-      console.log(this.state.data)
-  };
 
   renderSeparator = () => {
     return (
@@ -174,42 +149,8 @@ class ExploreScreen extends Component {
       );
     }
     return (
-      <View style={styles.screen}>
-		<View style={styles.headerScreen}>
- 				<Animatable.View animation="slideInDown">
- 					<GradientHeader
- 						title={`Hello, ${user ? user.name : ''}`}
- 						subtitle="Get started to sell your services!"
- 						gradientColors={[colors.red, colors.red]}
- 						imageSource={{
- 							uri: '../../assets/images/user.png'
- 						}}
- 					/>
- 				</Animatable.View>
- 			</View>
-			 <View style={{marginTop:190}}>
- 			</View>
- 			<View>
- 				<Text style={styles.heading}>APPLY FOR SERVICE</Text>
- 			</View>
-
-
+      <View style={{ flex: 1 }}>
         {this.state.data && this.state.data.length>0 &&
-		  <>
-		  <TouchableOpacity
-					style={[
-						styles.button,
-						{
-							backgroundColor: colors.light,
-							borderColor: colors.red,
-							borderWidth: 1,
-						},
-					]}
-					onPress={() => navigate('WorkerLogin')}
-				>
-					<Text style={styles.textBtnSignUp}>Apply Filters</Text>
-		</TouchableOpacity>
-          <ScrollView>
           <FlatList
           data={this.state.data}
           renderItem={({ item }) => (
@@ -217,11 +158,10 @@ class ExploreScreen extends Component {
             <Image source={item.categories[0].image} style={styles.userPic} />
             <View>
               <Text style={styles.msgTxt}>Job Id: {item._id}</Text>
-			  <Text style={styles.msgTxt}>Posted By: {item.user_id.name}</Text>
               <Text style={styles.msgTxt}>Date: {item.dateCreated}</Text>
         <TouchableOpacity
 					style={[
-						styles.hbutton,
+						styles.button,
 						{
 							backgroundColor: colors.light,
 							borderColor: colors.red,
@@ -238,12 +178,11 @@ class ExploreScreen extends Component {
           )}
           keyExtractor={item => item.email}
           ItemSeparatorComponent={this.renderSeparator}
-          //ListHeaderComponent={this.renderHeader}
-        /></ScrollView>
-         <View style={{marginBottom:20}}></View>
-        </>
+          ListHeaderComponent={this.renderHeader}
+        />
+
         }
-       
+        
       </View>
     );
   }
@@ -251,45 +190,9 @@ class ExploreScreen extends Component {
 
 
 const styles = StyleSheet.create({
-  button: {
-		// backgroundColor: colors.red,
-		borderRadius: 2,
-		justifyContent: 'center',
-		alignItems: 'center',
-		padding: 10,
-		elevation: 5,
-        height:40,
-		marginVertical: 10,
-		marginHorizontal: 10,
-        marginBottom:10
-	},
-  hbutton: {
-		// backgroundColor: colors.red,
-		borderRadius: 2,
-		justifyContent: 'center',
-		alignItems: 'center',
-		padding: 10,
-		elevation: 5,
-        height:30,
-		marginVertical: 10,
-		marginHorizontal: 10,
-        marginBottom:10
-	},
-		heading:{
-       color:colors.red,
-	   fontSize:30,
-	   fontWeight:'bold',
-	   textAlign:'center',
-	   marginBottom:40,
-	   marginTop:15
-	},
     container:{
         flex:1
       },
-	  	screen: {
-		flex: 1,
-		backgroundColor: colors.white,
-	  },
       list:{
         paddingHorizontal: 17,
         marginTop:40
@@ -475,4 +378,4 @@ const styles = StyleSheet.create({
   },
 }); 
 
-export default ExploreScreen;
+export default WorkerCompletedJobs;

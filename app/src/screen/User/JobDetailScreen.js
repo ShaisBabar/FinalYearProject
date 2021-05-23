@@ -17,6 +17,7 @@ import colors from '../../styles/colors';
 function JobDetailScreen(props) 
 {
 	const job = props.route.params.job;
+	console.log(job.is_paid, job.assigned_to)
 	const user = global.user;
 	const [name, setName] = useState(user?.name || '');
 	const [email, setEmail] = useState(user?.email);
@@ -25,7 +26,7 @@ function JobDetailScreen(props)
 	const [city, setCity] = useState(user?.city);
 	const [area, setArea] = useState(user?.area);
 	const DeletePost = () =>{
-		fetch('http://192.168.0.110:5000/jobs/removejob/'+job._id, {
+		fetch('http://192.168.1.100:5000/jobs/removejob/'+job._id, {
 			method: 'DELETE',
 			headers: {
 			  Accept: 'application/json',
@@ -139,14 +140,24 @@ function JobDetailScreen(props)
 							value={job.street_address+", "+job.area+", "+job.city}
 							editable={false}
 						/>
-						<LinearGradient
-					colors={[colors.red, colors.red]}
-					style={[styles.button]}
-				>
+						
 					{job.is_paid==true &&
-					
+
+					<>
 					<TouchableOpacity
-					style={{ width: '100%', alignItems: 'center' }}
+					style={[
+						styles.button,
+						{
+							backgroundColor: colors.light,
+							borderColor: colors.red,
+							borderWidth: 1,
+							marginBottom:10,
+							width:'50%',
+							//justifyContent: 'left',
+		                    //alignItems: 'l',
+							marginRight:20000
+						},
+					]}
 					onPress={() =>  Alert.alert(
 						"Waiting for Worker to confirm payment is received.",
 						"After that, job will be moved from active to complete state.",
@@ -160,27 +171,34 @@ function JobDetailScreen(props)
 						]
 					  )}
 				   >
-				 <Text style={styles.textBtn}>Waiting for Confirmation</Text>
+				 <Text style={styles.textBtnSignUp}>Waiting</Text>
 				</TouchableOpacity>
+				</>
+				
 				 }
 
 					{job.assigned_to && job.is_paid==false &&
-					
-					   <TouchableOpacity
-					   style={{ width: '100%', alignItems: 'center' }}
-					   onPress={() => props.navigation.navigate('Confirmation',{applicants:job.applicants,jobid:job._id,worker:job.assigned_to})}
-				      >
-					<Text style={styles.textBtn}>Mark as Completed</Text>
-				   </TouchableOpacity>
+					   <>
+				   <TouchableOpacity
+					style={[
+						styles.button,
+						{
+							backgroundColor: colors.light,
+							borderColor: colors.red,
+							borderWidth: 1,
+							marginBottom:10,
+							width:'60%'
+						},
+					]}
+					onPress={() => props.navigation.navigate('Confirmation',{applicants:job.applicants,jobid:job._id,worker:job.assigned_to})}
+				>
+					<Text style={styles.textBtnSignUp}>Mark as Completed</Text>
+				</TouchableOpacity>
+				   </>
+				   
 					}
 					{!job.assigned_to && job.is_paid==false &&
-					<>
-					  <TouchableOpacity
-					  style={{ width: '100%', alignItems: 'center' }}
-					  onPress={() => props.navigation.navigate('Applications',{applicants:job.applicants,jobid:job._id})}
-				  >
-					  <Text style={styles.textBtn}>View Applications</Text>
-				  </TouchableOpacity>
+					<View>
 				  <TouchableOpacity
 					style={[
 						styles.button,
@@ -188,6 +206,22 @@ function JobDetailScreen(props)
 							backgroundColor: colors.light,
 							borderColor: colors.red,
 							borderWidth: 1,
+							marginBottom:10,
+							width:'55%'
+						},
+					]}
+					onPress={() => props.navigation.navigate('Applications',{applicants:job.applicants,jobid:job._id})}
+				>
+					<Text style={styles.textBtnSignUp}>View Applications</Text>
+				</TouchableOpacity>
+				  <TouchableOpacity
+					style={[
+						styles.button,
+						{
+							backgroundColor: colors.light,
+							borderColor: colors.red,
+							borderWidth: 1,
+							marginBottom:10
 						},
 					]}
 					onPress={() => props.navigation.navigate('UpdateDetails',{job:job})}
@@ -207,10 +241,10 @@ function JobDetailScreen(props)
 				>
 					<Text style={styles.textBtnSignUp}>Delete Post</Text>
 				</TouchableOpacity>
-				  </>
+				  </View>
 				  
 					}
-				</LinearGradient>
+				
 				
 						
 						<View style={styles.bottom}></View>

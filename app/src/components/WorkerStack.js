@@ -38,6 +38,15 @@ import UpdatePasswordScreen from '../screen/User/UpdatePasswordScreen';
 import ReviewScreen from './../screen/User/ReviewScreen';
 import JobDetailScreenW from './../screen/User/JobDetailScreenW';
 import WorkerProfileScreen from './../screen/User/WorkerProfileScreen';
+import WorkerActiveJobs from './../screen/User/WorkerActiveJobs';
+import WorkerCompletedJobs from './../screen/User/WorkerCompletedJobs';
+import WorkerEditProfileScreen from './../screen/User/WorkerEditProfileScreen';
+import ContactusScreen from '../screen/User/ContactusScreen';
+import FAQScreen from './../screen/User/FAQScreen';
+import WorkerUpdatePasswordScreen from './../screen/User/WorkerUpdatePasswordScreen';
+import WorkerSettingsScreen from './../screen/User/WokrerSettings';
+import WorkerJobsScreen from './../screen/User/WorkerJobsScreen';
+
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -75,7 +84,7 @@ export default class WorkerStack extends Component {
 	
 			<Stack.Screen
 				name="Settings"
-				component={UserSettings}
+				component={WorkerSettingsScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',
@@ -83,7 +92,7 @@ export default class WorkerStack extends Component {
 			/>
 			<Stack.Screen
 				name="Edit Profile"
-				component={EditProfileScreen}
+				component={WorkerEditProfileScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',
@@ -107,7 +116,7 @@ export default class WorkerStack extends Component {
 			/>
 			<Stack.Screen
 				name="UpdatePassword"
-				component={UpdatePasswordScreen}
+				component={WorkerUpdatePasswordScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',
@@ -148,6 +157,30 @@ export default class WorkerStack extends Component {
         return (
 		<Stack.Navigator>
 			<Stack.Screen
+				name="Jobs"
+				component={WorkerJobsScreen}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
+			<Stack.Screen
+				name="UserActive"
+				component={WorkerActiveJobs}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
+			<Stack.Screen
+				name="UserComplete"
+				component={WorkerCompletedJobs}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
+			<Stack.Screen
 				name="Home"
 				component={ExploreScreen}
 				options={{
@@ -156,32 +189,8 @@ export default class WorkerStack extends Component {
 				}}
 			/>
 			<Stack.Screen
-				name="UserActive"
-				component={UserActiveJobs}
-				options={{
-					headerStyle: { backgroundColor: colors.red },
-					headerTintColor: 'white',
-				}}
-			/>
-			<Stack.Screen
-				name="UserComplete"
-				component={UserCompletedJobs}
-				options={{
-					headerStyle: { backgroundColor: colors.red },
-					headerTintColor: 'white',
-				}}
-			/>
-			<Stack.Screen
-				name="Applications"
-				component={ApplicationsScreen}
-				options={{
-					headerStyle: { backgroundColor: colors.red },
-					headerTintColor: 'white',
-				}}
-			/>
-			<Stack.Screen
 				name="WorkerProfile"
-				component={WorkerProfileScreenU}
+				component={WorkerProfileScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',
@@ -195,30 +204,14 @@ export default class WorkerStack extends Component {
 					headerTintColor: 'white',
 				}}
 			/>
-			<Stack.Screen
-				name="Review"
-				component={ReviewScreen}
-				options={{
-					headerStyle: { backgroundColor: colors.red },
-					headerTintColor: 'white',
-				}}
-			/>
-			<Stack.Screen
+			{/* <Stack.Screen
 				name="UpdateDetails"
 				component={UpdateJobDetailsScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',
 				}}
-			/>
-			<Stack.Screen
-				name="Chat Details"
-				component={chatScreen}
-				options={{
-					headerStyle: { backgroundColor: colors.red },
-					headerTintColor: 'white',
-				}}
-			/>
+			/> */}
 		</Stack.Navigator>
 		);
 	}
@@ -241,22 +234,14 @@ export default class WorkerStack extends Component {
 			  }}>
 
 				<Drawer.Screen name="Home" children={this.createExploreStack} />
-				
-				{/* <Drawer.Screen name="Explore Jobs" component={PostServiceScreen}
-				options={{
-					headerStyle: { backgroundColor: colors.red },
-					headerTintColor: 'white',
-				}}/> */}
 				<Drawer.Screen
 					name="Services History"
 					children={this.createAppointmentStack}
 				/>
 				<Drawer.Screen name="Conversations" children={this.createChatStack} 
 				 />
-				<Drawer.Screen name="Profile" component={WorkerProfileScreen} />
+				<Drawer.Screen name="Profile/Reviews" component={WorkerProfileScreen} />
 				<Drawer.Screen name="Account Settings" children={this.createAccountStack} 
-				 />
-				<Drawer.Screen name="Reviews" component={ReviewScreen}
 				 />
 				<Drawer.Screen name="Logout" component={WelcomeScreen} />
 			</Drawer.Navigator>

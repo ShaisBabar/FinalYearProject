@@ -23,7 +23,7 @@ function LoginScreen({ navigation: { navigate }}) {
 				email,password
 			}
 			console.log(user)
-			fetch('http://192.168.0.110:5000/users/loginuser', {
+			fetch('http://192.168.1.100:5000/users/loginuser', {
 				method: 'POST',
 				headers: {
 				  Accept: 'application/json',

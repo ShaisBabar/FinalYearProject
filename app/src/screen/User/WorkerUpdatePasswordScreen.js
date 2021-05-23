@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Rating, AirbnbRating } from 'react-native-ratings';
-
 import {
 	Text,
 	TextInput,
@@ -14,37 +12,48 @@ import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 
 import colors from '../../styles/colors';
+import LoadingIndicator from '../../components/LoadingIndicator';
 
-function ReviewScreen(props) {
-	const [reviewtext, setReview] = useState('');
-	const [rating, setRating] = useState('');
-    const ratingCompleted = (rating) => {
-        console.log("Rating is: " + rating)
-		setRating(rating);
-      }
-	const submitreview = () =>{
-		let data ={review:reviewtext,rating:rating,user_id:global.user._id,worker_id:props.route.params.worker,job_id:props.route.params.jobid,actual_payment:props.route.params.payment}
-		console.log(data)
-		fetch('http://192.168.1.100:4001/predict', {
-				method: 'POST',
+function WorkerUpdatePasswordScreen({ navigation: { navigate }}) {
+	const [password, setPassword] = useState('');
+	const [cpassword, setCPassword] = useState('');
+
+	const update_password = () =>{
+		    if(password!=cpassword){
+				Alert.alert(
+					"Password and Confirm Password do not match!",
+					"",
+					[
+					  {
+						text: "Cancel",
+						onPress: () => console.log("Cancel Pressed"),
+						style: "cancel"
+					  },
+					  { text: "OK", onPress: () => console.log("OK Pressed") }
+					]
+				  );
+				return;
+			}
+			const user = {
+				id:global.user._id,
+				password
+			}
+			fetch('http://192.168.1.100:5000/users/editpassword', {
+				method: 'PUT',
 				headers: {
 				  Accept: 'application/json',
 				  'Content-Type': 'application/json'
 				},
-				body: JSON.stringify(data)
+				body: JSON.stringify(user)
 			})
 			.then((response) => response.json())
 			.then((json) => {
-				//console.log(json)
+				console.log(json)
 				if (json.success==true) {
-					var r = json.result;
-					var sent = "Positive";
-					if(r==0){
-                        sent = "Negative"
-					}
+					global.user.password = json.password
 					Alert.alert(
-						sent+" Review Submitted!",
-						"Thank you for your feedback.",
+						"Password Updated Successfully",
+						"",
 						[
 						  {
 							text: "Cancel",
@@ -54,11 +63,11 @@ function ReviewScreen(props) {
 						  { text: "OK", onPress: () => console.log("OK Pressed") }
 						]
 					  );
-					props.navigation.navigate('UserActive');
+					//navigate('MainApp',{user:json.user});
 				}
 				else{
 					Alert.alert(
-						'Something Went Wrong.',
+						"Error Occured.",
 						"Try again.",
 						[
 						  {
@@ -69,11 +78,11 @@ function ReviewScreen(props) {
 						  { text: "OK", onPress: () => console.log("OK Pressed") }
 						]
 					  );
-					  
+					  navigate('Login');
 				}
 			})
 			.catch((error) => Alert.alert(
-				"Error occured. "+error,
+				"Error occured.",
 				"Try again later.",
 				[
 				  {
@@ -95,41 +104,41 @@ function ReviewScreen(props) {
 			>
 				<Image
 					style={styles.logo}
-					source={require('../../assets/images/13.png')}
+					source={require('../../assets/images/lock.png')}
 				/>
 			</LinearGradient>
 			<Animatable.View animation="slideInUp" style={styles.footer}>
-            <Text style={styles.text}>Give Rating</Text>
-            <Rating
-                    type='heart'
-                    ratingCount={5}
-                    imageSize={60}
-                    showRating
-                    onFinishRating={ratingCompleted}
-                    />
-
-				<Text style={styles.text}>Give Review</Text>
+				<Text style={styles.text}>Password</Text>
+				<TextInput
+					autoCapitalize="none"
+					style={styles.textInput}
+					placeholder={'Enter Password'}
+					maxLength={20}
+					onChangeText={(text) => setPassword(text)}
+					secureTextEntry={true}
+					value={password}
+				/>
+				<Text style={styles.text}>Confirm Password</Text>
 				<TextInput
 					style={styles.textInput}
-					placeholder={'Enter Review'}
-					maxLength={50}
-					onChangeText={(text) => setReview(text)}
-					value={reviewtext}
+					autoCapitalize="none"
+					placeholder={'Confirm Password'}
+					maxLength={20}
+					onChangeText={(text) => setCPassword(text)}
+					secureTextEntry={true}
+					value={cpassword}
 				/>
-               
-				<TouchableOpacity
-					style={[
-						styles.button,
-						{
-							backgroundColor: colors.light,
-							borderColor: colors.red,
-							borderWidth: 1,
-						},
-					]}
-					onPress={() => submitreview()}
+				<LinearGradient
+					colors={[colors.red, colors.red]}
+					style={[styles.button]}
 				>
-					<Text style={styles.textBtnSignUp}>Submit Review</Text>
-				</TouchableOpacity>
+					<TouchableOpacity
+						style={{ width: '100%', alignItems: 'center' }}
+						onPress={() => update_password()}
+					>
+						<Text style={styles.textBtn}>Update Password</Text>
+					</TouchableOpacity>
+				</LinearGradient>
 			</Animatable.View>
 		</View>
 	);
@@ -200,8 +209,8 @@ const styles = StyleSheet.create({
 	},
 	logo: {
 		// tintColor: colors.red,
-		width: 250,
-		height: 200,
+		width: 200,
+		height: 180,
 	},
 	header: {
 		flex: 1,
@@ -220,5 +229,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-
-export default ReviewScreen;
+export default WorkerUpdatePasswordScreen;

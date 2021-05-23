@@ -5,6 +5,7 @@ import {
 	StyleSheet,
 	Text,
 	TextInput,
+	ScrollView
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import GradientHeader from 'react-native-gradient-header';
@@ -14,6 +15,7 @@ const FAQScreen = () => {
 
   return (
     <View style={styles.screen}>
+	<ScrollView>
         <View style={styles.headerScreen}>
 				<Animatable.View animation="slideInDown">
 					 				<GradientHeader
@@ -26,12 +28,15 @@ const FAQScreen = () => {
 					/>
 				</Animatable.View>
 			</View>
+	
     <List.Section title="If you're still confused, feel free to contact us!" style={{marginTop:180}}>
+	
       <List.Accordion
         title="Q1"
         left={props => <List.Icon {...props} icon="frequently-asked-questions" />}
         
          >
+			
         <List.Item title="First item" />
         {/* <List.Item title="Second item" /> */}
       </List.Accordion>
@@ -107,8 +112,10 @@ const FAQScreen = () => {
         <List.Item title="First item" />
         {/* <List.Item title="Second item" /> */}
       </List.Accordion>
-
+	 
+	  <View style={{marginBottom:50}}></View>
     </List.Section>
+	</ScrollView>
     </View>
   );
 };
