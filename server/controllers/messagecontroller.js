@@ -19,11 +19,13 @@ exports.getmessagesbyuser = (req, res, next) => {
 exports.getconversations = (req, res) => {
     Message.find({user_id:req.params.userid,worker_id:req.params.workerid})
     .then((result) => {
+        console.log("Messages fetched successfully.")
         res.status(200).json({
             result:result,success:true
         });
     })
     .catch(err => {
+    console.log("Messages fetch unsuccessfull.")
     console.log(err)
     res.status(400).json({
         success:false
@@ -44,25 +46,43 @@ exports.getmessagesbyworker = (req, res, next) => {
 //router.post('/sendmessage', sendmessage);
 exports.sendmessage = async (req, res) => {
     const message = await Message(req.body);
-    message.save();
-    res.status(200).json({
-        msg: "Message sent succesfully",
+    message.save().then(e=>{
+        console.log("ll",e)
+        res.status(200).json({
+            msg: e,success:true
+        });
+    
+    }).catch(err=>{
+        console.log(err)
+        res.status(200).json({
+            success:false
+        });
     });
 };
 //router.get('/getalluserconversations/:id', getalluserconversations);
 exports.getalluserconversations = (req, res, next) => {
-    Message.find({user_id:req.params.id})
+    Message.find({user_id:req.params.id}).populate("worker_id")
     .then((result) => {
+        // var ids = [];
+        // result.forEach(element => {
+        //     ids.push(element.worker_id)
+        // });
+        var ids = result.filter((v,i,a)=>a.findIndex(t=>(t.worker_id === v.worker_id))===i)
+        console.log(ids)
         res.status(200).json({
-            result
+            result:ids,success:true
         });
     })
-    .catch(err => console.log(err));
+    .catch(err =>  res.status(200).json({
+        success:false
+    }));
 };
 //router.get('/getallworkerconversations/:id', getallworkerconversations);
 exports.getallworkerconversations = (req, res, next) => {
-    Message.find({worker_id:req.params.id})
+    Message.find({worker_id:req.params.id}).populate("user_id")
     .then((result) => {
+        var ids = result.filter((v,i,a)=>a.findIndex(t=>(t.worker_id === v.worker_id))===i)
+        console.log(ids)
         res.status(200).json({
             result
         });

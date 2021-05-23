@@ -9,5 +9,5 @@ router.get('/getalluserconversations/:id', getalluserconversations);
 router.get('/getallworkerconversations/:id', getallworkerconversations);
 router.post('/getcovnersationsbyworker', getcovnersationsbyworker);
 router.post('/getcovnersationsbyuser', getcovnersationsbyuser);
-router.post('/getcovnersations', getconversations);
+router.get('/getconversations/:userid/:workerid', getconversations);
 module.exports = router;

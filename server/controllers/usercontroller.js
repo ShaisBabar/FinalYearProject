@@ -73,6 +73,21 @@ exports.edituser = (req, res) =>{
 });
 }
 
+//router.put('/editpassword', editpassword);
+exports.editpassword = (req, res) =>{
+    req.body.password = Bcrypt.hashSync(req.body.password, 10);
+    User.findOneAndUpdate({_id:req.body.id},{password:req.body.password},function(error, results) {
+        if (error) {
+            console.log('Updating User Password Failed ',error);
+            res.json({success:false});
+        }
+        else{
+            console.log('Updated User Password');
+            res.json({success:true,password:req.body.password});
+        }   
+});
+}
+
 //router.put('/showphone/:id', showphone);
 exports.showphone = (req, res) =>{
     User.findOneAndUpdate({_id:req.params._id},{show_phone:!show_phone},function(error, results) {

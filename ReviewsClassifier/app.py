@@ -10,6 +10,8 @@ import joblib
 from sklearn.feature_extraction.text import CountVectorizer
 from pymongo import MongoClient
 from bson.json_util import loads, dumps
+from bson.objectid import ObjectId
+
 client = MongoClient()
 
 app = Flask(__name__)
@@ -40,6 +42,7 @@ def predict():
         worker_id = request.get_json()['worker_id']
         job_id = request.get_json()['job_id']
         rating = request.get_json()['rating']
+        actual_payment = request.get_json()['actual_payment']
 
         prediction = classifyReview(review)
         client = MongoClient("mongodb+srv://Mominadar:oth009@database.sxhxy.mongodb.net/doorstep?retryWrites=true&w=majority")
@@ -53,9 +56,13 @@ def predict():
             'sentiment':'{}'.format(prediction[0]),
             'rating':rating
         }
-        print(review_obj)
         rec.insert_one(review_obj)
-
+        wor = db.jobs
+        g = list(wor.find())
+        query = {"_id": ObjectId(job_id)}
+        w = wor.find_one({"_id": ObjectId(job_id)})
+        newvalues = { "$set": { "is_paid": True,"actual_payment":actual_payment } }
+        wor.update_one(query, newvalues)
         if prediction[0]==1:
             good_review=1
             return jsonify({'result':good_review,'success':True})

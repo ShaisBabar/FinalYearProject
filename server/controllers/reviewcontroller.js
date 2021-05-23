@@ -15,14 +15,16 @@ exports.getreviews = (req, res, next, id) => {
 
 //router.get('/getreviewsbyworker/:id', getreviewsbyworker);
 exports.getreviewsbyworker = (req, res) => {
-    Review.find({worker_id:req.params.id})
+    console.log("hhhhh")
+    Review.find({worker_id:req.params.id}).populate("user_id")
     .then((result) => {
+        console.log('Got reviews!',result)
         res.status(200).json({
             result:result,success:true
         });
     })
     .catch(err => {
-    console.log(err)
+    console.log('Getting Reviews failed',err)
     res.status(200).json({
         success:false
     });

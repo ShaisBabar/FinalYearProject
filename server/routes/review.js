@@ -6,5 +6,5 @@ router.get('/getreviews', getreviews);
 router.post('/addreview', addreview);
 router.delete('/deletereview/:id', deletereview);
 router.put('/editreview', editreview);
-router.get('/getreviewsbyworker',getreviewsbyworker)
+router.get('/getreviewsbyworker/:id',getreviewsbyworker)
 module.exports = router;
