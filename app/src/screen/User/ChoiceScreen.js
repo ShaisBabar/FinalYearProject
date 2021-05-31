@@ -21,7 +21,7 @@ function ChoiceScreen({ navigation: { navigate }}) {
 		// 	navigate('MainApp',{user:global.user});
 		// }
 
-		fetch('http://192.168.1.100:5000/category/categories')
+		fetch('http://192.168.8.100:5000/category/categories')
 		.then((response) => response.json())
 		.then((json) => {
 				var arr = [];

@@ -74,7 +74,7 @@ function RegisterScreen({ navigation: { navigate }}) {
 			name, email, phoneno:phone, password,city,street_address:address,city,area
 		}
 		console.log(user)
-		fetch('http://192.168.1.100:5000/users/adduser', {
+		fetch('http://192.168.8.100:5000/users/adduser', {
 			method: 'POST',
 			headers: {
 			  Accept: 'application/json',

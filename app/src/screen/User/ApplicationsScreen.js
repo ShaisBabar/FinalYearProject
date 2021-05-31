@@ -36,7 +36,7 @@ class ApplicationsScreen extends Component {
   }
 
   componentDidMount() {
-      fetch('http://192.168.1.100:5000/jobs/jobsbyuserapplicants/'+global.user._id+'/'+this.props.route.params.jobid)
+      fetch('http://192.168.8.100:5000/jobs/jobsbyuserapplicants/'+global.user._id+'/'+this.props.route.params.jobid)
       .then((response) => response.json())
       .then((json) => {
         if (json.success==true) {
@@ -97,7 +97,7 @@ class ApplicationsScreen extends Component {
   assignjob = (workerid) =>{
     var data = {id:this.props.route.params.jobid,workerid:workerid}
     console.log(data)
-    fetch('http://192.168.1.100:5000/jobs/addworker', {
+    fetch('http://192.168.8.100:5000/jobs/addworker', {
 			method: 'PUT',
 			headers: {
 			  Accept: 'application/json',
@@ -198,7 +198,7 @@ class ApplicationsScreen extends Component {
             <View style={styles.eachMsg}>
             <Image source={require(`./../../assets/categories/worker.png`)} style={styles.userPic} />
             <View>
-              <Text style={styles.msgTxt}>Worker Id: {item._id}</Text>
+              <Text style={styles.msgTxt}>Worker Id: {item.worker_id._id}</Text>
               <Text style={styles.msgTxt}>Worker Name: {item.worker_id.name}</Text>
               <Text style={styles.msgTxt}>Date: {item.Date_Applied}</Text>
               <TouchableOpacity
@@ -210,7 +210,7 @@ class ApplicationsScreen extends Component {
 							borderWidth: 1,
 						},
 					]}
-					onPress={() => this.assignjob(item._id)}
+					onPress={() => this.assignjob(item.worker_id._id)}
 				>
 					<Text style={styles.textBtnSignUp}>Assign Job</Text>
 				</TouchableOpacity>
@@ -223,7 +223,7 @@ class ApplicationsScreen extends Component {
 							borderWidth: 1,
 						},
 					]}
-					onPress={() => this.props.navigation.navigate('WorkerProfile',{user:item.worker_id})}
+					onPress={() => this.props.navigation.navigate('WorkerProfile',{user:item.worker_id._id})}
 				>
 					<Text style={styles.textBtnSignUp}>View Profile</Text>
 				</TouchableOpacity>

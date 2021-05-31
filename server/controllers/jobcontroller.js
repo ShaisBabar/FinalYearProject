@@ -31,6 +31,39 @@ exports.getJobByUserApplicants = (req, res) => {
     })});
 };
 
+exports.getJobByWorkerActive = (req, res) => {
+    console.log('hereee')
+    Job.find({assigned_to:req.params.id,is_completed:false}).populate('categories')
+    .then((result) => {
+        res.status(200).json({
+            result:result,success:true
+        });
+    })
+    .catch(err => {console.log("Error:",err)
+    res.status(200).json({
+        error:err,success:false
+    });
+});
+};
+
+exports.getJobByWorkerCompleted = (req, res) => {
+    Job.find({assigned_to:req.params.id,is_completed:true}).populate('categories')
+    .then((result) => {
+        res.status(200).json({
+            result:result,success:true
+        });
+    })
+    .catch(err => {
+    console.log("Error:",err)
+    res.status(200).json({
+        error:err,success:false
+    });
+    });
+};
+
+
+
+
 exports.getJobByUserActive = (req, res) => {
     console.log('hereee')
     Job.find({user_id:req.params.id,is_completed:false}).populate('categories').populate('applicants.worker_id')
@@ -51,7 +84,7 @@ exports.getJobByUserActive = (req, res) => {
 };
 
 exports.getJobByUserCompleted = (req, res, next) => {
-    Job.find({user_id:req.params.id,is_completed:true})
+    Job.find({user_id:req.params.id,is_completed:true}).populate('categories')
     .then((result) => {
         res.status(200).json({
             result:result,success:true
@@ -141,8 +174,12 @@ exports.getJobByCategory = (req, res, next) => {
 exports.getJobs = (req, res) => {
     Job.find({}).populate('categories').populate('applicants.worker_id').populate('user_id')
     .then((result) => {
+        const ans  = result.filter(element => {
+            return element.assigned_to===undefined
+        });
         res.status(200).json({
-            result:result,success:true
+
+            result:ans,success:true
         });
     })
     .catch(err => {
@@ -207,6 +244,19 @@ exports.editJob = (req, res, next) =>{
         }
         console.log('Updated Job Details');
         res.json(results);
+        });
+   
+};
+
+//router.put("/completeJob", completeJob);
+exports.completeJob = (req, res) =>{
+    console.log("completing job.")
+    Job.findOneAndUpdate({_id:req.body.id},{is_completed:true},function(error, results) {
+        if (error) {
+        return res.json({success:false});
+        }
+        console.log('Updated Job Details');
+        res.json({success:true});
         });
    
 };

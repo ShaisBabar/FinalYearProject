@@ -26,7 +26,7 @@ function JobDetailScreen(props)
 	const [city, setCity] = useState(user?.city);
 	const [area, setArea] = useState(user?.area);
 	const DeletePost = () =>{
-		fetch('http://192.168.1.100:5000/jobs/removejob/'+job._id, {
+		fetch('http://192.168.8.100:5000/jobs/removejob/'+job._id, {
 			method: 'DELETE',
 			headers: {
 			  Accept: 'application/json',
@@ -141,7 +141,7 @@ function JobDetailScreen(props)
 							editable={false}
 						/>
 						
-					{job.is_paid==true &&
+					{job.is_paid==true && job.is_completed==false &&
 
 					<>
 					<TouchableOpacity
@@ -177,7 +177,7 @@ function JobDetailScreen(props)
 				
 				 }
 
-					{job.assigned_to && job.is_paid==false &&
+					{job.assigned_to && job.is_paid==false && job.is_completed==false &&
 					   <>
 				   <TouchableOpacity
 					style={[
@@ -197,7 +197,7 @@ function JobDetailScreen(props)
 				   </>
 				   
 					}
-					{!job.assigned_to && job.is_paid==false &&
+					{!job.assigned_to && job.is_paid==false && job.is_completed==false &&
 					<View>
 				  <TouchableOpacity
 					style={[

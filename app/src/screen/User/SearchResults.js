@@ -25,7 +25,6 @@ const images = [
 class SearchResults extends Component {
   constructor(props) {
     super(props);
-    console.log("jj",this.props.route.params.workers)
     this.state = {
       loading: false,
       data: this.props.route.params.workers,
@@ -33,52 +32,6 @@ class SearchResults extends Component {
     };
 
     this.arrayholder = this.props.route.params.workers;
-  }
-
-  componentDidMount() {
-    //   fetch('http://192.168.1.100:5000/jobs/jobsbyuserapplicants/'+global.user._id+'/'+this.props.route.params.jobid)
-    //   .then((response) => response.json())
-    //   .then((json) => {
-    //     if (json.success==true) {
-    //       this.setState({
-    //         data: json.result.applicants,
-    //         error: json.error || null,
-    //       });
-    //       this.arrayholder = json.result.applicants;
-    //       console.log(json.result.applicants)
-    //     }
-    //     else{
-    //       Alert.alert(
-    //         "Error Loading Jobs",
-    //         "Try again.",
-    //         [
-    //           {
-    //           text: "Cancel",
-    //           onPress: () => console.log("Cancel Pressed"),
-    //           style: "cancel"
-    //           },
-    //           { text: "OK", onPress: () => console.log("OK Pressed") }
-    //         ]
-    //         );
-    //     }
-    //   })
-    //   .catch((error) => Alert.alert(
-    //     "Error occured"+error,
-    //     "Try again later.",
-    //     [
-    //       {
-    //       text: "Cancel",
-    //       onPress: () => console.log("Cancel Pressed"),
-    //       style: "cancel"
-    //       },
-    //       { text: "OK", onPress: () => console.log("OK Pressed") }
-    //     ]
-    //     )
-    //     );
-    //     console.log('llllll')
-      //this.makeRemoteRequest();
-    
-  
   }
 
   renderSeparator = () => {
@@ -97,7 +50,7 @@ class SearchResults extends Component {
   assignjob = (workerid) =>{
     var data = {id:this.props.route.params.jobid,workerid:workerid}
     console.log(data)
-    fetch('http://192.168.1.100:5000/jobs/addworker', {
+    fetch('http://192.168.8.100:5000/jobs/addworker', {
 			method: 'PUT',
 			headers: {
 			  Accept: 'application/json',
@@ -223,7 +176,7 @@ class SearchResults extends Component {
 							borderWidth: 1,
 						},
 					]}
-					onPress={() => this.props.navigation.navigate('WorkerProfile',{user:item})}
+					onPress={() => this.props.navigation.navigate('WorkerProfile',{workerid:item._id.$oid})}
 				>
 					<Text style={styles.textBtnSignUp}>View Profile</Text>
 				</TouchableOpacity>

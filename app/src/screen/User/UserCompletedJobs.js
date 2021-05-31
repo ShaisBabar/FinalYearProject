@@ -22,7 +22,7 @@ const images = [
   require(`./../../assets/categories/laundary.png`),
   require(`./../../assets/categories/gardening.png`)
 ];
-class UserActiveJobs extends Component {
+class UserCompletedJobs extends Component {
   constructor(props) {
     super(props);
 
@@ -37,7 +37,7 @@ class UserActiveJobs extends Component {
 
   componentDidMount() {
       this.setState({ loading: true });
-      fetch('http://192.168.1.100:5000/jobs/jobsbyusercompleted/'+global.user._id)
+      fetch('http://192.168.8.100:5000/jobs/jobsbyusercompleted/'+global.user._id)
       .then((response) => response.json())
       .then((json) => {
         if (json.success==true) {
@@ -92,32 +92,8 @@ class UserActiveJobs extends Component {
         ]
         )
         );
-      //this.makeRemoteRequest();
     
-  
   }
-
-  makeRemoteRequest = () => {
-    const url = `https://randomuser.me/api/?&results=20`;
-    this.setState({ loading: true });
-
-    fetch(url)
-      .then(res => res.json())
-      .then(res => {
-        console.log("kkk",res.results)
-        this.setState({
-          data: res.results,
-          error: res.error || null,
-          loading: false,
-        });
-        this.arrayholder = res.results;
-      })
-      .catch(error => {
-        this.setState({ error, loading: false });
-      });
-
-      console.log(this.state.data)
-  };
 
   renderSeparator = () => {
     return (
@@ -402,4 +378,4 @@ const styles = StyleSheet.create({
   },
 }); 
 
-export default UserActiveJobs;
+export default UserCompletedJobs;

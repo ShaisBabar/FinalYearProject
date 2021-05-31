@@ -54,6 +54,7 @@ function ProfileScreen()
 	const [area, setArea] = useState(user?.area);
 	const theme = 'red';
 	const border = 'grey';
+	
 	return (
 		<View style={styles.screen}>
 			<View style={styles.headerScreen}>
@@ -195,11 +196,11 @@ function barberReviews() {
 
 	useEffect(() => {
 		console.log("hhhhh")
-		//fetch('http://192.168.1.100:5000/review/getreviewsbyworker/'+global.user._id)
-		fetch('http://192.168.1.100:5000/review/getreviewsbyworker/'+"609d8335729e7532fcb00ddc")
+	 fetch('http://192.168.8.100:5000/review/getreviewsbyworker/'+global.user._id)
+	 // fetch('http://192.168.8.100:5000/review/getreviewsbyworker/'+"609d8335729e7532fcb00ddc")
       .then((response) => response.json())
       .then((json) => {
-		//console.log("jjj",json)
+		console.log("jjj",json)
         if (json.success==true) {
           setReviews(json.result)
         }

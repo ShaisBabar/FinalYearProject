@@ -23,6 +23,7 @@ import FAQScreen from './../screen/User/FAQScreen';
 import EditProfileScreen from './../screen/User/EditProfileScreen';
 import ApplicationsScreen from './../screen/User/ApplicationsScreen';
 import WorkerProfileScreen from './../screen/User/WorkerProfileScreen';
+import WorkerProfileScreenU from './../screen/User/WorkerProfileScreenU';
 import UpdateJobDetailsScreen from './../screen/User/UpdateJobDetailsScreen';
 import ConfirmationScreen from './../screen/User/ConfirmationScreen';
 import SearchWorker from './../screen/User/SearchWorker';
@@ -241,6 +242,23 @@ export default class UserStack extends Component {
 			<Stack.Screen
 				name="Results"
 				component={SearchResults}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
+			<Stack.Screen
+				name="WorkerProfile"
+				component={WorkerProfileScreenU}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
+
+            <Stack.Screen
+				name="Chat Details"
+				component={chatScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',

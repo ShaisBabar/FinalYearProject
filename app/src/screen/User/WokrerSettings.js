@@ -36,7 +36,7 @@ export default class App extends React.Component {
     show_phon:global.user.show_phone
   }
   updateshowaddress = () =>{
-    fetch('http://192.168.1.100:5000/users/showaddress/'+global.user._id, {
+    fetch('http://192.168.8.100:5000/users/showaddress/'+global.user._id, {
             method: 'PUT',
             headers: {
               Accept: 'application/json',
@@ -109,7 +109,7 @@ export default class App extends React.Component {
         },
         { text: "OK", onPress: () => {
           console.log("OK Pressed");
-          fetch('http://192.168.1.100:5000/jobs/removejobuser/'+global.user._id, {
+          fetch('http://192.168.8.100:5000/jobs/removejobuser/'+global.user._id, {
             method: 'DELETE',
             headers: {
               Accept: 'application/json',

@@ -2,10 +2,11 @@ var Message = require('../model/message');
 var Worker_ = require('../model/worker');
 var User = require('../model/user');
 var _ = require('lodash');
-
+const mongoose = require('mongoose')
 
 //router.get('/getmessagesbyuser/:id', getmessagesbyuser);
 exports.getmessagesbyuser = (req, res, next) => {
+    
     Message.find({user_id:req.params.id})
     .then((result) => {
         res.status(200).json({
@@ -79,15 +80,20 @@ exports.getalluserconversations = (req, res, next) => {
 };
 //router.get('/getallworkerconversations/:id', getallworkerconversations);
 exports.getallworkerconversations = (req, res, next) => {
+    console.log("llll")
+    req.params.id = mongoose.Types.ObjectId(req.params.id)
     Message.find({worker_id:req.params.id}).populate("user_id")
     .then((result) => {
-        var ids = result.filter((v,i,a)=>a.findIndex(t=>(t.worker_id === v.worker_id))===i)
+        console.log(result,"kkkkk")
+        var ids = result.filter((v,i,a)=>a.findIndex(t=>(t.user_id === v.user_id))===i)
         console.log(ids)
         res.status(200).json({
-            result
+           result:ids,success:true
         });
     })
-    .catch(err => console.log(err));
+    .catch(err =>  res.status(200).json({
+        success:false
+    }));
 };
 
 //router.post('/getcovnersationsbyworker', getcovnersationsbyworker);

@@ -38,7 +38,7 @@ function WorkerUpdatePasswordScreen({ navigation: { navigate }}) {
 				id:global.user._id,
 				password
 			}
-			fetch('http://192.168.1.100:5000/users/editpassword', {
+			fetch('http://192.168.8.100:5000/users/editpassword', {
 				method: 'PUT',
 				headers: {
 				  Accept: 'application/json',

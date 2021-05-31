@@ -135,7 +135,7 @@ useEffect(() => {
 			max_payment:price
 		}
 		console.log(post)
-		fetch('http://192.168.1.100:5000/jobs/addjob', {
+		fetch('http://192.168.8.100:5000/jobs/addjob', {
 			method: 'POST',
 			headers: {
 			  Accept: 'application/json',

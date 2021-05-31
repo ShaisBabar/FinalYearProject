@@ -18,7 +18,7 @@ class UserConversationsScreen extends Component {
   }
 
   componentDidMount() {
-      fetch('http://192.168.1.100:5000/messages/getalluserconversations/'+global.user._id)
+      fetch('http://192.168.8.100:5000/messages/getalluserconversations/'+global.user._id)
       .then((response) => response.json())
       .then((json) => {
         if (json.success==true) {

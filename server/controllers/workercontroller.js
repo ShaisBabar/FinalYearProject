@@ -194,4 +194,18 @@ exports.getworkerbyname = (req, res, next, id) => {
     .catch(err => console.log(err));
 };
 
+//router.get('/getworkerbyid/:id', getworkerbyid);
+exports.getworkerbyid = (req, res) => {
+    
+    Worker_.findById(req.params.id)
+    .then((result) => {
+        console.log("success")
+        res.status(200).json({
+            result:result,success:true
+        });
+    })
+    .catch(err => res.status(200).json({
+        success:false
+    }));
+};
 

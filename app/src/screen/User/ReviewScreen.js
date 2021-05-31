@@ -25,7 +25,7 @@ function ReviewScreen(props) {
 	const submitreview = () =>{
 		let data ={review:reviewtext,rating:rating,user_id:global.user._id,worker_id:props.route.params.worker,job_id:props.route.params.jobid,actual_payment:props.route.params.payment}
 		console.log(data)
-		fetch('http://192.168.1.100:4001/predict', {
+		fetch('http://192.168.8.100:4001/predict', {
 				method: 'POST',
 				headers: {
 				  Accept: 'application/json',

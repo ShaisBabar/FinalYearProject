@@ -1,5 +1,5 @@
 var Review = require('../model/review');
-
+const mongoose = require('mongoose')
 
 
 //router.get('/getreviews', getreviews);
@@ -16,9 +16,11 @@ exports.getreviews = (req, res, next, id) => {
 //router.get('/getreviewsbyworker/:id', getreviewsbyworker);
 exports.getreviewsbyworker = (req, res) => {
     console.log("hhhhh")
-    Review.find({worker_id:req.params.id}).populate("user_id")
+    req.params.id = mongoose.Types.ObjectId(req.params.id)
+    //Review.find({worker_id:req.params.id}).populate("user_id")
+    Review.find({}).populate("user_id")
     .then((result) => {
-        console.log('Got reviews!',result)
+        console.log('Got reviews!',result.length)
         res.status(200).json({
             result:result,success:true
         });

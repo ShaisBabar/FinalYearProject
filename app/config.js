@@ -11,7 +11,7 @@ import Axios from 'axios';
 
 const axios = Axios.create({
 	baseURL: 'http://onyourdoorstepapp.herokuapp.com/api',
-	// baseURL: 'http://192.168.1.100:5000/api',
+	// baseURL: 'http://192.168.8.100:5000/api',
 });
 
 axios.interceptors.request.use(

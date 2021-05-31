@@ -38,7 +38,7 @@ class ExploreScreen extends Component {
 
   componentDidMount() {
       this.setState({ loading: true });
-      fetch('http://192.168.1.100:5000/jobs/jobs')
+      fetch('http://192.168.8.100:5000/jobs/jobs')
       .then((response) => response.json())
       .then((json) => {
         if (json.success==true) {
@@ -62,8 +62,8 @@ class ExploreScreen extends Component {
             loading: false,
           });
           this.arrayholder = json.result;
-          console.log('jjjjj')
-          console.log(this.state.data)
+          //console.log('jjjjj')
+          //console.log(this.state.data)
         }
         else{
           Alert.alert(
@@ -196,7 +196,7 @@ class ExploreScreen extends Component {
 
         {this.state.data && this.state.data.length>0 &&
 		  <>
-		  <TouchableOpacity
+		  {/* <TouchableOpacity
 					style={[
 						styles.button,
 						{
@@ -208,7 +208,7 @@ class ExploreScreen extends Component {
 					onPress={() => navigate('WorkerLogin')}
 				>
 					<Text style={styles.textBtnSignUp}>Apply Filters</Text>
-		</TouchableOpacity>
+		</TouchableOpacity> */}
           <ScrollView>
           <FlatList
           data={this.state.data}

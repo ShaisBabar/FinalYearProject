@@ -43,7 +43,7 @@ function JobDetailScreenW(props)
         }
         job.applicants.push({worker_id:global.user._id})
         console.log(user)
-        fetch('http://192.168.1.100:5000/jobs/applyjob', {
+        fetch('http://192.168.8.101:5000/jobs/applyjob', {
             method: 'PUT',
             headers: {
               Accept: 'application/json',
@@ -98,6 +98,64 @@ function JobDetailScreenW(props)
           ));
         return;
     }
+	const markasdone = () =>{
+		const user = {id:job._id}
+		console.log(user)
+        fetch('http://192.168.8.100:5000/jobs/completeJob', {
+            method: 'PUT',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+        .then((response) => response.json())
+        .then((json) => {
+            if (json.success==true) {
+                Alert.alert(
+                    "Job marked as completed",
+                    "Try another job.",
+                    [
+                      {
+                        text: "Cancel",
+                        onPress: () => console.log("Cancel Pressed"),
+                        style: "cancel"
+                      },
+                      { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                  );
+                props.navigation.navigate('Explore Jobs');
+            }
+            else{
+                Alert.alert(
+                    "Something Went Wrong.",
+                    "Try again.",
+                    [
+                      {
+                        text: "Cancel",
+                        onPress: () => console.log("Cancel Pressed"),
+                        style: "cancel"
+                      },
+                      { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                  );
+                  props.navigation.navigate('Explore Jobs');
+            }
+        })
+        .catch((error) => Alert.alert(
+            "Error occured."+error,
+            "Try again later.",
+            [
+              {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel"
+              },
+              { text: "OK", onPress: () => console.log("OK Pressed") }
+            ]
+          ));
+        return;
+    }
 
     const unapplyforjob = () =>{
         const user = {
@@ -106,7 +164,7 @@ function JobDetailScreenW(props)
         }
         job.applicants = job.applicants.filter(r=>r.worker_id!=global.user._id)
         console.log(user)
-        fetch('http://192.168.1.100:5000/jobs/unapplyjob', {
+        fetch('http://192.168.8.101:5000/jobs/unapplyjob', {
             method: 'PUT',
             headers: {
               Accept: 'application/json',
@@ -221,7 +279,46 @@ function JobDetailScreenW(props)
 							value={job.street_address+", "+job.area+", "+job.city}
 							editable={false}
 						/>
-                        {exists==true && 
+						{job.assigned_to!=undefined && job.is_paid==false && job.is_completed==false &&
+                        <LinearGradient
+                        colors={[colors.red, colors.red]}
+                        style={[styles.button]}
+                    >
+                        <TouchableOpacity
+                            style={{ width: '100%', alignItems: 'center' }}
+                            onPress={() =>  Alert.alert(
+								"Waiting for User to confirm job is complete.",
+								"After your confirmation, job will be moved from active to complete state.",
+								[
+								  {
+									text: "Cancel",
+									onPress: () => console.log("Cancel Pressed"),
+									style: "cancel"
+								  },
+								  { text: "OK", onPress: () => console.log("OK Pressed") }
+								]
+							  )}
+                        >
+                            <Text style={styles.textBtn}>on Hold.</Text>
+                        </TouchableOpacity>
+                    </LinearGradient>
+                        
+                    }
+					{job.is_paid==true && job.is_completed==false &&
+                        <LinearGradient
+                        colors={[colors.red, colors.red]}
+                        style={[styles.button]}
+                    >
+                        <TouchableOpacity
+                            style={{ width: '100%', alignItems: 'center' }}
+                            onPress={() =>  markasdone()}
+                        >
+                            <Text style={styles.textBtn}>Mark as Completed.</Text>
+                        </TouchableOpacity>
+                    </LinearGradient>
+                        
+                    }
+                        {exists==true && job.assigned_to==undefined && job.is_completed==false &&
                         <LinearGradient
                         colors={[colors.red, colors.red]}
                         style={[styles.button]}
@@ -235,7 +332,7 @@ function JobDetailScreenW(props)
                     </LinearGradient>
                         
                     }
-                    {exists==false && 
+                    {exists==false && job.assigned_to==undefined && job.is_completed==false &&
                         <LinearGradient
                         colors={[colors.red, colors.red]}
                         style={[styles.button]}

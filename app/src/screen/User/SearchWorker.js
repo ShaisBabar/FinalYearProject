@@ -59,7 +59,7 @@ function SearchWorker({ navigation: { navigate } }) {
 			city,categories:sd,area
 		}
 		console.log(data);
-		fetch('http://192.168.1.100:4000/search', {
+		fetch('http://192.168.8.100:4000/search', {
 			method: 'POST',
 			headers: {
 			  Accept: 'application/json',

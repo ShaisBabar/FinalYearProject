@@ -31,7 +31,7 @@ import ExploreScreen from '../screen/User/ExploreScreen'
 // import Chat from '../screen/chat/Chat';
 import AddJobScreen from '../screen/User/Addjob';
 import chatScreen from '../screen/chat/chatScreen';
-import ConversationScreen from '../screen/chat/workerconversations';
+import WorkerConversationsScreen from '../screen/chat/workerconversations';
 import WelcomeScreen from '../screen/User/WelcomeScreen';
 import UserSettings from '../screen/User/UserSettings';
 import UpdatePasswordScreen from '../screen/User/UpdatePasswordScreen';
@@ -60,7 +60,7 @@ export default class WorkerStack extends Component {
 	
 			<Stack.Screen
 				name="Conversations"
-				component={ConversationScreen}
+				component={WorkerConversationsScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',
@@ -141,6 +141,22 @@ export default class WorkerStack extends Component {
 			<Stack.Screen
 				name="JobDetails"
 				component={JobDetailScreenW}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
+			<Stack.Screen
+				name="Chat Details"
+				component={chatScreen}
+				options={{
+					headerStyle: { backgroundColor: colors.red },
+					headerTintColor: 'white',
+				}}
+			/>
+			<Stack.Screen
+				name="WorkerProfile"
+				component={WorkerProfileScreen}
 				options={{
 					headerStyle: { backgroundColor: colors.red },
 					headerTintColor: 'white',

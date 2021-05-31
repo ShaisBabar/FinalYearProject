@@ -29,7 +29,7 @@ export default class Chat extends Component {
   componentDidMount(){
     // console.log('user',this.props.route.params.userid)
     // console.log('worker',this.props.route.params.workerid)
-    fetch('http://192.168.1.100:5000/messages/getconversations/'+this.props.route.params.userid+'/'+this.props.route.params.workerid)
+    fetch('http://192.168.8.100:5000/messages/getconversations/'+this.props.route.params.userid+'/'+this.props.route.params.workerid)
     .then((response) => response.json())
     .then((json) => {
       //console.log("res",json)
@@ -92,7 +92,7 @@ export default class Chat extends Component {
         worker_id:this.props.route.params.workerid,
         message:this.state.msg
       }
-      fetch('http://192.168.1.100:5000/messages/sendmessage', {
+      fetch('http://192.168.8.100:5000/messages/sendmessage', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -140,7 +140,7 @@ export default class Chat extends Component {
     }
 
   _renderItem = ({item}) => {
-    if (item.sent === false) {
+    if (item.user_id === global.user._id) {
       return (
         <View style={styles.eachMsg}>
           <Image source={require(`./../../assets/images/avatar.png`)} style={styles.userPic} />
